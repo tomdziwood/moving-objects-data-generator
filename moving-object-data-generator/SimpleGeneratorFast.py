@@ -16,24 +16,31 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
 
     last_colloc_id = 0
     area_in_cell_dim = area // cell_size
+    print("area_in_cell_dim: ", area_in_cell_dim)
     for i_colloc in range(n_colloc):
-        collocation_feature_ids = list(range(last_colloc_id, last_colloc_id + base_collocation_length_array[i_colloc]))
+        collocation_feature_ids = np.arange(last_colloc_id, last_colloc_id + base_collocation_length_array[i_colloc])
         print(collocation_feature_ids)
 
-        for i_colloc_inst in range(collocation_instances_number_array[i_colloc]):
-            cell_x_id = random.randint(0, area_in_cell_dim)
-            cell_y_id = random.randint(0, area_in_cell_dim)
-            # print("ids:\t(%d, %d)" % (cell_x_id, cell_y_id))
+        number_of_all_features_instances_of_collocation = collocation_instances_number_array[i_colloc] * base_collocation_length_array[i_colloc]
 
-            cell_x = cell_x_id * cell_size
-            cell_y = cell_y_id * cell_size
-            # print("cell coor:\t(%d, %d)" % (cell_x, cell_y))
+        instance_x = np.random.randint(low=area_in_cell_dim, size=collocation_instances_number_array[i_colloc])
+        instance_x = instance_x * cell_size
+        instance_x = np.repeat(a=instance_x, repeats=base_collocation_length_array[i_colloc])
+        instance_x = instance_x + np.random.uniform(high=cell_size, size=number_of_all_features_instances_of_collocation)
 
-            for i_feature in range(base_collocation_length_array[i_colloc]):
-                instance_x = cell_x + random.random() * cell_size
-                instance_y = cell_y + random.random() * cell_size
-                # print("i_feature: %d\tinst coor:\t(%f, %f)" % (collocation_feature_ids[i_feature], instance_x, instance_y))
-                f.write("%d %d %f %f\n" % (collocation_feature_ids[i_feature], i_colloc_inst, instance_x, instance_y))
+        instance_y = np.random.randint(low=area_in_cell_dim, size=collocation_instances_number_array[i_colloc])
+        instance_y = instance_y * cell_size
+        instance_y = np.repeat(a=instance_y, repeats=base_collocation_length_array[i_colloc])
+        instance_y = instance_y + np.random.uniform(high=cell_size, size=number_of_all_features_instances_of_collocation)
+
+        feature_id = np.tile(A=collocation_feature_ids, reps=collocation_instances_number_array[i_colloc])
+
+        feature_instance_id = np.arange(collocation_instances_number_array[i_colloc])
+        feature_instance_id = np.repeat(a=feature_instance_id, repeats=base_collocation_length_array[i_colloc])
+
+        fmt = '%d %d %.6f %.6f\n' * number_of_all_features_instances_of_collocation
+        data = fmt % tuple(np.column_stack(tup=(feature_id, feature_instance_id, instance_x, instance_y)).ravel())
+        f.write(data)
 
         last_colloc_id += base_collocation_length_array[i_colloc]
 
@@ -83,9 +90,8 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
 
 def main():
     print("main()")
-    # generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=0.0, ncfn=1.0, ndf=0, ndfn=10)
-    generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=0.0, ncfn=1.0, ndf=0, ndfn=10)
 
+    generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=0.0, ncfn=1.0, ndf=0, ndfn=10)
 
 
 if __name__ == "__main__":
