@@ -1,97 +1,105 @@
-import random
 import numpy as np
 
 
-def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=1.0, ncfn=1.0, ndf=2, ndfn=5000):
+def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=1.0, ncfn=1.0, ndf=2, ndfn=5000, random_seed=None):
     print("generate()")
-    f = open(file=output_file, mode="w")
-    base_collocation_length_array = np.random.poisson(lam=lambda_1, size=n_colloc)
-    base_collocation_length_array[base_collocation_length_array < 2] = 2
-    print("base_collocation_length_array=%s" % str(base_collocation_length_array))
-    collocation_instances_number_array = np.random.poisson(lam=lambda_2, size=n_colloc)
-    print("collocation_instances_number_array=%s" % str(collocation_instances_number_array))
 
-    collocation_features_number = np.sum(base_collocation_length_array)
-    print("collocation_features_number=%d" % collocation_features_number)
+    if random_seed is not None:
+        np.random.seed(random_seed)
+
+    f = open(file=output_file, mode="w")
+    base_collocation_lengths = np.random.poisson(lam=lambda_1, size=n_colloc)
+    base_collocation_lengths[base_collocation_lengths < 2] = 2
+    print("base_collocation_lengths=%s" % str(base_collocation_lengths))
+    collocations_instances_counts = np.random.poisson(lam=lambda_2, size=n_colloc)
+    print("collocations_instances_counts=%s" % str(collocations_instances_counts))
+
+    collocation_features_sum = np.sum(base_collocation_lengths)
+    print("collocation_features_sum=%d" % collocation_features_sum)
 
     last_colloc_id = 0
     area_in_cell_dim = area // cell_size
     print("area_in_cell_dim: ", area_in_cell_dim)
     for i_colloc in range(n_colloc):
-        collocation_feature_ids = np.arange(last_colloc_id, last_colloc_id + base_collocation_length_array[i_colloc])
-        print(collocation_feature_ids)
+        collocation_features = np.arange(last_colloc_id, last_colloc_id + base_collocation_lengths[i_colloc])
+        print("collocation_features=%s" % str(collocation_features))
 
-        number_of_all_features_instances_of_collocation = collocation_instances_number_array[i_colloc] * base_collocation_length_array[i_colloc]
+        collocation_features_instances_sum = collocations_instances_counts[i_colloc] * base_collocation_lengths[i_colloc]
 
-        instance_x = np.random.randint(low=area_in_cell_dim, size=collocation_instances_number_array[i_colloc])
-        instance_x = instance_x * cell_size
-        instance_x = np.repeat(a=instance_x, repeats=base_collocation_length_array[i_colloc])
-        instance_x = instance_x + np.random.uniform(high=cell_size, size=number_of_all_features_instances_of_collocation)
+        collocation_features_instances_x = np.random.randint(low=area_in_cell_dim, size=collocations_instances_counts[i_colloc])
+        collocation_features_instances_x *= cell_size
+        collocation_features_instances_x = collocation_features_instances_x.astype(dtype=np.float64)
+        collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=base_collocation_lengths[i_colloc])
+        collocation_features_instances_x += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
 
-        instance_y = np.random.randint(low=area_in_cell_dim, size=collocation_instances_number_array[i_colloc])
-        instance_y = instance_y * cell_size
-        instance_y = np.repeat(a=instance_y, repeats=base_collocation_length_array[i_colloc])
-        instance_y = instance_y + np.random.uniform(high=cell_size, size=number_of_all_features_instances_of_collocation)
+        collocation_features_instances_y = np.random.randint(low=area_in_cell_dim, size=collocations_instances_counts[i_colloc])
+        collocation_features_instances_y *= cell_size
+        collocation_features_instances_y = collocation_features_instances_y.astype(dtype=np.float64)
+        collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=base_collocation_lengths[i_colloc])
+        collocation_features_instances_y += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
 
-        feature_id = np.tile(A=collocation_feature_ids, reps=collocation_instances_number_array[i_colloc])
+        collocation_features_ids = np.tile(A=collocation_features, reps=collocations_instances_counts[i_colloc])
 
-        feature_instance_id = np.arange(collocation_instances_number_array[i_colloc])
-        feature_instance_id = np.repeat(a=feature_instance_id, repeats=base_collocation_length_array[i_colloc])
+        collocation_features_instances_ids = np.arange(collocations_instances_counts[i_colloc])
+        collocation_features_instances_ids = np.repeat(a=collocation_features_instances_ids, repeats=base_collocation_lengths[i_colloc])
 
-        fmt = '%d %d %.6f %.6f\n' * number_of_all_features_instances_of_collocation
-        data = fmt % tuple(np.column_stack(tup=(feature_id, feature_instance_id, instance_x, instance_y)).ravel())
+        fmt = '%d %d %.6f %.6f\n' * collocation_features_instances_sum
+        data = fmt % tuple(np.column_stack(tup=(collocation_features_ids, collocation_features_instances_ids, collocation_features_instances_x, collocation_features_instances_y)).ravel())
         f.write(data)
 
-        last_colloc_id += base_collocation_length_array[i_colloc]
+        last_colloc_id += base_collocation_lengths[i_colloc]
 
-    collocation_noise_feature_number = round(ncfr * collocation_features_number)
-    print("collocation_noise_feature_number=%d" % collocation_noise_feature_number)
+    # collocation noise feature
+    collocation_noise_features_sum = round(ncfr * collocation_features_sum)
+    print("collocation_noise_features_sum=%d" % collocation_noise_features_sum)
 
-    # collocation_noise_feature = random.sample(population=range(collocation_features_number), k=collocation_noise_feature_number)
-    collocation_noise_feature = np.random.choice(a=range(collocation_features_number), size=collocation_noise_feature_number, replace=False)
-    collocation_noise_feature.sort()
-    print("collocation_noise_feature=%s" % str(collocation_noise_feature))
+    collocation_noise_features = np.random.choice(a=collocation_features_sum, size=collocation_noise_features_sum, replace=False)
+    collocation_noise_features.sort()
+    print("collocation_noise_features=%s" % str(collocation_noise_features))
 
-    collocation_features_instances_number_array = []
-    for index in range(len(base_collocation_length_array)):
-        for _ in range(base_collocation_length_array[index]):
-            collocation_features_instances_number_array.append(collocation_instances_number_array[index])
+    collocation_features_instances_counts = np.repeat(a=collocations_instances_counts, repeats=base_collocation_lengths)
+    print("collocation_features_instances_counts=%s" % str(collocation_features_instances_counts))
 
-    collocation_noise_feature_instances_number_array = []
-    for collocation_id in collocation_noise_feature:
-        collocation_noise_feature_instances_number_array.append(
-            int(ncfn * collocation_features_instances_number_array[collocation_id])
-        )
-    print("collocation_noise_feature_instances_number_array=%s" % str(collocation_noise_feature_instances_number_array))
+    collocation_noise_features_instances_counts = ncfn * collocation_features_instances_counts[collocation_noise_features]
+    collocation_noise_features_instances_counts = collocation_noise_features_instances_counts.astype(np.int32)
+    print("collocation_noise_features_instances_counts=%s" % str(collocation_noise_features_instances_counts))
 
-    for i_feature in range(len(collocation_noise_feature)):
-        feature = collocation_noise_feature[i_feature]
-        collocation_noise_feature_instances_number = collocation_noise_feature_instances_number_array[i_feature]
-        # print("collocation_noise_feature_instances_number=%d" % collocation_noise_feature_instances_number)
-        feature_instance = collocation_features_instances_number_array[feature]
-        for i_instance in range(collocation_noise_feature_instances_number):
-            instance_x = random.random() * area
-            instance_y = random.random() * area
-            # print("noise feature %d \t feature instance %d \t coor:\t(%f, %f)" % (feature, feature_instance, instance_x, instance_y))
-            f.write("%d %d %f %f\n" % (feature, feature_instance, instance_x, instance_y))
-            feature_instance += 1
+    collocation_noise_features_instances_sum = np.sum(collocation_noise_features_instances_counts)
+    collocation_noise_features_instances_x = np.random.uniform(high=area, size=collocation_noise_features_instances_sum)
+    collocation_noise_features_instances_y = np.random.uniform(high=area, size=collocation_noise_features_instances_sum)
+    collocation_noise_features_ids = np.repeat(a=collocation_noise_features, repeats=collocation_noise_features_instances_counts)
 
-    for additional_noise_feature in range(last_colloc_id, last_colloc_id + ndf):
-        print("additional_noise_feature=%d" % additional_noise_feature)
-        for additional_noise_feature_instance in range(ndfn):
-            instance_x = random.random() * area
-            instance_y = random.random() * area
-            # print("additional noise %d inst %d \t coor:\t(%f, %f)" % (additional_noise_feature, additional_noise_feature_instance, instance_x, instance_y))
-            f.write("%d %d %f %f\n" % (additional_noise_feature, additional_noise_feature_instance, instance_x, instance_y))
+    start = collocation_features_instances_counts[collocation_noise_features]
+    length = collocation_noise_features_instances_counts
+    collocation_noise_features_instances_ids = np.repeat(a=(start + length - length.cumsum()), repeats=length) + np.arange(collocation_noise_features_instances_sum)
+    # print("collocation_noise_features_instances_ids=%s" % collocation_noise_features_instances_ids)
+
+    fmt = '%d %d %.6f %.6f\n' * collocation_noise_features_instances_sum
+    data = fmt % tuple(np.column_stack(tup=(collocation_noise_features_ids, collocation_noise_features_instances_ids, collocation_noise_features_instances_x, collocation_noise_features_instances_y)).ravel())
+    f.write(data)
+
+    # additional noise feature
+    additional_noise_features_ids = np.random.randint(low=ndf, size=ndfn) + last_colloc_id
+    (additional_noise_features, additional_noise_features_instances_counts) = np.unique(ar=additional_noise_features_ids, return_counts=True)
+    additional_noise_features_instances_ids = np.repeat(
+        a=(additional_noise_features_instances_counts - additional_noise_features_instances_counts.cumsum()),
+        repeats=additional_noise_features_instances_counts
+    ) + np.arange(ndfn)
+    additional_noise_features_ids = np.repeat(a=additional_noise_features, repeats=additional_noise_features_instances_counts)
+    additional_noise_features_instances_x = np.random.uniform(high=area, size=ndfn)
+    additional_noise_features_instances_y = np.random.uniform(high=area, size=ndfn)
+
+    fmt = '%d %d %.6f %.6f\n' * ndfn
+    data = fmt % tuple(np.column_stack(tup=(additional_noise_features_ids, additional_noise_features_instances_ids, additional_noise_features_instances_x, additional_noise_features_instances_y)).ravel())
+    f.write(data)
 
     f.close()
-
 
 
 def main():
     print("main()")
 
-    generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=0.0, ncfn=1.0, ndf=0, ndfn=10)
+    generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=0.4, ncfn=0.8, ndf=5, ndfn=200, random_seed=0)
 
 
 if __name__ == "__main__":
