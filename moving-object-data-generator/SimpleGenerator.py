@@ -24,7 +24,8 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
         collocation_features = np.arange(last_colloc_id, last_colloc_id + base_collocation_lengths[i_colloc])
         print("collocation_features=%s" % str(collocation_features))
 
-        for collocation_feature_instance_id in range(collocation_instances_counts[i_colloc]):
+        collocation_feature_instance_id = 0
+        while collocation_feature_instance_id < collocation_instances_counts[i_colloc]:
             cell_x_id = np.random.randint(low=area_in_cell_dim)
             cell_y_id = np.random.randint(low=area_in_cell_dim)
             # print("ids:\t(%d, %d)" % (cell_x_id, cell_y_id))
@@ -33,11 +34,15 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
             cell_y = cell_y_id * cell_size
             # print("cell coor:\t(%d, %d)" % (cell_x, cell_y))
 
-            for i_feature in range(base_collocation_lengths[i_colloc]):
-                instance_x = cell_x + np.random.uniform() * cell_size
-                instance_y = cell_y + np.random.uniform() * cell_size
-                # print("i_feature: %d\tinst coor:\t(%f, %f)" % (collocation_features[i_feature], instance_x, instance_y))
-                f.write("%d %d %f %f\n" % (collocation_features[i_feature], collocation_feature_instance_id, instance_x, instance_y))
+            m_clumpy_repeats = min(m_clumpy, collocation_instances_counts[i_colloc] - collocation_feature_instance_id)
+            for _ in range(m_clumpy_repeats):
+                for i_feature in range(base_collocation_lengths[i_colloc]):
+                    instance_x = cell_x + np.random.uniform() * cell_size
+                    instance_y = cell_y + np.random.uniform() * cell_size
+                    # print("i_feature: %d\tinst coor:\t(%f, %f)" % (collocation_features[i_feature], instance_x, instance_y))
+                    f.write("%d %d %f %f\n" % (collocation_features[i_feature], collocation_feature_instance_id, instance_x, instance_y))
+
+                collocation_feature_instance_id += 1
 
         last_colloc_id += base_collocation_lengths[i_colloc]
 

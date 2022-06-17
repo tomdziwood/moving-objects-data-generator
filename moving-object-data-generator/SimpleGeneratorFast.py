@@ -26,15 +26,17 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
 
         collocation_features_instances_sum = collocations_instances_counts[i_colloc] * base_collocation_lengths[i_colloc]
 
-        collocation_features_instances_x = np.random.randint(low=area_in_cell_dim, size=collocations_instances_counts[i_colloc])
+        collocation_features_instances_x = np.random.randint(low=area_in_cell_dim, size=(collocations_instances_counts[i_colloc] - 1) // m_clumpy + 1)
         collocation_features_instances_x *= cell_size
         collocation_features_instances_x = collocation_features_instances_x.astype(dtype=np.float64)
+        collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=m_clumpy)[:collocations_instances_counts[i_colloc]]
         collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=base_collocation_lengths[i_colloc])
         collocation_features_instances_x += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
 
-        collocation_features_instances_y = np.random.randint(low=area_in_cell_dim, size=collocations_instances_counts[i_colloc])
+        collocation_features_instances_y = np.random.randint(low=area_in_cell_dim, size=(collocations_instances_counts[i_colloc] - 1) // m_clumpy + 1)
         collocation_features_instances_y *= cell_size
         collocation_features_instances_y = collocation_features_instances_y.astype(dtype=np.float64)
+        collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=m_clumpy)[:collocations_instances_counts[i_colloc]]
         collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=base_collocation_lengths[i_colloc])
         collocation_features_instances_y += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
 

@@ -3,7 +3,7 @@ import numpy as np
 from timeit import default_timer as timer
 
 
-def generate_collocation_feature_1(area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100):
+def generate_collocation_feature_1(area, cell_size, n_colloc, lambda_1, lambda_2, m_clumpy):
     np.random.seed(0)
     base_collocation_length_array = np.random.poisson(lam=lambda_1, size=n_colloc)
     base_collocation_length_array[base_collocation_length_array < 2] = 2
@@ -37,7 +37,7 @@ def generate_collocation_feature_1(area=1000, cell_size=5, n_colloc=3, lambda_1=
         last_colloc_id += base_collocation_length_array[i_colloc]
 
 
-def generate_collocation_feature_2(area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100):
+def generate_collocation_feature_2(area, cell_size, n_colloc, lambda_1, lambda_2, m_clumpy):
     np.random.seed(0)
     base_collocation_length_array = np.random.poisson(lam=lambda_1, size=n_colloc)
     base_collocation_length_array[base_collocation_length_array < 2] = 2
@@ -74,7 +74,7 @@ def generate_collocation_feature_2(area=1000, cell_size=5, n_colloc=3, lambda_1=
         last_colloc_id += base_collocation_length_array[i_colloc]
 
 
-def generate_collocation_feature_3(area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100):
+def generate_collocation_feature_3(area, cell_size, n_colloc, lambda_1, lambda_2, m_clumpy):
     np.random.seed(0)
     base_collocation_length_array = np.random.poisson(lam=lambda_1, size=n_colloc)
     base_collocation_length_array[base_collocation_length_array < 2] = 2
@@ -113,11 +113,94 @@ def generate_collocation_feature_3(area=1000, cell_size=5, n_colloc=3, lambda_1=
         last_colloc_id += base_collocation_length_array[i_colloc]
 
 
+def generate_collocation_feature_4(area, cell_size, n_colloc, lambda_1, lambda_2, m_clumpy):
+    np.random.seed(0)
+    base_collocation_lengths = np.random.poisson(lam=lambda_1, size=n_colloc)
+    base_collocation_lengths[base_collocation_lengths < 2] = 2
+    # print("base_collocation_lengths=%s" % str(base_collocation_lengths))
+    collocation_instances_counts = np.random.poisson(lam=lambda_2, size=n_colloc)
+    # print("collocation_instances_counts=%s" % str(collocation_instances_counts))
+
+    collocation_features_sum = np.sum(base_collocation_lengths)
+    # print("collocation_features_sum=%d" % collocation_features_sum)
+
+    last_colloc_id = 0
+    area_in_cell_dim = area // cell_size
+    for i_colloc in range(n_colloc):
+        collocation_features = np.arange(last_colloc_id, last_colloc_id + base_collocation_lengths[i_colloc])
+        # print(collocation_features)
+
+        collocation_feature_instance_id = 0
+        while collocation_feature_instance_id < collocation_instances_counts[i_colloc]:
+            cell_x_id = random.randint(0, area_in_cell_dim)
+            cell_y_id = random.randint(0, area_in_cell_dim)
+            # print("ids:\t(%d, %d)" % (cell_x_id, cell_y_id))
+
+            cell_x = cell_x_id * cell_size
+            cell_y = cell_y_id * cell_size
+            # print("cell coor:\t(%d, %d)" % (cell_x, cell_y))
+
+            m_clumpy_repeats = min(m_clumpy, collocation_instances_counts[i_colloc] - collocation_feature_instance_id)
+            for _ in range(m_clumpy_repeats):
+                for i_feature in range(base_collocation_lengths[i_colloc]):
+                    instance_x = cell_x + random.random() * cell_size
+                    instance_y = cell_y + random.random() * cell_size
+                    # print("i_feature: %d\tinst coor:\t(%f, %f)" % (collocation_features[i_feature], instance_x, instance_y))
+
+                collocation_feature_instance_id += 1
+
+        last_colloc_id += base_collocation_lengths[i_colloc]
+
+
+def generate_collocation_feature_5(area, cell_size, n_colloc, lambda_1, lambda_2, m_clumpy):
+    np.random.seed(0)
+    base_collocation_lengths = np.random.poisson(lam=lambda_1, size=n_colloc)
+    base_collocation_lengths[base_collocation_lengths < 2] = 2
+    # print("base_collocation_lengths=%s" % str(base_collocation_lengths))
+    collocations_instances_counts = np.random.poisson(lam=lambda_2, size=n_colloc)
+    # print("collocations_instances_counts=%s" % str(collocations_instances_counts))
+
+    collocation_features_sum = np.sum(base_collocation_lengths)
+    # print("collocation_features_sum=%d" % collocation_features_sum)
+
+    last_colloc_id = 0
+    area_in_cell_dim = area // cell_size
+    # print("area_in_cell_dim: ", area_in_cell_dim)
+    for i_colloc in range(n_colloc):
+        collocation_features = np.arange(last_colloc_id, last_colloc_id + base_collocation_lengths[i_colloc])
+        # print(collocation_features)
+
+        collocation_features_instances_sum = collocations_instances_counts[i_colloc] * base_collocation_lengths[i_colloc]
+
+        collocation_features_instances_x = np.random.randint(low=area_in_cell_dim, size=(collocations_instances_counts[i_colloc] - 1) // m_clumpy + 1)
+        collocation_features_instances_x *= cell_size
+        collocation_features_instances_x = collocation_features_instances_x.astype(dtype=np.float64)
+        collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=m_clumpy)[:collocations_instances_counts[i_colloc]]
+        collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=base_collocation_lengths[i_colloc])
+        collocation_features_instances_x += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
+
+        collocation_features_instances_y = np.random.randint(low=area_in_cell_dim, size=(collocations_instances_counts[i_colloc] - 1) // m_clumpy + 1)
+        collocation_features_instances_y *= cell_size
+        collocation_features_instances_y = collocation_features_instances_y.astype(dtype=np.float64)
+        collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=m_clumpy)[:collocations_instances_counts[i_colloc]]
+        collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=base_collocation_lengths[i_colloc])
+        collocation_features_instances_y += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
+
+        collocation_features_ids = np.tile(A=collocation_features, reps=collocations_instances_counts[i_colloc])
+
+        collocation_features_instances_ids = np.arange(collocations_instances_counts[i_colloc])
+        collocation_features_instances_ids = np.repeat(a=collocation_features_instances_ids, repeats=base_collocation_lengths[i_colloc])
+
+        last_colloc_id += base_collocation_lengths[i_colloc]
+
+
 def test_generate_collocation_feature():
     # test_generate_collocation_feature execute
-    # average time execution of function generate_collocation_feature_1:	0.130188207000 [s]
-    # average time execution of function generate_collocation_feature_2:	0.017090251000 [s]
-    # average time execution of function generate_collocation_feature_3:	0.010674810600 [s]
+    # average time execution of function generate_collocation_feature_1:	0.124433431000 [s]
+    # average time execution of function generate_collocation_feature_2:	0.009619150100 [s]
+    # average time execution of function generate_collocation_feature_3:	0.009689085300 [s]
+    # average time execution of function generate_collocation_feature_4:	0.156563081000 [s]
+    # average time execution of function generate_collocation_feature_5:	0.010183195200 [s]
 
     print("test_generate_collocation_feature execute")
     parameters = {
@@ -125,7 +208,8 @@ def test_generate_collocation_feature():
         "cell_size": 5,
         "n_colloc": 10,
         "lambda_1": 5,
-        "lambda_2": 1000
+        "lambda_2": 1000,
+        "m_clumpy": 1
     }
 
     loops_number = 100
@@ -148,6 +232,20 @@ def test_generate_collocation_feature():
         generate_collocation_feature_3(**parameters)
     end = timer()
     print("average time execution of function generate_collocation_feature_3:\t%.12f [s]" % ((end - start) / loops_number))
+
+    loops_number = 100
+    start = timer()
+    for _ in range(loops_number):
+        generate_collocation_feature_4(**parameters)
+    end = timer()
+    print("average time execution of function generate_collocation_feature_4:\t%.12f [s]" % ((end - start) / loops_number))
+
+    loops_number = 1000
+    start = timer()
+    for _ in range(loops_number):
+        generate_collocation_feature_5(**parameters)
+    end = timer()
+    print("average time execution of function generate_collocation_feature_5:\t%.12f [s]" % ((end - start) / loops_number))
 
 
 def generate_collocation_feature_and_write_1(output_file="generate_collocation_feature_and_write_1.txt", area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100):
@@ -659,11 +757,11 @@ def test_generate_additional_noise_feature():
 
 
 def main():
-    # test_generate_collocation_feature()
+    test_generate_collocation_feature()
     # test_generate_collocation_feature_and_write()
     # test_generate_collocation_noise_feature()
     # test_write_collocation_noise_feature()
-    test_generate_additional_noise_feature()
+    # test_generate_additional_noise_feature()
 
 
 if __name__ == "__main__":
