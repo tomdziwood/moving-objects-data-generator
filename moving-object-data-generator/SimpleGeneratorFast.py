@@ -8,48 +8,75 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
         np.random.seed(random_seed)
 
     f = open(file=output_file, mode="w")
+
     base_collocation_lengths = np.random.poisson(lam=lambda_1, size=n_colloc)
     base_collocation_lengths[base_collocation_lengths < 2] = 2
     print("base_collocation_lengths=%s" % str(base_collocation_lengths))
-    collocations_instances_counts = np.random.poisson(lam=lambda_2, size=n_colloc)
+
+    if m_overlap > 1:
+        collocation_lengths = np.repeat(a=base_collocation_lengths + 1, repeats=m_overlap)
+    else:
+        collocation_lengths = base_collocation_lengths
+    print("collocation_lengths=%s" % str(collocation_lengths))
+
+    collocations_instances_counts = np.random.poisson(lam=lambda_2, size=n_colloc * m_overlap)
     print("collocations_instances_counts=%s" % str(collocations_instances_counts))
 
     collocation_features_sum = np.sum(base_collocation_lengths)
+    if m_overlap > 1:
+        collocation_features_sum += n_colloc * m_overlap
     print("collocation_features_sum=%d" % collocation_features_sum)
 
-    last_colloc_id = 0
+    collocation_features_instances_counts = np.zeros(shape=collocation_features_sum, dtype=np.int32)
+    print("collocation_features_instances_counts=%s" % str(collocation_features_instances_counts))
+
+    collocation_start_feature_id = 0
     area_in_cell_dim = area // cell_size
     print("area_in_cell_dim: ", area_in_cell_dim)
-    for i_colloc in range(n_colloc):
-        collocation_features = np.arange(last_colloc_id, last_colloc_id + base_collocation_lengths[i_colloc])
+    for i_colloc in range(n_colloc * m_overlap):
+        collocation_features = np.arange(collocation_start_feature_id, collocation_start_feature_id + collocation_lengths[i_colloc])
+        collocation_features[-1] += i_colloc % m_overlap
         print("collocation_features=%s" % str(collocation_features))
 
-        collocation_features_instances_sum = collocations_instances_counts[i_colloc] * base_collocation_lengths[i_colloc]
+        collocation_features_instances_sum = collocations_instances_counts[i_colloc] * collocation_lengths[i_colloc]
 
         collocation_features_instances_x = np.random.randint(low=area_in_cell_dim, size=(collocations_instances_counts[i_colloc] - 1) // m_clumpy + 1)
         collocation_features_instances_x *= cell_size
         collocation_features_instances_x = collocation_features_instances_x.astype(dtype=np.float64)
         collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=m_clumpy)[:collocations_instances_counts[i_colloc]]
-        collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=base_collocation_lengths[i_colloc])
+        collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=collocation_lengths[i_colloc])
         collocation_features_instances_x += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
 
         collocation_features_instances_y = np.random.randint(low=area_in_cell_dim, size=(collocations_instances_counts[i_colloc] - 1) // m_clumpy + 1)
         collocation_features_instances_y *= cell_size
         collocation_features_instances_y = collocation_features_instances_y.astype(dtype=np.float64)
         collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=m_clumpy)[:collocations_instances_counts[i_colloc]]
-        collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=base_collocation_lengths[i_colloc])
+        collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=collocation_lengths[i_colloc])
         collocation_features_instances_y += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
 
         collocation_features_ids = np.tile(A=collocation_features, reps=collocations_instances_counts[i_colloc])
 
-        collocation_features_instances_ids = np.arange(collocations_instances_counts[i_colloc])
-        collocation_features_instances_ids = np.repeat(a=collocation_features_instances_ids, repeats=base_collocation_lengths[i_colloc])
+        collocation_features_instances_ids = np.arange(
+            start=collocation_features_instances_counts[collocation_start_feature_id],
+            stop=collocation_features_instances_counts[collocation_start_feature_id] + collocations_instances_counts[i_colloc]
+        )
+        collocation_features_instances_ids = np.tile(A=collocation_features_instances_ids, reps=(collocation_lengths[i_colloc] - 1, 1))
+        collocation_features_instances_ids = np.concatenate((
+            collocation_features_instances_ids,
+            np.arange(collocations_instances_counts[i_colloc]).reshape((1, collocations_instances_counts[i_colloc]))
+        ))
+        collocation_features_instances_ids = collocation_features_instances_ids.T.flatten()
 
         fmt = '%d %d %.6f %.6f\n' * collocation_features_instances_sum
         data = fmt % tuple(np.column_stack(tup=(collocation_features_ids, collocation_features_instances_ids, collocation_features_instances_x, collocation_features_instances_y)).ravel())
         f.write(data)
 
-        last_colloc_id += base_collocation_lengths[i_colloc]
+        collocation_features_instances_counts[collocation_features] += collocations_instances_counts[i_colloc]
+
+        if (i_colloc + 1) % m_overlap == 0:
+            collocation_start_feature_id += collocation_lengths[i_colloc] + m_overlap - 1
+
+    print("collocation_features_instances_counts=%s" % str(collocation_features_instances_counts))
 
     # collocation noise feature
     collocation_noise_features_sum = round(ncfr * collocation_features_sum)
@@ -58,9 +85,6 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
     collocation_noise_features = np.random.choice(a=collocation_features_sum, size=collocation_noise_features_sum, replace=False)
     collocation_noise_features.sort()
     print("collocation_noise_features=%s" % str(collocation_noise_features))
-
-    collocation_features_instances_counts = np.repeat(a=collocations_instances_counts, repeats=base_collocation_lengths)
-    print("collocation_features_instances_counts=%s" % str(collocation_features_instances_counts))
 
     collocation_noise_features_instances_counts = ncfn * collocation_features_instances_counts[collocation_noise_features]
     collocation_noise_features_instances_counts = collocation_noise_features_instances_counts.astype(np.int32)
@@ -81,7 +105,7 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
     f.write(data)
 
     # additional noise feature
-    additional_noise_features_ids = np.random.randint(low=ndf, size=ndfn) + last_colloc_id
+    additional_noise_features_ids = np.random.randint(low=ndf, size=ndfn) + collocation_start_feature_id
     (additional_noise_features, additional_noise_features_instances_counts) = np.unique(ar=additional_noise_features_ids, return_counts=True)
     additional_noise_features_instances_ids = np.repeat(
         a=(additional_noise_features_instances_counts - additional_noise_features_instances_counts.cumsum()),

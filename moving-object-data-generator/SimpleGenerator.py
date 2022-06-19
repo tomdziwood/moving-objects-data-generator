@@ -27,7 +27,6 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
         collocation_features_sum += n_colloc * m_overlap
     print("collocation_features_sum=%d" % collocation_features_sum)
 
-    # collocation_features_instances_counts = np.repeat(a=collocation_instances_counts, repeats=base_collocation_lengths)
     collocation_features_instances_counts = np.zeros(shape=collocation_features_sum, dtype=np.int32)
     print("collocation_features_instances_counts=%s" % str(collocation_features_instances_counts))
 
