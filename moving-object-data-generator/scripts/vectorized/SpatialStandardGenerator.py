@@ -125,7 +125,7 @@ def generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=3, 
 def main():
     print("main()")
 
-    generate(output_file="output_file.txt", area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=0.4, ncfn=0.8, ndf=5, ndfn=200, random_seed=0)
+    generate(output_file="../../output_file.txt", area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=0.4, ncfn=0.8, ndf=5, ndfn=200, random_seed=0)
 
 
 if __name__ == "__main__":
