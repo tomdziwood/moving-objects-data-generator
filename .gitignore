@@ -131,3 +131,9 @@ dmypy.json
 
 # Ignore PyCharm project configuration
 .idea/
+
+
+# Ignore txt output files
+moving-object-data-generator/performance/*.txt
+moving-object-data-generator/scripts/iterative/*.txt
+moving-object-data-generator/scripts/vectorized/*.txt
