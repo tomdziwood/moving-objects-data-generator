@@ -105,19 +105,20 @@ def generate(output_file="SpatialStandardGenerator_output_file.txt", area=1000, 
     f.write(data)
 
     # additional noise feature
-    additional_noise_features_ids = np.random.randint(low=ndf, size=ndfn) + collocation_start_feature_id
-    (additional_noise_features, additional_noise_features_instances_counts) = np.unique(ar=additional_noise_features_ids, return_counts=True)
-    additional_noise_features_instances_ids = np.repeat(
-        a=(additional_noise_features_instances_counts - additional_noise_features_instances_counts.cumsum()),
-        repeats=additional_noise_features_instances_counts
-    ) + np.arange(ndfn)
-    additional_noise_features_ids = np.repeat(a=additional_noise_features, repeats=additional_noise_features_instances_counts)
-    additional_noise_features_instances_x = np.random.uniform(high=area, size=ndfn)
-    additional_noise_features_instances_y = np.random.uniform(high=area, size=ndfn)
+    if ndf > 0:
+        additional_noise_features_ids = np.random.randint(low=ndf, size=ndfn) + collocation_start_feature_id
+        (additional_noise_features, additional_noise_features_instances_counts) = np.unique(ar=additional_noise_features_ids, return_counts=True)
+        additional_noise_features_instances_ids = np.repeat(
+            a=(additional_noise_features_instances_counts - additional_noise_features_instances_counts.cumsum()),
+            repeats=additional_noise_features_instances_counts
+        ) + np.arange(ndfn)
+        additional_noise_features_ids = np.repeat(a=additional_noise_features, repeats=additional_noise_features_instances_counts)
+        additional_noise_features_instances_x = np.random.uniform(high=area, size=ndfn)
+        additional_noise_features_instances_y = np.random.uniform(high=area, size=ndfn)
 
-    fmt = '%d %d %.6f %.6f\n' * ndfn
-    data = fmt % tuple(np.column_stack(tup=(additional_noise_features_ids, additional_noise_features_instances_ids, additional_noise_features_instances_x, additional_noise_features_instances_y)).ravel())
-    f.write(data)
+        fmt = '%d %d %.6f %.6f\n' * ndfn
+        data = fmt % tuple(np.column_stack(tup=(additional_noise_features_ids, additional_noise_features_instances_ids, additional_noise_features_instances_x, additional_noise_features_instances_y)).ravel())
+        f.write(data)
 
     f.close()
 
