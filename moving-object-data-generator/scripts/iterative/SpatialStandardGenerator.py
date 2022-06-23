@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def generate(output_file="SpatialStandardGenerator_output_file.txt", area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=1.0, ncfn=1.0, ndf=2, ndfn=5000, random_seed=None):
+def generate(output_file="SpatialStandardGenerator_output_file.txt", area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=1.0, ncfn=1.0, ncf_proportional=False, ndf=2, ndfn=5000, random_seed=None):
     print("generate()")
 
     # set random seed value
@@ -94,8 +94,15 @@ def generate(output_file="SpatialStandardGenerator_output_file.txt", area=1000, 
     print("collocation_noise_features=%s" % str(collocation_noise_features))
 
     # prepare array which holds counts of created instances of the co-location noise feature
-    collocation_noise_features_instances_counts = ncfn * collocation_features_instances_counts[collocation_noise_features]
-    collocation_noise_features_instances_counts = collocation_noise_features_instances_counts.astype(np.int32)
+    collocation_noise_features_instances_sum = round(ncfn * collocation_features_instances_counts.sum())
+    if ncf_proportional:
+        # number of the instances of given co-location noise feature is proportional to the number of instances of given feature, which are participating in co-locations
+        collocation_noise_features_instances_counts = collocation_noise_features_instances_sum * collocation_features_instances_counts[collocation_noise_features] / collocation_features_instances_counts[collocation_noise_features].sum()
+        collocation_noise_features_instances_counts = collocation_noise_features_instances_counts.astype(np.int32)
+    else:
+        # number of the instances of every co-location noise feature is similar, because co-location noise feature id is chosen randomly with uniform distribution.
+        collocation_noise_feature_random_choices = np.random.randint(low=collocation_noise_features_sum, size=collocation_noise_features_instances_sum)
+        (_, collocation_noise_features_instances_counts) = np.unique(ar=collocation_noise_feature_random_choices, return_counts=True)
     print("collocation_noise_features_instances_counts=%s" % str(collocation_noise_features_instances_counts))
 
     # generate data of every co-location noise feature
@@ -131,8 +138,7 @@ def generate(output_file="SpatialStandardGenerator_output_file.txt", area=1000, 
 def main():
     print("main()")
 
-    # generate(output_file="SpatialStandardGenerator_output_file.txt", area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=0.0, ncfn=1.0, ndf=0, ndfn=10, random_seed=0)
-    generate(output_file="SpatialStandardGenerator_output_file.txt", area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=3, ncfr=0.4, ncfn=0.8, ndf=5, ndfn=200, random_seed=0)
+    generate(output_file="SpatialStandardGenerator_output_file.txt", area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=3, ncfr=0.4, ncfn=1, ncf_proportional=False, ndf=5, ndfn=200, random_seed=0)
 
 
 if __name__ == "__main__":
