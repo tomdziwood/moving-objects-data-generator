@@ -79,7 +79,6 @@ def generate(output_file="SpatialStandardGenerator_output_file.txt", time_frames
     # print("collocation_noise_features_instances_ids=%s" % collocation_noise_features_instances_ids)
 
     # initiate basic data of the additional noise features if they are requested
-    (additional_noise_features, additional_noise_features_instances_counts) = (np.array([]), np.array([]))
     additional_noise_features_ids = np.array([])
     additional_noise_features_instances_ids = np.array([])
     if ndf > 0:
