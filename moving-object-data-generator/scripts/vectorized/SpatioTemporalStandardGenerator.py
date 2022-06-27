@@ -69,13 +69,34 @@ def generate(output_file="SpatialStandardGenerator_output_file.txt", time_frames
         (_, collocation_noise_features_instances_counts) = np.unique(ar=collocation_noise_feature_random_choices, return_counts=True)
     print("collocation_noise_features_instances_counts=%s" % str(collocation_noise_features_instances_counts))
 
-    # determine number of each of the additional noise features if they are requested
+    # generate vector of features ids of all the consecutive instances of co-location noise features
+    collocation_noise_features_ids = np.repeat(a=collocation_noise_features, repeats=collocation_noise_features_instances_counts)
+
+    # generate vector of features instances ids of all the consecutive instances of co-location noise features
+    start = collocation_features_instances_counts[collocation_noise_features]
+    length = collocation_noise_features_instances_counts
+    collocation_noise_features_instances_ids = np.repeat(a=(start + length - length.cumsum()), repeats=length) + np.arange(collocation_noise_features_instances_sum)
+    # print("collocation_noise_features_instances_ids=%s" % collocation_noise_features_instances_ids)
+
+    # initiate basic data of the additional noise features if they are requested
     (additional_noise_features, additional_noise_features_instances_counts) = (np.array([]), np.array([]))
+    additional_noise_features_ids = np.array([])
+    additional_noise_features_instances_ids = np.array([])
     if ndf > 0:
+        # determine number of each of the additional noise features
         additional_noise_features_ids = np.random.randint(low=ndf, size=ndfn) + collocation_features_sum
         (additional_noise_features, additional_noise_features_instances_counts) = np.unique(ar=additional_noise_features_ids, return_counts=True)
         print("additional_noise_features=%s" % str(additional_noise_features))
         print("additional_noise_features_instances_counts=%s" % str(additional_noise_features_instances_counts))
+
+        # generate vector of feature ids of all the consecutive instances of additional noise features
+        additional_noise_features_ids = np.repeat(a=additional_noise_features, repeats=additional_noise_features_instances_counts)
+
+        # generate vector of features instances ids of all the consecutive instances of additional noise features
+        additional_noise_features_instances_ids = np.repeat(
+            a=(additional_noise_features_instances_counts - additional_noise_features_instances_counts.cumsum()),
+            repeats=additional_noise_features_instances_counts
+        ) + np.arange(ndfn)
 
     # generate data for each time frame
     for i_time_frame in range(time_frames_number):
@@ -142,17 +163,9 @@ def generate(output_file="SpatialStandardGenerator_output_file.txt", time_frames
                 collocation_start_feature_id += collocation_lengths[i_colloc] + m_overlap - 1
 
         # generate data of every co-location noise feature in given time frame
-        # generate vectors of x and y coordinates and ids of all the consecutive instances of co-location noise features
-        collocation_noise_features_instances_sum = np.sum(collocation_noise_features_instances_counts)
+        # generate vectors of x and y coordinates of all the consecutive instances of co-location noise features
         collocation_noise_features_instances_x = np.random.uniform(high=area, size=collocation_noise_features_instances_sum)
         collocation_noise_features_instances_y = np.random.uniform(high=area, size=collocation_noise_features_instances_sum)
-        collocation_noise_features_ids = np.repeat(a=collocation_noise_features, repeats=collocation_noise_features_instances_counts)
-
-        # generate vector of features instances ids of all the consecutive instances of co-location noise features
-        start = collocation_features_instances_counts[collocation_noise_features]
-        length = collocation_noise_features_instances_counts
-        collocation_noise_features_instances_ids = np.repeat(a=(start + length - length.cumsum()), repeats=length) + np.arange(collocation_noise_features_instances_sum)
-        # print("collocation_noise_features_instances_ids=%s" % collocation_noise_features_instances_ids)
 
         # generate vector of time frame ids of current time frame
         time_frame_ids = np.full(shape=collocation_noise_features_instances_sum, fill_value=i_time_frame, dtype=np.int32)
@@ -164,15 +177,11 @@ def generate(output_file="SpatialStandardGenerator_output_file.txt", time_frames
 
         # generate additional noise features if they are requested in given time frame
         if ndf > 0:
-            # generate vectors of all necessary additional noise features data
-            additional_noise_features_instances_ids = np.repeat(
-                a=(additional_noise_features_instances_counts - additional_noise_features_instances_counts.cumsum()),
-                repeats=additional_noise_features_instances_counts
-            ) + np.arange(ndfn)
-            additional_noise_features_ids = np.repeat(a=additional_noise_features, repeats=additional_noise_features_instances_counts)
+            # generate vectors of x and y coordinates of all the consecutive instances of additional noise features
             additional_noise_features_instances_x = np.random.uniform(high=area, size=ndfn)
             additional_noise_features_instances_y = np.random.uniform(high=area, size=ndfn)
 
+            # generate vector of time frame ids of current time frame
             time_frame_ids = np.full(shape=ndfn, fill_value=i_time_frame, dtype=np.int32)
 
             # write data of all the additional noise features to the output file
