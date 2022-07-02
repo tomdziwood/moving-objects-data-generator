@@ -71,31 +71,39 @@ class StandardInitiation:
         self.collocation_noise_features_sum = round(sp.ncfr * self.collocation_features_sum)
         print("collocation_noise_features_sum=%d" % self.collocation_noise_features_sum)
 
-        # chose co-location noise features from co-location features
-        self.collocation_noise_features = np.random.choice(a=self.collocation_features_sum, size=self.collocation_noise_features_sum, replace=False)
-        self.collocation_noise_features.sort()
-        print("collocation_noise_features=%s" % str(self.collocation_noise_features))
+        # initiate the remaining data of co-location noise features if there are any
+        if self.collocation_noise_features_sum > 0:
 
-        # prepare array which holds counts of created instances of the co-location noise feature
-        self.collocation_noise_features_instances_sum = round(sp.ncfn * self.collocation_features_instances_counts.sum())
-        if sp.ncf_proportional:
-            # number of the instances of given co-location noise feature is proportional to the number of instances of given feature, which are participating in co-locations
-            self.collocation_noise_features_instances_counts = self.collocation_noise_features_instances_sum * self.collocation_features_instances_counts[self.collocation_noise_features] / self.collocation_features_instances_counts[self.collocation_noise_features].sum()
-            self.collocation_noise_features_instances_counts = self.collocation_noise_features_instances_counts.astype(np.int32)
-        else:
-            # number of the instances of every co-location noise feature is similar, because co-location noise feature id is chosen randomly with uniform distribution.
-            collocation_noise_feature_random_choices = np.random.randint(low=self.collocation_noise_features_sum, size=self.collocation_noise_features_instances_sum)
-            (_, self.collocation_noise_features_instances_counts) = np.unique(ar=collocation_noise_feature_random_choices, return_counts=True)
-        print("collocation_noise_features_instances_counts=%s" % str(self.collocation_noise_features_instances_counts))
+            # chose co-location noise features from co-location features
+            self.collocation_noise_features = np.random.choice(a=self.collocation_features_sum, size=self.collocation_noise_features_sum, replace=False)
+            self.collocation_noise_features.sort()
+            print("collocation_noise_features=%s" % str(self.collocation_noise_features))
 
-        # generate vector of features ids of all the consecutive instances of co-location noise features
-        self.collocation_noise_features_ids = np.repeat(a=self.collocation_noise_features, repeats=self.collocation_noise_features_instances_counts)
+            # prepare array which holds counts of created instances of the co-location noise feature
+            self.collocation_noise_features_instances_sum = round(sp.ncfn * self.collocation_features_instances_counts.sum())
+            if sp.ncf_proportional:
+                # number of the instances of given co-location noise feature is proportional to the number of instances of given feature, which are participating in co-locations
+                self.collocation_noise_features_instances_counts = self.collocation_noise_features_instances_sum * self.collocation_features_instances_counts[self.collocation_noise_features] / self.collocation_features_instances_counts[self.collocation_noise_features].sum()
+                self.collocation_noise_features_instances_counts = self.collocation_noise_features_instances_counts.astype(np.int32)
 
-        # generate vector of features instances ids of all the consecutive instances of co-location noise features
-        start = self.collocation_features_instances_counts[self.collocation_noise_features]
-        length = self.collocation_noise_features_instances_counts
-        self.collocation_noise_features_instances_ids = np.repeat(a=(start + length - length.cumsum()), repeats=length) + np.arange(self.collocation_noise_features_instances_sum)
-        # print("collocation_noise_features_instances_ids=%s" % self.collocation_noise_features_instances_ids)
+                # correct sum of co-location noise features based on actual count of each feature - difference comes from rounding down counts to integer value
+                self.collocation_noise_features_instances_sum = self.collocation_noise_features_instances_counts.sum()
+            else:
+                # number of the instances of every co-location noise feature is similar, because co-location noise feature id is chosen randomly with uniform distribution.
+                collocation_noise_feature_random_choices = np.random.randint(low=self.collocation_noise_features_sum, size=self.collocation_noise_features_instances_sum)
+                (unique_indices, counts_indices) = np.unique(ar=collocation_noise_feature_random_choices, return_counts=True)
+                self.collocation_noise_features_instances_counts = np.zeros_like(a=self.collocation_noise_features)
+                self.collocation_noise_features_instances_counts[unique_indices] = counts_indices
+            print("collocation_noise_features_instances_counts=%s" % str(self.collocation_noise_features_instances_counts))
+
+            # generate vector of features ids of all the consecutive instances of co-location noise features
+            self.collocation_noise_features_ids = np.repeat(a=self.collocation_noise_features, repeats=self.collocation_noise_features_instances_counts)
+
+            # generate vector of features instances ids of all the consecutive instances of co-location noise features
+            start = self.collocation_features_instances_counts[self.collocation_noise_features]
+            length = self.collocation_noise_features_instances_counts
+            self.collocation_noise_features_instances_ids = np.repeat(a=(start + length - length.cumsum()), repeats=length) + np.arange(self.collocation_noise_features_instances_sum)
+            # print("collocation_noise_features_instances_ids=%s" % self.collocation_noise_features_instances_ids)
 
         # initiate basic data of the additional noise features if they are requested
         if sp.ndf > 0:
