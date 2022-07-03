@@ -4,10 +4,15 @@ from oop.SpatialStandardPlacement import SpatialStandardPlacement
 from oop.SpatioTemporalWriter import SpatioTemporalWriter
 from oop.StandardInitiation import StandardInitiation
 from oop.StandardParameters import StandardParameters
-from timeit import default_timer as timer
+
+
+def view_statistics_of_absolute_values(array, array_name):
+    array_abs = np.sqrt(np.sum(a=array ** 2, axis=-1))
+    print("%s:\n\tmin:\t%.12f\n\tavg:\t%.12f\n\tmax:\t%.12f\n" % (array_name, array_abs.min(), array_abs.mean(), array_abs.max()))
 
 
 class SpatioTemporalGravitationApproachGenerator:
+
     def generate(
             self,
             output_file: str = "SpatioTemporalParticlesInteractionsApproachGenerator_output_file.txt",
@@ -89,12 +94,12 @@ class SpatioTemporalGravitationApproachGenerator:
             # print(force)
 
             # calculate resultant force for each instance
-            force_sum = np.sum(a=force, axis=1)
-            # print("\nforce_sum:")
-            # print(force_sum)
+            force_resultant = np.sum(a=force, axis=1)
+            # print("\nforce_resultant:")
+            # print(force_resultant)
 
             # calculate acceleration
-            acceleration = force_sum / mass[:, None]
+            acceleration = force_resultant / mass[:, None]
             # print("\nacceleration:")
             # print(acceleration)
 
@@ -103,15 +108,20 @@ class SpatioTemporalGravitationApproachGenerator:
             # print("\nvelocity_delta:")
             # print(velocity_delta)
 
-            # calculate location of instances in next time_frame
-            instances_coor += time_interval * (velocity + velocity_delta / 2)
-            # print("\ninstances_coor:")
-            # print(instances_coor)
+            # calculate change of instances coordinations
+            instances_coor_delta = time_interval * (velocity + velocity_delta / 2)
+            # print("\ninstances_coor_delta:")
+            # print(instances_coor_delta)
 
             # calculate velocity of instances
             velocity += velocity_delta
             # print("\nvelocity:")
             # print(velocity)
+
+            # calculate location of instances in next time_frame
+            instances_coor += instances_coor_delta
+            # print("\ninstances_coor:")
+            # print(instances_coor)
 
             # generate vector of time frame ids of starting time frame
             time_frame_ids = np.full(shape=ssp.features_ids.size, fill_value=i_time_frame, dtype=np.int32)
@@ -125,6 +135,13 @@ class SpatioTemporalGravitationApproachGenerator:
                 y=instances_coor[:, 1]
             )
 
+            # view statistics of current time frame
+            view_statistics_of_absolute_values(force_resultant, "force_resultant")
+            view_statistics_of_absolute_values(acceleration, "acceleration")
+            view_statistics_of_absolute_values(velocity_delta, "velocity_delta")
+            view_statistics_of_absolute_values(velocity, "velocity")
+            view_statistics_of_absolute_values(instances_coor_delta, "instances_coor_delta")
+
         # end of file writing
         st_writer.close()
 
@@ -135,16 +152,16 @@ if __name__ == "__main__":
     sp = StandardParameters(
         area=1000,
         cell_size=5,
-        n_colloc=0,
-        lambda_1=5,
-        lambda_2=100,
-        m_clumpy=2,
-        m_overlap=3,
-        ncfr=0.4,
+        n_colloc=2,
+        lambda_1=3,
+        lambda_2=3,
+        m_clumpy=1,
+        m_overlap=1,
+        ncfr=0.9,
         ncfn=1,
         ncf_proportional=False,
         ndf=5,
-        ndfn=5,
+        ndfn=0,
         random_seed=0
     )
 
