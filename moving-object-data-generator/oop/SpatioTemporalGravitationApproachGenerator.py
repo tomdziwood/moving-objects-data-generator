@@ -157,17 +157,17 @@ if __name__ == "__main__":
         lambda_2=3,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0.9,
-        ncfn=1,
+        ncfr=0.5,
+        ncfn=0.5,
         ncf_proportional=False,
-        ndf=5,
-        ndfn=0,
+        ndf=1,
+        ndfn=5,
         random_seed=0
     )
 
     stgag = SpatioTemporalGravitationApproachGenerator()
     stgag.generate(
-        output_file="SpatioTemporalStandardGenerator_output_file.txt",
+        output_file="SpatioTemporalGravitationApproachGenerator_output_file.txt",
         time_frames_number=10,
         sp=sp
     )

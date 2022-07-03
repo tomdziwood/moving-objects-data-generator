@@ -142,3 +142,4 @@ moving-object-data-generator/oop/*.txt
 # Ignore visualization output files
 moving-object-data-generator/visualization/*.png
 moving-object-data-generator/visualization/*.svg
+moving-object-data-generator/visualization/*.gif

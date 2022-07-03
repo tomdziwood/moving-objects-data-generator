@@ -56,15 +56,15 @@ if __name__ == "__main__":
         area=1000,
         cell_size=5,
         n_colloc=2,
-        lambda_1=5,
-        lambda_2=100,
-        m_clumpy=2,
-        m_overlap=3,
-        ncfr=0.4,
-        ncfn=1,
+        lambda_1=3,
+        lambda_2=3,
+        m_clumpy=1,
+        m_overlap=1,
+        ncfr=0.5,
+        ncfn=0.5,
         ncf_proportional=False,
-        ndf=5,
-        ndfn=200,
+        ndf=1,
+        ndfn=5,
         random_seed=0
     )
 
