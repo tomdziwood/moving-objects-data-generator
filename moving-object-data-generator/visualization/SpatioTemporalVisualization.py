@@ -60,7 +60,7 @@ def animate(frame, *fargs):
     plt.title("czas: %d" % (frame + 1))
 
 
-def visualize_gif(input_file="output_file.txt"):
+def visualize_gif(input_file="output_file.txt", fps=1):
     print("visualizating...")
 
     df = pd.read_csv(input_file, sep=';', header=None)
@@ -78,23 +78,18 @@ def visualize_gif(input_file="output_file.txt"):
     ylim = [y_min - lim_margin_percent * (y_max - y_min), y_max + lim_margin_percent * (y_max - y_min)]
 
     fig, ax = plt.subplots()
-    ax.set_xlim(xlim)
-    ax.set_ylim(ylim)
-
     plt.rcParams["figure.figsize"] = (10, 7)
 
     fa = plt_ani.FuncAnimation(
         fig=fig,
         func= animate,
         frames=time_frames,
-        interval=1000,
-        repeat_delay=1000,
         fargs=(df, ax, xlim, ylim)
     )
 
     fa.save(
         filename="SpatioTemporalVisualization.gif",
-        writer=plt_ani.PillowWriter(fps=1),
+        writer=plt_ani.PillowWriter(fps=fps),
         progress_callback=lambda i, n: print(f'Saving frame {i} of {n}')
     )
 
@@ -107,7 +102,7 @@ def main():
 
     # visualize_gif(input_file="..\\scripts\\vectorized\\SpatioTemporalStandardGenerator_output_file.txt")
     # visualize_gif(input_file="..\\oop\\SpatioTemporalStandardGenerator_output_file.txt")
-    visualize_gif(input_file="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file.txt")
+    visualize_gif(input_file="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file.txt", fps=25)
 
 
 if __name__ == "__main__":
