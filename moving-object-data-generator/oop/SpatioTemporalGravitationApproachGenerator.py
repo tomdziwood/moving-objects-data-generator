@@ -24,7 +24,9 @@ class SpatioTemporalGravitationApproachGenerator:
             min_dist: float = 0.01,
             max_force: float = np.inf,
             k_force: float = 1.0,
-            mass_lambda: float = 1.0
+            mass_param: float = 1.0,
+            velocity_param: float = 0.0,
+            faraway_limit: float = np.inf
     ):
 
         print("generate()")
@@ -60,16 +62,34 @@ class SpatioTemporalGravitationApproachGenerator:
         # print("\ninstances_coor:")
         # print(instances_coor)
 
-        # create array of instances mass (all equals to 1)
-        # each type of feature has own mean mass value drawn from gamma distribution
-        feature_mass_mu = np.random.gamma(shape=mass_lambda, scale=1.0, size=si.collocation_features_sum + sp.ndf)
-        print("feature_mass_mu=%s" % str(feature_mass_mu))
-        # each instance of given type feature has own mass value drawn from normal distribution
-        mass = np.random.normal(loc=feature_mass_mu[ssp.features_ids], scale=feature_mass_mu[ssp.features_ids] / 5, size=ssp.features_ids.size)
-        mass[mass < 0] *= -1
+        if mass_param < 0:
+            # create array of instances mass all equals to -mass_param
+            mass = np.full_like(a=ssp.features_ids, fill_value=-mass_param, dtype=np.float64)
+        else:
+            # each type of feature has own mean mass value drawn from gamma distribution
+            feature_mass_mu = np.random.gamma(shape=mass_param, scale=1.0, size=si.collocation_features_sum + sp.ndf)
+            print("feature_mass_mu=%s" % str(feature_mass_mu))
+            # each instance of given type feature has own mass value drawn from normal distribution
+            mass = np.random.normal(loc=feature_mass_mu[ssp.features_ids], scale=feature_mass_mu[ssp.features_ids] / 5, size=ssp.features_ids.size)
+            mass[mass < 0] *= -1
 
-        # create array of instances velocity (all equals to 0)
-        velocity = np.zeros_like(instances_coor)
+        mass_sum = mass.sum()
+        center = np.sum(a=instances_coor * mass[:, None], axis=0) / mass_sum
+
+        if velocity_param == 0:
+            # create array of instances velocity all equals to 0
+            print("zero")
+            velocity = np.zeros_like(instances_coor)
+        elif velocity_param < 0:
+            # create array of instances velocity all with constant value in random direction
+            velocity_angle = np.random.uniform(high=2 * np.pi, size=ssp.features_ids.size)
+            velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
+            velocity *= -velocity_param
+        else:
+            # create array of instances velocity all with gamma distribution value in random direction
+            velocity_angle = np.random.uniform(high=2 * np.pi, size=ssp.features_ids.size)
+            velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
+            velocity *= np.random.gamma(shape=velocity_param, scale=1.0, size=ssp.features_ids.size)[:, None]
 
         # define time interval between time frames
         time_interval = 1 / time_unit
@@ -110,7 +130,7 @@ class SpatioTemporalGravitationApproachGenerator:
                 # print("\nforce_abs:")
                 # print(force_abs)
 
-                # delete forces which comes from to low distances
+                # delete forces which comes from too close distances
                 force_abs[dist < min_dist] = 0
                 # print("\nforce_abs:")
                 # print(force_abs)
@@ -131,6 +151,28 @@ class SpatioTemporalGravitationApproachGenerator:
                 force_resultant = np.sum(a=force, axis=1)
                 # print("\nforce_resultant:")
                 # print(force_resultant)
+
+                # force escaping objects to stay close to mass center within range of 'faraway_limit'
+                # center = np.sum(a=instances_coor * mass[:, None], axis=0) / mass_sum
+                # print("\ncenter=%s" % center)
+                dist_center = (center - instances_coor) / distance_unit
+                # print("\ndist_center:")
+                # print(dist_center)
+                dist_center_abs = np.sqrt(np.sum(a=dist_center ** 2, axis=-1))
+                # print("\ndist_center_abs:")
+                # print(dist_center_abs)
+                force_center_abs = np.divide(dist_center_abs - faraway_limit, faraway_limit, out=np.zeros_like(dist_center_abs), where=dist_center_abs > faraway_limit)
+                force_center_abs = force_center_abs ** 2 * k_force * mass_sum * mass
+                # print("\nforce_center_abs:")
+                # print(force_center_abs)
+                force_center = np.divide(force_center_abs, dist_center_abs, out=np.zeros_like(force_center_abs), where=dist_center_abs != 0)
+                force_center = force_center[:, None] * dist_center
+                # print("\nforce_center:")
+                # print(force_center)
+                force_resultant += force_center
+                # print("\nforce_resultant:")
+                # print(force_resultant)
+
 
                 # calculate acceleration
                 acceleration = force_resultant / mass[:, None]
@@ -191,9 +233,9 @@ if __name__ == "__main__":
     sp = StandardParameters(
         area=1000,
         cell_size=5,
-        n_colloc=1,
-        lambda_1=10,
-        lambda_2=1,
+        n_colloc=2,
+        lambda_1=6,
+        lambda_2=2,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0.0,
@@ -201,7 +243,7 @@ if __name__ == "__main__":
         ncf_proportional=False,
         ndf=0,
         ndfn=0,
-        random_seed=2
+        random_seed=4
     )
 
     stgag = SpatioTemporalGravitationApproachGenerator()
@@ -209,7 +251,10 @@ if __name__ == "__main__":
         output_file="SpatioTemporalGravitationApproachGenerator_output_file.txt",
         time_frames_number=500,
         sp=sp,
+        distance_unit=1,
         approx_steps_number=100,
         min_dist=0.5,
-        k_force=10
+        k_force=10,
+        velocity_param=0,
+        faraway_limit=1000
     )
