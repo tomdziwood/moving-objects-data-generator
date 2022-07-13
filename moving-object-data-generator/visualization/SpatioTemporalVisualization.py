@@ -5,15 +5,14 @@ import numpy as np
 import matplotlib.animation as plt_ani
 
 
-
-def visualize_stack(input_file="output_file.txt"):
+def visualize_stack(input_filename="input_file.txt"):
     print("visualizating...")
 
-    df = pd.read_csv(input_file, sep=';', header=None)
+    df = pd.read_csv(input_filename, sep=';', header=None)
     df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
     time_frames = df.time_frame.unique()
     sorted(time_frames)
-    print("time_frames=%s" % str(time_frames))
+    print("time_frames size: %d" % time_frames.size)
 
     (x_min, y_min) = (np.int32(df.x.min()), np.int32(df.y.min()))
     print("min coor:\t(%d, %d)" % (x_min, y_min))
@@ -60,14 +59,14 @@ def animate(frame, *fargs):
     plt.title("czas: %d" % (frame + 1))
 
 
-def visualize_gif(input_file="output_file.txt", fps=1):
+def visualize_gif(input_filename="input_file.txt", output_filename=None, fps=1):
     print("visualizating...")
 
-    df = pd.read_csv(input_file, sep=';', header=None)
+    df = pd.read_csv(input_filename, sep=';', header=None)
     df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
     time_frames = df.time_frame.unique()
     sorted(time_frames)
-    print("time_frames=%s" % str(time_frames))
+    print("time_frames size: %d" % time_frames.size)
 
     (x_min, y_min) = (np.int32(df.x.min()), np.int32(df.y.min()))
     print("min coor:\t(%d, %d)" % (x_min, y_min))
@@ -82,13 +81,20 @@ def visualize_gif(input_file="output_file.txt", fps=1):
 
     fa = plt_ani.FuncAnimation(
         fig=fig,
-        func= animate,
+        func=animate,
         frames=time_frames,
         fargs=(df, ax, xlim, ylim)
     )
 
+    if output_filename is None:
+        idx_start = input_filename.rfind('\\') + 1
+        idx_stop = input_filename.rfind('.')
+        if idx_stop == -1:
+            idx_stop = len(input_filename)
+        output_filename = input_filename[idx_start:idx_stop] + "_%03.dfps.gif" % fps
+
     fa.save(
-        filename="SpatioTemporalVisualization.gif",
+        filename=output_filename,
         writer=plt_ani.PillowWriter(fps=fps),
         progress_callback=lambda i, n: print(f'Saving frame {i} of {n}')
     )
@@ -96,13 +102,16 @@ def visualize_gif(input_file="output_file.txt", fps=1):
 
 def main():
     print("main()")
-    # visualize_stack(input_file="..\\scripts\\vectorized\\SpatioTemporalStandardGenerator_output_file.txt")
-    # visualize_stack(input_file="..\\oop\\SpatioTemporalStandardGenerator_output_file.txt")
-    # visualize_stack(input_file="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file.txt")
+    # visualize_stack(input_filename="..\\scripts\\vectorized\\SpatioTemporalStandardGenerator_output_file.txt")
+    # visualize_stack(input_filename="..\\oop\\SpatioTemporalStandardGenerator_output_file.txt")
+    # visualize_stack(input_filename="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file.txt")
 
-    # visualize_gif(input_file="..\\scripts\\vectorized\\SpatioTemporalStandardGenerator_output_file.txt")
-    # visualize_gif(input_file="..\\oop\\SpatioTemporalStandardGenerator_output_file.txt")
-    visualize_gif(input_file="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file.txt", fps=25)
+    # visualize_gif(input_filename="..\\scripts\\vectorized\\SpatioTemporalStandardGenerator_output_file.txt")
+    # visualize_gif(input_filename="..\\oop\\SpatioTemporalStandardGenerator_output_file.txt")
+    # visualize_gif(input_filename="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file.txt", fps=25)
+    visualize_gif(
+        input_filename="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file_2022-07-13_003806.652421.txt",
+        fps=25)
 
 
 if __name__ == "__main__":

@@ -7,40 +7,44 @@ from oop.StandardParameters import StandardParameters
 
 
 class SpatioTemporalStandardGenerator:
-    def generate(
+    def __init__(
             self,
-            output_file: str = "SpatialStandardGenerator_output_file.txt",
-            time_frames_number: int = 10,
-            sp: StandardParameters = StandardParameters()
-    ):
-
-        print("generate()")
-
-        # open file to which output will be written
-        st_writer = SpatioTemporalWriter(output_file=output_file)
+            sp: StandardParameters = StandardParameters()):
+        # store parameters of the generator
+        self.sp = sp
 
         # prepare all variables and vectors required to generate data at every time frame
-        si = StandardInitiation()
-        si.initiate(sp=sp)
+        self.si = StandardInitiation()
+        self.si.initiate(sp=self.sp)
+
+    def generate(
+            self,
+            time_frames_number: int = 10,
+            output_filename: str = "SpatialStandardGenerator_output_file.txt",
+            output_filename_timestamp: bool = True):
+        print("SpatioTemporalStandardGenerator.generate()")
+
+        # open file to which output will be written
+        st_writer = SpatioTemporalWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
 
         # create class object, which holds all data of the objects placement
         ssp = SpatialStandardPlacement()
 
         # generate data for each time frame
-        for i_time_frame in range(time_frames_number):
-            print("i_time_frame=%d" % i_time_frame)
+        for time_frame in range(time_frames_number):
+            print("time_frame %d of %d" % (time_frame + 1, time_frames_number))
 
-            # perform placement of all the feature
-            ssp.place(si)
+            # perform placement of all the features
+            ssp.place(self.si)
 
             # generate vector of time frame ids of current time frame
-            time_frame_ids = np.full(shape=ssp.features_ids.size, fill_value=i_time_frame, dtype=np.int32)
+            time_frame_ids = np.full(shape=self.si.features_sum, fill_value=time_frame, dtype=np.int32)
 
             # write data of all the features to the output file
             st_writer.write(
                     time_frame_ids=time_frame_ids,
-                    features_ids=ssp.features_ids,
-                    features_instances_ids=ssp.features_instances_ids,
+                    features_ids=self.si.features_ids,
+                    features_instances_ids=self.si.features_instances_ids,
                     x=ssp.x,
                     y=ssp.y
             )
@@ -50,7 +54,7 @@ class SpatioTemporalStandardGenerator:
 
 
 if __name__ == "__main__":
-    print("main()")
+    print("SpatioTemporalStandardGenerator main()")
 
     sp = StandardParameters(
         area=1000,
@@ -68,9 +72,8 @@ if __name__ == "__main__":
         random_seed=0
     )
 
-    stsg = SpatioTemporalStandardGenerator()
+    stsg = SpatioTemporalStandardGenerator(sp=sp)
     stsg.generate(
-        output_file="SpatioTemporalStandardGenerator_output_file.txt",
         time_frames_number=10,
-        sp=sp
+        output_filename="SpatioTemporalStandardGenerator_output_file.txt"
     )

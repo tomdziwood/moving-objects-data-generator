@@ -13,8 +13,7 @@ class StandardParameters:
             ncf_proportional=False,
             ndf=2,
             ndfn=5000,
-            random_seed=None
-    ):
+            random_seed=None):
 
         self.area = area
         self.cell_size = cell_size
