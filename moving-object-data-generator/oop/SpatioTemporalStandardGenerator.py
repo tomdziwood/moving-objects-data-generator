@@ -1,7 +1,7 @@
 import numpy as np
 
 from oop.SpatialStandardPlacement import SpatialStandardPlacement
-from oop.SpatioTemporalWriter import SpatioTemporalWriter
+from oop.SpatioTemporalWriters import SpatioTemporalStandardWriter
 from oop.StandardInitiation import StandardInitiation
 from oop.StandardParameters import StandardParameters
 
@@ -25,7 +25,10 @@ class SpatioTemporalStandardGenerator:
         print("SpatioTemporalStandardGenerator.generate()")
 
         # open file to which output will be written
-        st_writer = SpatioTemporalWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
+        sts_writer = SpatioTemporalStandardWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
+
+        # write comment to output file about chosen configuration
+        sts_writer.write_comment(si=self.si)
 
         # create class object, which holds all data of the objects placement
         ssp = SpatialStandardPlacement()
@@ -38,10 +41,10 @@ class SpatioTemporalStandardGenerator:
             ssp.place(self.si)
 
             # generate vector of time frame ids of current time frame
-            time_frame_ids = np.full(shape=self.si.features_sum, fill_value=time_frame, dtype=np.int32)
+            time_frame_ids = np.full(shape=self.si.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
             # write data of all the features to the output file
-            st_writer.write(
+            sts_writer.write(
                     time_frame_ids=time_frame_ids,
                     features_ids=self.si.features_ids,
                     features_instances_ids=self.si.features_instances_ids,
@@ -50,7 +53,7 @@ class SpatioTemporalStandardGenerator:
             )
 
         # end of file writing
-        st_writer.close()
+        sts_writer.close()
 
 
 if __name__ == "__main__":
@@ -75,5 +78,6 @@ if __name__ == "__main__":
     stsg = SpatioTemporalStandardGenerator(sp=sp)
     stsg.generate(
         time_frames_number=10,
-        output_filename="SpatioTemporalStandardGenerator_output_file.txt"
+        output_filename="SpatioTemporalStandardGenerator_output_file.txt",
+        output_filename_timestamp=False
     )

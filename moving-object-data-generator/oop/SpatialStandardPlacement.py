@@ -21,21 +21,21 @@ class SpatialStandardPlacement:
         for i_colloc in range(sp.n_colloc * sp.m_overlap):
 
             # calculate total number of all co-location feature instances
-            collocation_features_instances_sum = si.collocations_instances_counts[i_colloc] * si.collocation_lengths[i_colloc]
+            collocation_features_instances_sum = si.collocation_instances_counts[i_colloc] * si.collocation_lengths[i_colloc]
 
             # generate vector of x coordinates of all the consecutive instances
-            collocation_features_instances_x = np.random.randint(low=si.area_in_cell_dim, size=(si.collocations_instances_counts[i_colloc] - 1) // sp.m_clumpy + 1)
+            collocation_features_instances_x = np.random.randint(low=si.area_in_cell_dim, size=(si.collocation_instances_counts[i_colloc] - 1) // sp.m_clumpy + 1)
             collocation_features_instances_x *= sp.cell_size
             collocation_features_instances_x = collocation_features_instances_x.astype(dtype=np.float64)
-            collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=sp.m_clumpy)[:si.collocations_instances_counts[i_colloc]]
+            collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=sp.m_clumpy)[:si.collocation_instances_counts[i_colloc]]
             collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=si.collocation_lengths[i_colloc])
             collocation_features_instances_x += np.random.uniform(high=sp.cell_size, size=collocation_features_instances_sum)
 
             # generate vector of y coordinates of all the consecutive instances
-            collocation_features_instances_y = np.random.randint(low=si.area_in_cell_dim, size=(si.collocations_instances_counts[i_colloc] - 1) // sp.m_clumpy + 1)
+            collocation_features_instances_y = np.random.randint(low=si.area_in_cell_dim, size=(si.collocation_instances_counts[i_colloc] - 1) // sp.m_clumpy + 1)
             collocation_features_instances_y *= sp.cell_size
             collocation_features_instances_y = collocation_features_instances_y.astype(dtype=np.float64)
-            collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=sp.m_clumpy)[:si.collocations_instances_counts[i_colloc]]
+            collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=sp.m_clumpy)[:si.collocation_instances_counts[i_colloc]]
             collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=si.collocation_lengths[i_colloc])
             collocation_features_instances_y += np.random.uniform(high=sp.cell_size, size=collocation_features_instances_sum)
 

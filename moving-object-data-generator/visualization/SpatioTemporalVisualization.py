@@ -8,7 +8,7 @@ import matplotlib.animation as plt_ani
 def visualize_stack(input_filename="input_file.txt"):
     print("visualizating...")
 
-    df = pd.read_csv(input_filename, sep=';', header=None)
+    df = pd.read_csv(input_filename, sep=';', header=None, comment="#")
     df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
     time_frames = df.time_frame.unique()
     sorted(time_frames)
@@ -62,7 +62,7 @@ def animate(frame, *fargs):
 def visualize_gif(input_filename="input_file.txt", output_filename=None, fps=1):
     print("visualizating...")
 
-    df = pd.read_csv(input_filename, sep=';', header=None)
+    df = pd.read_csv(input_filename, sep=';', header=None, comment="#")
     df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
     time_frames = df.time_frame.unique()
     sorted(time_frames)
@@ -109,9 +109,7 @@ def main():
     # visualize_gif(input_filename="..\\scripts\\vectorized\\SpatioTemporalStandardGenerator_output_file.txt")
     # visualize_gif(input_filename="..\\oop\\SpatioTemporalStandardGenerator_output_file.txt")
     # visualize_gif(input_filename="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file.txt", fps=25)
-    visualize_gif(
-        input_filename="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file_2022-07-13_003806.652421.txt",
-        fps=25)
+    visualize_gif(input_filename="..\\oop\\SpatioTemporalGravitationApproachGenerator_output_file_2022-07-14_220750.656520.txt", fps=25)
 
 
 if __name__ == "__main__":

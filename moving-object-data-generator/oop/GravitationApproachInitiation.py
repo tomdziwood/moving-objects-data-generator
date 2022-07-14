@@ -35,13 +35,13 @@ class GravitationApproachInitiation(StandardInitiation):
 
         if gap.mass_param < 0:
             # create array of instances mass all equals to -mass_param
-            self.mass = np.full(shape=self.features_sum, fill_value=-gap.mass_param, dtype=np.float64)
+            self.mass = np.full(shape=self.features_instances_sum, fill_value=-gap.mass_param, dtype=np.float64)
         else:
             # each type of feature has own mean mass value drawn from gamma distribution
             feature_mass_mu = np.random.gamma(shape=gap.mass_param, scale=1.0, size=self.collocation_features_sum + gap.ndf)
             print("feature_mass_mu=%s" % str(feature_mass_mu))
             # each instance of given type feature has own mass value drawn from normal distribution
-            self.mass = np.random.normal(loc=feature_mass_mu[self.features_ids], scale=feature_mass_mu[self.features_ids] / 5, size=self.features_sum)
+            self.mass = np.random.normal(loc=feature_mass_mu[self.features_ids], scale=feature_mass_mu[self.features_ids] / 5, size=self.features_instances_sum)
             self.mass[self.mass < 0] *= -1
 
         self.mass_sum = self.mass.sum()
@@ -52,14 +52,14 @@ class GravitationApproachInitiation(StandardInitiation):
             self.velocity = np.zeros_like(self.instances_coor)
         elif gap.velocity_param < 0:
             # create array of instances velocity all with constant value in random direction
-            velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_sum)
+            velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_instances_sum)
             self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
             self.velocity *= -gap.velocity_param
         else:
             # create array of instances velocity all with gamma distribution value in random direction
-            velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_sum)
+            velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_instances_sum)
             self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
-            self.velocity *= np.random.gamma(shape=gap.velocity_param, scale=1.0, size=self.features_sum)[:, None]
+            self.velocity *= np.random.gamma(shape=gap.velocity_param, scale=1.0, size=self.features_instances_sum)[:, None]
 
         # define time interval between time frames
         self.time_interval = 1 / gap.time_unit

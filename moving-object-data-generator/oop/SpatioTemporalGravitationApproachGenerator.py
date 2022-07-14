@@ -2,7 +2,7 @@ import numpy as np
 
 from oop.GravitationApproachInitiation import GravitationApproachInitiation
 from oop.GravitationApproachParameters import GravitationApproachParameters
-from oop.SpatioTemporalWriter import SpatioTemporalWriter
+from oop.SpatioTemporalWriters import SpatioTemporalGravitationApproachWriter
 
 
 def view_statistics_of_absolute_values(array, array_name):
@@ -29,13 +29,16 @@ class SpatioTemporalGravitationApproachGenerator:
         print("SpatioTemporalGravitationApproachGenerator.generate()")
 
         # open file to which output will be written
-        st_writer = SpatioTemporalWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
+        stga_writer = SpatioTemporalGravitationApproachWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
 
         # generate vector of time frame ids of starting time frame
-        time_frame_ids = np.full(shape=self.gai.features_sum, fill_value=0, dtype=np.int32)
+        time_frame_ids = np.full(shape=self.gai.features_instances_sum, fill_value=0, dtype=np.int32)
+
+        # write comment to output file about chosen configuration
+        stga_writer.write_comment(gai=self.gai)
 
         # write starting data of all the features to the output file
-        st_writer.write(
+        stga_writer.write(
             time_frame_ids=time_frame_ids,
             features_ids=self.gai.features_ids,
             features_instances_ids=self.gai.features_instances_ids,
@@ -161,10 +164,10 @@ class SpatioTemporalGravitationApproachGenerator:
                 # view_statistics_of_absolute_values(instances_coor_delta, "instances_coor_delta")
 
             # generate vector of time frame ids of starting time frame
-            time_frame_ids = np.full(shape=self.gai.features_sum, fill_value=time_frame, dtype=np.int32)
+            time_frame_ids = np.full(shape=self.gai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
             # write starting data of all the features to the output file
-            st_writer.write(
+            stga_writer.write(
                 time_frame_ids=time_frame_ids,
                 features_ids=self.gai.features_ids,
                 features_instances_ids=self.gai.features_instances_ids,
@@ -173,7 +176,7 @@ class SpatioTemporalGravitationApproachGenerator:
             )
 
         # end of file writing
-        st_writer.close()
+        stga_writer.close()
 
 
 if __name__ == "__main__":
@@ -182,20 +185,20 @@ if __name__ == "__main__":
     gap = GravitationApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=2,
-        lambda_1=6,
-        lambda_2=2,
+        n_colloc=5,
+        lambda_1=3,
+        lambda_2=30,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0.0,
-        ncfn=0.0,
+        ncfr=0.5,
+        ncfn=0.5,
         ncf_proportional=False,
-        ndf=0,
-        ndfn=0,
-        random_seed=4,
+        ndf=3,
+        ndfn=50,
+        random_seed=0,
         time_unit=1.0,
         distance_unit=1.0,
-        approx_steps_number=100,
+        approx_steps_number=10,
         min_dist=0.5,
         max_force=np.inf,
         k_force=10,
@@ -206,6 +209,6 @@ if __name__ == "__main__":
 
     stgag = SpatioTemporalGravitationApproachGenerator(gap=gap)
     stgag.generate(
-        time_frames_number=500,
+        time_frames_number=50,
         output_filename="SpatioTemporalGravitationApproachGenerator_output_file.txt"
     )
