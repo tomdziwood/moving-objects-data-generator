@@ -1,8 +1,8 @@
 import numpy as np
 
-from oop.GravitationApproachInitiation import GravitationApproachInitiation
-from oop.GravitationApproachParameters import GravitationApproachParameters
-from oop.SpatioTemporalWriters import SpatioTemporalGravitationApproachWriter
+from oop.SpatioTemporalWriters import SpatioTemporalStaticInteractionApproachWriter
+from oop.StaticInteractionApproachInitiation import StaticInteractionApproachInitiation
+from oop.StaticInteractionApproachParameters import StaticInteractionApproachParameters
 
 
 def view_statistics_of_absolute_values(array, array_name):
@@ -10,53 +10,53 @@ def view_statistics_of_absolute_values(array, array_name):
     print("%s:\n\tmin:\t%.12f\n\tavg:\t%.12f\n\tmax:\t%.12f\n" % (array_name, array_abs.min(), array_abs.mean(), array_abs.max()))
 
 
-class SpatioTemporalGravitationApproachGenerator:
+class SpatioTemporalStaticInteractionApproachGenerator:
     def __init__(
             self,
-            gap: GravitationApproachParameters = GravitationApproachParameters()):
+            siap: StaticInteractionApproachParameters = StaticInteractionApproachParameters()):
         # store parameters of the generator
-        self.gap = gap
+        self.siap = siap
 
         # prepare all variables and vectors required to generate data at every time frame
-        self.gai = GravitationApproachInitiation()
-        self.gai.initiate(gap=self.gap)
+        self.siai = StaticInteractionApproachInitiation()
+        self.siai.initiate(siap=self.siap)
 
     def generate(
             self,
             time_frames_number: int = 10,
-            output_filename: str = "SpatioTemporalGravitationApproachGenerator_output_file.txt",
+            output_filename: str = "SpatioTemporalStaticInteractionApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
-        print("SpatioTemporalGravitationApproachGenerator.generate()")
+        print("SpatioTemporalStaticInteractionApproachGenerator.generate()")
 
         # open file to which output will be written
-        stga_writer = SpatioTemporalGravitationApproachWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
+        stsia_writer = SpatioTemporalStaticInteractionApproachWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
 
         # generate vector of time frame ids of starting time frame
-        time_frame_ids = np.full(shape=self.gai.features_instances_sum, fill_value=0, dtype=np.int32)
+        time_frame_ids = np.full(shape=self.siai.features_instances_sum, fill_value=0, dtype=np.int32)
 
         # write comment to output file about chosen configuration
-        stga_writer.write_comment(gai=self.gai)
+        stsia_writer.write_comment(siai=self.siai)
 
         # write starting data of all the features to the output file
-        stga_writer.write(
+        stsia_writer.write(
             time_frame_ids=time_frame_ids,
-            features_ids=self.gai.features_ids,
-            features_instances_ids=self.gai.features_instances_ids,
-            x=self.gai.spatial_standard_placement.x,
-            y=self.gai.spatial_standard_placement.y
+            features_ids=self.siai.features_ids,
+            features_instances_ids=self.siai.features_instances_ids,
+            x=self.siai.spatial_standard_placement.x,
+            y=self.siai.spatial_standard_placement.y
         )
 
         # get arrays where new coordinates and velocities of instances will be calculated
-        instances_coor = np.copy(self.gai.instances_coor)
-        velocity = np.copy(self.gai.velocity)
+        instances_coor = np.copy(self.siai.instances_coor)
+        velocity = np.copy(self.siai.velocity)
 
         # generate data for next time frames
         for time_frame in range(1, time_frames_number):
             print("time_frame %d of %d" % (time_frame + 1, time_frames_number))
 
             # calculate positions in next time frame by making 'approx_steps_number' steps
-            for approx_step in range(self.gap.approx_steps_number):
-                # print("\tapprox_step %d of %d" % (approx_step + 1, self.gap.approx_steps_number))
+            for approx_step in range(self.siap.approx_steps_number):
+                # print("\tapprox_step %d of %d" % (approx_step + 1, self.siap.approx_steps_number))
 
                 # calculate coordinates difference of each pair of instances
                 coor_diff = instances_coor[None, :, :] - instances_coor[:, None, :]
@@ -64,7 +64,7 @@ class SpatioTemporalGravitationApproachGenerator:
                 # print(coor_diff)
 
                 # translate coordinates difference into distance unit
-                coor_diff /= self.gap.distance_unit
+                coor_diff /= self.siap.distance_unit
                 # print("\ncoor_diff:")
                 # print(coor_diff)
 
@@ -79,19 +79,21 @@ class SpatioTemporalGravitationApproachGenerator:
                 # print(dist)
 
                 # calculate absolute value of attraction force between each pair of instances
-                force_abs = np.divide(self.gap.k_force * self.gai.mass[:, None] * self.gai.mass[None, :], dist_squared, out=np.zeros_like(dist_squared), where=dist_squared != 0)
+                force_abs = np.divide(self.siap.k_force * self.siai.mass[:, None] * self.siai.mass[None, :], dist_squared, out=np.zeros_like(dist_squared), where=dist_squared != 0)
                 # print("\nforce_abs:")
                 # print(force_abs)
 
                 # delete forces which comes from too close distances
-                force_abs[dist < self.gap.min_dist] = 0
+                force_abs[dist < self.siap.min_dist] = 0
                 # print("\nforce_abs:")
                 # print(force_abs)
 
                 # limit forces which are too big in current generator model
-                force_abs[force_abs > self.gap.max_force] = self.gap.max_force
+                force_abs[force_abs > self.siap.max_force] = self.siap.max_force
                 # print("\nforce_abs:")
                 # print(force_abs)
+
+                force_abs *= macierz jakaś
 
                 # calculate components of attraction force between each pair of instances
                 force_div = np.divide(force_abs, dist, out=np.zeros_like(force_abs), where=dist != 0)
@@ -108,14 +110,14 @@ class SpatioTemporalGravitationApproachGenerator:
                 # force escaping objects to stay close to mass center within range of 'faraway_limit'
                 # center = np.sum(a=instances_coor * mass[:, None], axis=0) / mass_sum
                 # print("\ncenter=%s" % center)
-                dist_center = (self.gai.center - instances_coor) / self.gap.distance_unit
+                dist_center = (self.siai.center - instances_coor) / self.siap.distance_unit
                 # print("\ndist_center:")
                 # print(dist_center)
                 dist_center_abs = np.sqrt(np.sum(a=dist_center ** 2, axis=-1))
                 # print("\ndist_center_abs:")
                 # print(dist_center_abs)
-                force_center_abs = np.divide(dist_center_abs - self.gap.faraway_limit, self.gap.faraway_limit, out=np.zeros_like(dist_center_abs), where=dist_center_abs > self.gap.faraway_limit)
-                force_center_abs = force_center_abs ** 2 * self.gap.k_force * self.gai.mass_sum * self.gai.mass
+                force_center_abs = np.divide(dist_center_abs - self.siap.faraway_limit, self.siap.faraway_limit, out=np.zeros_like(dist_center_abs), where=dist_center_abs > self.siap.faraway_limit)
+                force_center_abs = force_center_abs ** 2 * self.siap.k_force * self.siai.mass_sum * self.siai.mass
                 # print("\nforce_center_abs:")
                 # print(force_center_abs)
                 force_center = np.divide(force_center_abs, dist_center_abs, out=np.zeros_like(force_center_abs), where=dist_center_abs != 0)
@@ -127,22 +129,22 @@ class SpatioTemporalGravitationApproachGenerator:
                 # print(force_resultant)
 
                 # calculate acceleration
-                acceleration = force_resultant / self.gai.mass[:, None]
+                acceleration = force_resultant / self.siai.mass[:, None]
                 # print("\nacceleration:")
                 # print(acceleration)
 
                 # calculate change of velocity
-                velocity_delta = acceleration * self.gai.approx_step_time_interval
+                velocity_delta = acceleration * self.siai.approx_step_time_interval
                 # print("\nvelocity_delta:")
                 # print(velocity_delta)
 
                 # calculate distance change of instances
-                instances_coor_delta = self.gai.approx_step_time_interval * (velocity + velocity_delta / 2)
+                instances_coor_delta = self.siai.approx_step_time_interval * (velocity + velocity_delta / 2)
                 # print("\ninstances_coor_delta:")
                 # print(instances_coor_delta)
 
                 # translate distance change into coordinates change
-                instances_coor_delta *= self.gap.distance_unit
+                instances_coor_delta *= self.siap.distance_unit
                 # print("\ninstances_coor_delta:")
                 # print(instances_coor_delta)
 
@@ -164,25 +166,25 @@ class SpatioTemporalGravitationApproachGenerator:
                 # view_statistics_of_absolute_values(instances_coor_delta, "instances_coor_delta")
 
             # generate vector of time frame ids of starting time frame
-            time_frame_ids = np.full(shape=self.gai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
+            time_frame_ids = np.full(shape=self.siai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
             # write starting data of all the features to the output file
-            stga_writer.write(
+            stsia_writer.write(
                 time_frame_ids=time_frame_ids,
-                features_ids=self.gai.features_ids,
-                features_instances_ids=self.gai.features_instances_ids,
+                features_ids=self.siai.features_ids,
+                features_instances_ids=self.siai.features_instances_ids,
                 x=instances_coor[:, 0],
                 y=instances_coor[:, 1]
             )
 
         # end of file writing
-        stga_writer.close()
+        stsia_writer.close()
 
 
 if __name__ == "__main__":
     print("SpatioTemporalGravitationApproachGenerator main()")
 
-    gap = GravitationApproachParameters(
+    siap = StaticInteractionApproachParameters(
         area=1000,
         cell_size=5,
         n_colloc=5,
@@ -207,8 +209,8 @@ if __name__ == "__main__":
         faraway_limit=1000
     )
 
-    stgag = SpatioTemporalGravitationApproachGenerator(gap=gap)
-    stgag.generate(
+    stsiag = SpatioTemporalStaticInteractionApproachGenerator(siap=siap)
+    stsiag.generate(
         time_frames_number=50,
-        output_filename="SpatioTemporalGravitationApproachGenerator_output_file.txt"
+        output_filename="SpatioTemporalStaticInteractionApproachGenerator_output_file.txt"
     )

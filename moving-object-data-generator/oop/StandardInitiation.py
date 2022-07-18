@@ -25,6 +25,7 @@ class StandardInitiation:
         self.additional_noise_features_instances_counts: np.ndarray = np.array([], dtype=np.int32)
         self.additional_noise_features_ids: np.ndarray = np.array([], dtype=np.int32)
         self.additional_noise_features_instances_ids: np.ndarray = np.array([], dtype=np.int32)
+        self.features_sum: int = 0
         self.features_ids: np.ndarray = np.array([], dtype=np.int32)
         self.features_instances_ids: np.ndarray = np.array([], dtype=np.int32)
         self.features_instances_sum: int = 0
@@ -168,5 +169,8 @@ class StandardInitiation:
         self.features_ids = np.concatenate((self.collocation_features_ids, self.collocation_noise_features_ids, self.additional_noise_features_ids))
         self.features_instances_ids = np.concatenate((self.collocation_features_instances_ids, self.collocation_noise_features_instances_ids, self.additional_noise_features_instances_ids))
 
-        # sum number of all features
+        # sum number of all features instances
         self.features_instances_sum = self.features_ids.size
+
+        # the total number of features (co-location and additional noise)
+        self.features_sum = self.collocation_features_sum + sp.ndf
