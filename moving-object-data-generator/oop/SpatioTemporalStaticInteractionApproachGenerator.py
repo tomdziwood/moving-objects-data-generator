@@ -1,5 +1,6 @@
 import numpy as np
 
+from oop.FeatureInteractionModes import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode
 from oop.SpatioTemporalWriters import SpatioTemporalStaticInteractionApproachWriter
 from oop.StaticInteractionApproachInitiation import StaticInteractionApproachInitiation
 from oop.StaticInteractionApproachParameters import StaticInteractionApproachParameters
@@ -93,7 +94,10 @@ class SpatioTemporalStaticInteractionApproachGenerator:
                 # print("\nforce_abs:")
                 # print(force_abs)
 
-                force_abs *= macierz jakaś
+                # scale forces according to the rules of interaction between given features instances pair
+                force_abs *= self.siai.features_instances_interaction
+                # print("\nforce_abs:")
+                # print(force_abs)
 
                 # calculate components of attraction force between each pair of instances
                 force_div = np.divide(force_abs, dist, out=np.zeros_like(force_abs), where=dist != 0)
@@ -187,17 +191,17 @@ if __name__ == "__main__":
     siap = StaticInteractionApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=5,
-        lambda_1=3,
-        lambda_2=30,
+        n_colloc=2,
+        lambda_1=5,
+        lambda_2=2,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0.5,
-        ncfn=0.5,
+        ncfr=0.0,
+        ncfn=0.0,
         ncf_proportional=False,
-        ndf=3,
-        ndfn=50,
-        random_seed=0,
+        ndf=2,
+        ndfn=10,
+        random_seed=6,
         time_unit=1.0,
         distance_unit=1.0,
         approx_steps_number=10,
@@ -206,11 +210,14 @@ if __name__ == "__main__":
         k_force=10,
         mass_param=1.0,
         velocity_param=0.0,
-        faraway_limit=1000
+        faraway_limit=1000,
+        identical_features_interaction_mode=IdenticalFeaturesInteractionMode.REPEL,
+        different_features_interaction_mode=DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL
     )
 
     stsiag = SpatioTemporalStaticInteractionApproachGenerator(siap=siap)
     stsiag.generate(
-        time_frames_number=50,
-        output_filename="SpatioTemporalStaticInteractionApproachGenerator_output_file.txt"
+        time_frames_number=500,
+        output_filename="SpatioTemporalStaticInteractionApproachGenerator_output_file.txt",
+        output_filename_timestamp=False
     )

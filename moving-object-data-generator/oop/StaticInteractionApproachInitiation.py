@@ -1,7 +1,6 @@
 import numpy as np
 
 from oop.FeatureInteractionModes import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode
-from oop.GravitationApproachParameters import GravitationApproachParameters
 from oop.SpatialStandardPlacement import SpatialStandardPlacement
 from oop.StandardInitiation import StandardInitiation
 from oop.StaticInteractionApproachParameters import StaticInteractionApproachParameters
@@ -20,22 +19,43 @@ class StaticInteractionApproachInitiation(StandardInitiation):
         self.time_interval: float = 1.0
         self.approx_step_time_interval: float = 1.0
         self.spatial_standard_placement: SpatialStandardPlacement = SpatialStandardPlacement()
-        self.features_interaction: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
+        self.features_instances_interaction: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
 
-    def __group_collocation_features(self):
+    def __define_features_instances_interaction(self, different_collocations_interaction_value=0, identical_features_interaction_value=1, noise_features_interaction_value=1):
+        """
+        Private method define `self.features_instances_interaction` matrix values
+
+        :param different_collocations_interaction_value: default value of interaction between features which participate in different co-location
+        :param identical_features_interaction_value: interaction value between instances of the identical feature
+        :param noise_features_interaction_value: default value of interaction noise feature with any other feature
+        """
+
+        # initiate interaction matrix of co-location features with default value of interaction between different co-location
+        collocation_features_interaction = np.full(fill_value=different_collocations_interaction_value, shape=(self.collocation_features_sum, self.collocation_features_sum), dtype=np.int32)
+
         collocation_start_feature_id = 0
         for i_colloc in range(self.collocation_lengths.size):
             # get the features ids of current co-location
             collocation_features = np.arange(collocation_start_feature_id, collocation_start_feature_id + self.collocation_lengths[i_colloc])
             collocation_features[-1] += i_colloc % self.static_interaction_approach_parameters.m_overlap
 
-            # todo
-            self.features_interaction
+            # features of given co-location attract each other
+            collocation_features_interaction[collocation_features[:, None], collocation_features[None, :]] = 1
 
             # change starting feature of next co-location according to the m_overlap parameter value
             if (i_colloc + 1) % self.static_interaction_approach_parameters.m_overlap == 0:
                 collocation_start_feature_id += self.collocation_lengths[i_colloc] + self.standard_parameters.m_overlap - 1
-        return
+
+        # initiate interaction matrix of features instances with default value of interaction noise feature with any other feature
+        self.features_instances_interaction = np.full(fill_value=noise_features_interaction_value, shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
+
+        # define interaction between co-location features instances according to 'collocation_features_interaction' matrix
+        self.features_instances_interaction[:self.collocation_features_instances_sum, :self.collocation_features_instances_sum] = collocation_features_interaction[
+            self.collocation_features_ids[:, None], self.collocation_features_ids[None, :]
+        ]
+
+        # set interaction value between instances of the identical feature
+        self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = identical_features_interaction_value
 
     def initiate(self, siap: StaticInteractionApproachParameters = StaticInteractionApproachParameters()):
         super().initiate(sp=siap)
@@ -85,32 +105,24 @@ class StaticInteractionApproachInitiation(StandardInitiation):
         # divide time interval of single time frame into steps of equal duration
         self.approx_step_time_interval = self.time_interval / siap.approx_steps_number
 
-        # define matrix
+        # define `self.features_instances_interaction` matrix values
         if self.static_interaction_approach_parameters.identical_features_interaction_mode is IdenticalFeaturesInteractionMode.ATTRACT:
             if self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.ATTRACT:
-                self.features_interaction = 1
+                self.features_instances_interaction = 1
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.REPEL:
-                self.features_interaction = -np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
-                self.features_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = 1
+                self.features_instances_interaction = -np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
+                self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = 1
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL:
-                self.features_interaction = np.zeros(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
-                # todo
-                self.features_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = 1
+                self.__define_features_instances_interaction(different_collocations_interaction_value=0, identical_features_interaction_value=1)
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL:
-                self.features_interaction = -np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
-                # todo
-                self.features_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = 1
+                self.__define_features_instances_interaction(different_collocations_interaction_value=-1, identical_features_interaction_value=1)
         elif self.static_interaction_approach_parameters.identical_features_interaction_mode is IdenticalFeaturesInteractionMode.REPEL:
             if self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.ATTRACT:
-                self.features_interaction = np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
-                self.features_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = -1
+                self.features_instances_interaction = np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
+                self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = -1
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.REPEL:
-                self.features_interaction = -1
+                self.features_instances_interaction = -1
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL:
-                self.features_interaction = np.zeros(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
-                # todo
-                self.features_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = -1
+                self.__define_features_instances_interaction(different_collocations_interaction_value=0, identical_features_interaction_value=-1)
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL:
-                self.features_interaction = -np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
-                # todo
-                self.features_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = -1
+                self.__define_features_instances_interaction(different_collocations_interaction_value=-1, identical_features_interaction_value=-1)
