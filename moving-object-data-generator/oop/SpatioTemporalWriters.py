@@ -3,6 +3,7 @@ from datetime import datetime
 
 from oop.StandardInitiation import StandardInitiation
 from oop.StaticInteractionApproachInitiation import StaticInteractionApproachInitiation
+from oop.TravelApproachInitiation import TravelApproachInitiation
 
 
 class SpatioTemporalWriter:
@@ -120,4 +121,52 @@ class SpatioTemporalStaticInteractionApproachWriter(SpatioTemporalWriter):
         self.f.write("# center:\t%s\n" % str(siai.center))
         self.f.write("# time_interval:\t%s\n" % str(siai.time_interval))
         self.f.write("# approx_step_time_interval:\t%s\n" % str(siai.approx_step_time_interval))
+        self.f.write("#\n")
+
+
+class SpatioTemporalTravelApproachWriter(SpatioTemporalWriter):
+    def write_comment(self, tai: TravelApproachInitiation):
+        # numpy print options - prevent line breaking
+        np.set_printoptions(linewidth=np.inf)
+
+        # write id of generator
+        self.f.write("# SpatioTemporalTravelApproachGenerator\n")
+        self.f.write("#\n")
+
+        # write values of used parameters
+        self.f.write("# ---------- parameters ----------\n")
+        parameters_names = [a for a in dir(tai.standard_parameters) if not a.startswith('__')]
+        for parameters_name in parameters_names:
+            self.f.write("# %s:\t%s\n" % (parameters_name, str(getattr(tai.standard_parameters, parameters_name))))
+        self.f.write("#\n")
+
+        # write basic statistics of created features
+        self.f.write("# ---------- initiated values ----------\n")
+        self.f.write("# area_in_cell_dim:\t%s\n" % str(tai.area_in_cell_dim))
+        self.f.write("# base_collocation_lengths:\t%s\n" % str(tai.base_collocation_lengths))
+        self.f.write("# collocation_lengths:\t%s\n" % str(tai.collocation_lengths))
+        self.f.write("# collocation_features_sum:\t%s\n" % str(tai.collocation_features_sum))
+        self.f.write("# collocation_instances_counts:\t%s\n" % str(tai.collocation_instances_counts))
+        self.f.write("# collocation_features_instances_sum:\t%s\n" % str(tai.collocation_features_instances_sum))
+        self.f.write("# collocation_features_instances_counts:\t%s\n" % str(tai.collocation_features_instances_counts))
+
+        self.f.write("# collocation_features:\n")
+        collocation_start_feature_id = 0
+        for i_colloc in range(tai.collocation_lengths.size):
+            # get the features ids of current co-location
+            collocation_features = np.arange(collocation_start_feature_id, collocation_start_feature_id + tai.collocation_lengths[i_colloc])
+            collocation_features[-1] += i_colloc % tai.standard_parameters.m_overlap
+            self.f.write("#\t%s\n" % str(collocation_features))
+
+            # change starting feature of next co-location according to the m_overlap parameter value
+            if (i_colloc + 1) % tai.standard_parameters.m_overlap == 0:
+                collocation_start_feature_id += tai.collocation_lengths[i_colloc] + tai.standard_parameters.m_overlap - 1
+
+        self.f.write("# collocation_noise_features_sum:\t%s\n" % str(tai.collocation_noise_features_sum))
+        self.f.write("# collocation_noise_features:\t%s\n" % str(tai.collocation_noise_features))
+        self.f.write("# collocation_noise_features_instances_sum:\t%s\n" % str(tai.collocation_noise_features_instances_sum))
+        self.f.write("# collocation_noise_features_instances_counts:\t%s\n" % str(tai.collocation_noise_features_instances_counts))
+        self.f.write("# additional_noise_features:\t%s\n" % str(tai.additional_noise_features))
+        self.f.write("# additional_noise_features_instances_counts:\t%s\n" % str(tai.additional_noise_features_instances_counts))
+        self.f.write("# features_instances_sum:\t%s\n" % str(tai.features_instances_sum))
         self.f.write("#\n")

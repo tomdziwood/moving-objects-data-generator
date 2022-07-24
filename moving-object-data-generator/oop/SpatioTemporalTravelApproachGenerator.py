@@ -1,34 +1,34 @@
 import numpy as np
 
 from oop.SpatialStandardPlacement import SpatialStandardPlacement
-from oop.SpatioTemporalWriters import SpatioTemporalStandardWriter
-from oop.StandardInitiation import StandardInitiation
-from oop.StandardParameters import StandardParameters
+from oop.SpatioTemporalWriters import SpatioTemporalTravelApproachWriter
+from oop.TravelApproachInitiation import TravelApproachInitiation
+from oop.TravelApproachParameters import TravelApproachParameters
 
 
-class SpatioTemporalStandardGenerator:
+class SpatioTemporalTravelApproachGenerator:
     def __init__(
             self,
-            sp: StandardParameters = StandardParameters()):
+            tap: TravelApproachParameters = TravelApproachParameters()):
         # store parameters of the generator
-        self.sp = sp
+        self.tap = tap
 
         # prepare all variables and vectors required to generate data at every time frame
-        self.si = StandardInitiation()
-        self.si.initiate(sp=self.sp)
+        self.tai = TravelApproachInitiation()
+        self.tai.initiate(tap=self.tap)
 
     def generate(
             self,
             time_frames_number: int = 10,
-            output_filename: str = "SpatioTemporalStandardGenerator_output_file.txt",
+            output_filename: str = "SpatioTemporalTravelApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
-        print("SpatioTemporalStandardGenerator.generate()")
+        print("SpatioTemporalTravelApproachGenerator.generate()")
 
         # open file to which output will be written
-        sts_writer = SpatioTemporalStandardWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
+        stta_writer = SpatioTemporalTravelApproachWriter(output_filename=output_filename, output_filename_timestamp=output_filename_timestamp)
 
         # write comment to output file about chosen configuration
-        sts_writer.write_comment(si=self.si)
+        stta_writer.write_comment(si=self.si)
 
         # create class object, which holds all data of the objects placement
         ssp = SpatialStandardPlacement()
@@ -44,7 +44,7 @@ class SpatioTemporalStandardGenerator:
             time_frame_ids = np.full(shape=self.si.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
             # write data of all the features to the output file
-            sts_writer.write(
+            stta_writer.write(
                     time_frame_ids=time_frame_ids,
                     features_ids=self.si.features_ids,
                     features_instances_ids=self.si.features_instances_ids,
@@ -53,13 +53,13 @@ class SpatioTemporalStandardGenerator:
             )
 
         # end of file writing
-        sts_writer.close()
+        stta_writer.close()
 
 
 if __name__ == "__main__":
-    print("SpatioTemporalStandardGenerator main()")
+    print("SpatioTemporalTravelApproachGenerator main()")
 
-    sp = StandardParameters(
+    tap = TravelApproachParameters(
         area=1000,
         cell_size=5,
         n_colloc=2,
@@ -75,9 +75,9 @@ if __name__ == "__main__":
         random_seed=0
     )
 
-    stsg = SpatioTemporalStandardGenerator(sp=sp)
-    stsg.generate(
+    sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
+    sttag.generate(
         time_frames_number=10,
-        output_filename="SpatioTemporalStandardGenerator_output_file.txt",
+        output_filename="SpatioTemporalTravelApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )
