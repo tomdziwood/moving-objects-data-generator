@@ -137,6 +137,7 @@ class StandardInitiation:
                 (unique_indices, counts_indices) = np.unique(ar=collocation_noise_feature_random_choices, return_counts=True)
                 self.collocation_noise_features_instances_counts = np.zeros_like(a=self.collocation_noise_features)
                 self.collocation_noise_features_instances_counts[unique_indices] = counts_indices
+            print("collocation_noise_features_instances_sum=%s" % str(self.collocation_noise_features_instances_sum))
             print("collocation_noise_features_instances_counts=%s" % str(self.collocation_noise_features_instances_counts))
 
             # generate vector of features ids of all the consecutive instances of co-location noise features
@@ -169,8 +170,10 @@ class StandardInitiation:
         self.features_ids = np.concatenate((self.collocation_features_ids, self.collocation_noise_features_ids, self.additional_noise_features_ids))
         self.features_instances_ids = np.concatenate((self.collocation_features_instances_ids, self.collocation_noise_features_instances_ids, self.additional_noise_features_instances_ids))
 
-        # sum number of all features instances
-        self.features_instances_sum = self.features_ids.size
-
         # the total number of features (co-location and additional noise)
         self.features_sum = self.collocation_features_sum + sp.ndf
+        print("features_sum=%s" % str(self.features_sum))
+
+        # sum number of all features instances
+        self.features_instances_sum = self.features_ids.size
+        print("features_instances_sum=%s" % str(self.features_instances_sum))
