@@ -76,7 +76,7 @@ class StaticInteractionApproachInitiation(StandardInitiation):
             self.mass = np.full(shape=self.features_instances_sum, fill_value=-siap.mass_param, dtype=np.float64)
         else:
             # each type of feature has own mean mass value drawn from gamma distribution
-            feature_mass_mu = np.random.gamma(shape=siap.mass_param, scale=1.0, size=self.collocation_features_sum + siap.ndf)
+            feature_mass_mu = np.random.gamma(shape=siap.mass_param, scale=1.0, size=self.features_sum)
             print("feature_mass_mu=%s" % str(feature_mass_mu))
             # each instance of given type feature has own mass value drawn from normal distribution
             self.mass = np.random.normal(loc=feature_mass_mu[self.features_ids], scale=feature_mass_mu[self.features_ids] / 5, size=self.features_instances_sum)
