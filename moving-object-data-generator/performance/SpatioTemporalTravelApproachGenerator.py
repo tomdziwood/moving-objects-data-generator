@@ -3,15 +3,16 @@ import numpy as np
 from performance.Utils import measure_time_execution_of_function
 
 
-def detect_travel_end_1(collocations_instances_global_ids, flag):
+def detect_travel_end_1(collocations_instances_global_ids, flag, collocations_instances_global_ids_repeats):
     not_reached = collocations_instances_global_ids[flag == 0]
     not_reached = np.unique(ar=not_reached)
-    reached_flag = np.ones_like(a=collocations_instances_global_ids)
-    reached_flag[not_reached] = 0
+    collocation_reached_flag = np.ones_like(a=collocations_instances_global_ids_repeats, dtype=bool)
+    collocation_reached_flag[not_reached] = False
+    features_new_destination_needed = np.repeat(a=collocation_reached_flag, repeats=collocations_instances_global_ids_repeats)
 
 
 def test_detect_travel_end():
-    # average time execution of function detect_travel_end_1:	0.000079343590 [s]
+    # average time execution of function detect_travel_end_1:	0.000104014380 [s]
 
     print("test_detect_travel_end execute")
 
@@ -35,9 +36,15 @@ def test_detect_travel_end():
     collocations_instances_global_ids = np.concatenate((collocations_instances_global_ids, np.arange(last_id, last_id + nfn)))
     flag = np.random.randint(low=2, size=collocations_instances_global_ids.size)
 
+    collocations_instances_global_ids_repeats = np.concatenate((
+        np.repeat(a=collocation_lengths, repeats=collocation_instances_counts),
+        np.ones(shape=nfn, dtype=np.int32)
+    ))
+
     parameters = {
         "collocations_instances_global_ids": collocations_instances_global_ids,
-        "flag": flag
+        "flag": flag,
+        "collocations_instances_global_ids_repeats": collocations_instances_global_ids_repeats
     }
 
     measure_time_execution_of_function(func=detect_travel_end_1, loops_number=10000, parameters=parameters)
@@ -185,10 +192,10 @@ def test_calculate_rotation():
 
 
 def main():
-    # test_detect_travel_end()
+    test_detect_travel_end()
     # test_set_destination_point()
     # test_out_of_range_correction()
-    test_calculate_rotation()
+    # test_calculate_rotation()
 
 
 if __name__ == "__main__":

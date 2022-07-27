@@ -66,6 +66,12 @@ class SpatioTemporalTravelApproachGenerator:
             np.arange(last_collocation_instance_global_id, last_collocation_instance_global_id + self.tai.collocation_noise_features_instances_sum + self.tap.ndfn)
         ))
 
+        # save number of repeats of the consecutive co-locations instances global ids - required data at detection of reached co-locations
+        collocations_instances_global_ids_repeats = np.concatenate((
+            np.repeat(a=self.tai.collocation_lengths, repeats=self.tai.collocation_instances_counts),
+            np.ones(shape=self.tai.collocation_noise_features_instances_sum + self.tap.ndfn, dtype=np.int32)
+        ))
+
         # sum of all specified collocation global instances
         collocation_instances_global_sum = last_collocation_instance_global_id + self.tai.collocation_noise_features_instances_sum + self.tap.ndfn
 
@@ -150,11 +156,26 @@ class SpatioTemporalTravelApproachGenerator:
             # calculate location of instances in next time_frame
             instances_coor += instances_coor_delta_rotated
 
-            # check if the given feature instance reached its own destination point
-            # todo
+            # check if the given feature instance reached its own destination point - distance to a destination lower than a half of mean step length
+            dist_squared = np.sum(a=(features_instances_destination_coor - instances_coor) ** 2, axis=-1)
+            features_instances_destination_reached = np.logical_or(
+                features_instances_destination_reached,
+                dist_squared <= ((features_step_length_mean[self.tai.features_ids] / 2) ** 2)
+            )
+
+            # check which of co-locations instances has all of its feature instances with reached destination point
+            collocations_instances_global_ids_not_reached_idndices = collocations_instances_global_ids[np.logical_not(features_instances_destination_reached)]
+            collocations_instances_global_ids_not_reached_idndices = np.unique(ar=collocations_instances_global_ids_not_reached_idndices)
+            collocations_instances_global_ids_reached_flag = np.ones_like(a=collocations_instances_global_ids_repeats, dtype=bool)
+            collocations_instances_global_ids_reached_flag[collocations_instances_global_ids_not_reached_idndices] = False
+            features_instances_new_destination_needed_flag = np.repeat(a=collocations_instances_global_ids_reached_flag, repeats=collocations_instances_global_ids_repeats)
 
             # set new destination points of features instances of the given co-location if all of these features have reached their own destination points
-            # todo
+            collocation_instances_destination_coor[collocations_instances_global_ids_reached_flag] = np.random.randint(low=self.tai.area_in_cell_dim, size=(collocations_instances_global_ids_reached_flag.sum(), 2))
+            collocation_instances_destination_coor[collocations_instances_global_ids_reached_flag] *= self.tap.cell_size
+            # collocation_instances_destination_coor = collocation_instances_destination_coor.astype(dtype=np.float64)
+            features_instances_destination_coor[features_instances_new_destination_needed_flag] = collocation_instances_destination_coor[collocations_instances_global_ids[features_instances_new_destination_needed_flag]]
+            features_instances_destination_coor[features_instances_new_destination_needed_flag] += np.random.uniform(high=self.tap.cell_size, size=(features_instances_new_destination_needed_flag.sum(), 2))
 
             # generate vector of time frame ids of current time frame
             time_frame_ids = np.full(shape=self.tai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
@@ -192,14 +213,14 @@ if __name__ == "__main__":
         step_length_mean=10.0,
         step_length_method=StepLengthMethod.UNIFORM,
         step_length_std_ratio=0.5,
-        step_angle_range=50,
+        step_angle_range=np.pi / 4,
         step_angle_method=StepAngleMethod.UNIFORM,
         step_angle_std_ratio=1/3
     )
 
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
-        time_frames_number=10,
+        time_frames_number=500,
         output_filename="SpatioTemporalTravelApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )
