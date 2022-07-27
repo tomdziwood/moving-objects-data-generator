@@ -49,57 +49,6 @@ class SpatioTemporalTravelApproachGenerator:
             y=ssp.y
         )
 
-        # prepare array of co-locations instances global ids to which features belong
-        collocations_instances_global_ids = np.array([], dtype=np.int32)
-        last_collocation_instance_global_id = 0
-        for i_colloc in range(self.tap.n_colloc * self.tap.m_overlap):
-            i_colloc_collocations_instances_global_ids = np.repeat(
-                a=np.arange(last_collocation_instance_global_id, last_collocation_instance_global_id + self.tai.collocation_instances_counts[i_colloc]),
-                repeats=self.tai.collocation_lengths[i_colloc]
-            )
-            collocations_instances_global_ids = np.concatenate((collocations_instances_global_ids, i_colloc_collocations_instances_global_ids))
-            last_collocation_instance_global_id += self.tai.collocation_instances_counts[i_colloc]
-
-        # every single noise feature instance is assigned to the unique individual co-location instance global id
-        collocations_instances_global_ids = np.concatenate((
-            collocations_instances_global_ids,
-            np.arange(last_collocation_instance_global_id, last_collocation_instance_global_id + self.tai.collocation_noise_features_instances_sum + self.tap.ndfn)
-        ))
-
-        # save number of repeats of the consecutive co-locations instances global ids - required data at detection of reached co-locations
-        collocations_instances_global_ids_repeats = np.concatenate((
-            np.repeat(a=self.tai.collocation_lengths, repeats=self.tai.collocation_instances_counts),
-            np.ones(shape=self.tai.collocation_noise_features_instances_sum + self.tap.ndfn, dtype=np.int32)
-        ))
-
-        # sum of all specified collocation global instances
-        collocation_instances_global_sum = last_collocation_instance_global_id + self.tai.collocation_noise_features_instances_sum + self.tap.ndfn
-
-        # set destination point of every feature instance
-        collocation_instances_destination_coor = np.random.randint(low=self.tai.area_in_cell_dim, size=(collocation_instances_global_sum, 2))
-        collocation_instances_destination_coor *= self.tap.cell_size
-        collocation_instances_destination_coor = collocation_instances_destination_coor.astype(dtype=np.float64)
-        features_instances_destination_coor = collocation_instances_destination_coor[collocations_instances_global_ids]
-        features_instances_destination_coor += np.random.uniform(high=self.tap.cell_size, size=features_instances_destination_coor.shape)
-
-        # create boolean array which tells if the given feature instance reached its own destination point
-        features_instances_destination_reached = np.zeros(shape=self.tai.features_instances_sum, dtype=bool)
-
-        # determine travel step length settings of each feature type
-        features_step_length_mean = np.random.gamma(shape=self.tap.step_length_mean, scale=1.0, size=self.tai.features_sum)
-        features_step_length_max = np.array([], dtype=np.float64)
-        features_step_length_std = np.array([], dtype=np.float64)
-        if self.tap.step_length_method == StepLengthMethod.UNIFORM:
-            features_step_length_max = features_step_length_mean * 2
-        elif self.tap.step_length_method == StepLengthMethod.NORMAL:
-            features_step_length_std = self.tap.step_length_std_ratio * features_step_length_mean
-
-        # determine travel step angle settings of each feature type
-        features_step_angle_range = np.random.gamma(shape=self.tap.step_angle_range, scale=1.0, size=self.tai.features_sum)
-        features_step_angle_std = np.array([], dtype=np.float64)
-        if self.tap.step_angle_method == StepAngleMethod.NORMAL:
-            features_step_angle_std = self.tap.step_angle_std_ratio * features_step_angle_range
-
         # get coordinates of features instances into single array
         instances_coor = np.column_stack(tup=(ssp.x, ssp.y))
 
@@ -108,7 +57,7 @@ class SpatioTemporalTravelApproachGenerator:
             print("time_frame %d of %d" % (time_frame + 1, time_frames_number))
 
             # calculate coordinates difference between destination and current position of each feature instance
-            coor_diff = features_instances_destination_coor - instances_coor
+            coor_diff = self.tai.features_instances_destination_coor - instances_coor
 
             # calculate distance between destination and current position of each feature instance
             dist = np.sqrt(np.sum(a=coor_diff ** 2, axis=-1))
@@ -116,13 +65,13 @@ class SpatioTemporalTravelApproachGenerator:
             # determine travel step length of each feature instance
             features_instances_step_length = np.array([], dtype=np.float64)
             if self.tap.step_length_method == StepLengthMethod.CONSTANT:
-                features_instances_step_length = features_step_length_mean[self.tai.features_ids]
+                features_instances_step_length = self.tai.features_step_length_mean[self.tai.features_ids]
             elif self.tap.step_length_method == StepLengthMethod.UNIFORM:
-                features_instances_step_length = np.random.uniform(high=features_step_length_max[self.tai.features_ids], size=self.tai.features_instances_sum)
+                features_instances_step_length = np.random.uniform(high=self.tai.features_step_length_max[self.tai.features_ids], size=self.tai.features_instances_sum)
             elif self.tap.step_length_method == StepLengthMethod.GAUSS:
-                features_instances_step_length = np.random.gamma(shape=features_step_length_mean[self.tai.features_ids], scale=1.0, size=self.tai.features_instances_sum)
+                features_instances_step_length = np.random.gamma(shape=self.tai.features_step_length_mean[self.tai.features_ids], scale=1.0, size=self.tai.features_instances_sum)
             elif self.tap.step_length_method == StepLengthMethod.NORMAL:
-                features_instances_step_length = np.random.normal(loc=features_step_length_mean[self.tai.features_ids], scale=features_step_length_std[self.tai.features_ids], size=self.tai.features_instances_sum)
+                features_instances_step_length = np.random.normal(loc=self.tai.features_step_length_mean[self.tai.features_ids], scale=self.tai.features_step_length_std[self.tai.features_ids], size=self.tai.features_instances_sum)
 
             # calculate coordinates change when each feature instance move directly to the destination point in straight line
             instances_coor_delta_direct = np.divide(features_instances_step_length, dist, out=np.zeros_like(features_instances_step_length), where=dist != 0)
@@ -131,18 +80,18 @@ class SpatioTemporalTravelApproachGenerator:
             # determine travel step angle of each feature instance
             features_instances_step_angle = np.array([], dtype=np.float64)
             if self.tap.step_angle_method == StepAngleMethod.UNIFORM:
-                features_instances_step_angle = np.random.uniform(low=-features_step_angle_range[self.tai.features_ids], high=features_step_angle_range[self.tai.features_ids], size=self.tai.features_instances_sum)
+                features_instances_step_angle = np.random.uniform(low=-self.tai.features_step_angle_range[self.tai.features_ids], high=self.tai.features_step_angle_range[self.tai.features_ids], size=self.tai.features_instances_sum)
             elif self.tap.step_angle_method == StepAngleMethod.NORMAL:
-                features_instances_step_angle = np.random.normal(loc=0.0, scale=features_step_angle_std[self.tai.features_ids], size=self.tai.features_instances_sum)
+                features_instances_step_angle = np.random.normal(loc=0.0, scale=self.tai.features_step_angle_std[self.tai.features_ids], size=self.tai.features_instances_sum)
 
                 # if the angle of feature instance has been drawn outside of feature type range, the angle is drawn again with uniform distribution within its feature type range
                 angle_out_of_range_indices = np.flatnonzero(np.logical_or(
-                    features_instances_step_angle < -features_step_angle_range[self.tai.features_ids],
-                    features_instances_step_angle > features_step_angle_range[self.tai.features_ids]
+                    features_instances_step_angle < -self.tai.features_step_angle_range[self.tai.features_ids],
+                    features_instances_step_angle > self.tai.features_step_angle_range[self.tai.features_ids]
                 ))
                 features_instances_step_angle[angle_out_of_range_indices] = np.random.uniform(
-                    low=-features_step_angle_range[self.tai.features_ids[angle_out_of_range_indices]],
-                    high=features_step_angle_range[self.tai.features_ids[angle_out_of_range_indices]],
+                    low=-self.tai.features_step_angle_range[self.tai.features_ids[angle_out_of_range_indices]],
+                    high=self.tai.features_step_angle_range[self.tai.features_ids[angle_out_of_range_indices]],
                     size=angle_out_of_range_indices.size
                 )
 
@@ -157,25 +106,25 @@ class SpatioTemporalTravelApproachGenerator:
             instances_coor += instances_coor_delta_rotated
 
             # check if the given feature instance reached its own destination point - distance to a destination lower than a half of mean step length
-            dist_squared = np.sum(a=(features_instances_destination_coor - instances_coor) ** 2, axis=-1)
-            features_instances_destination_reached = np.logical_or(
-                features_instances_destination_reached,
-                dist_squared <= ((features_step_length_mean[self.tai.features_ids] / 2) ** 2)
+            dist_squared = np.sum(a=(self.tai.features_instances_destination_coor - instances_coor) ** 2, axis=-1)
+            self.tai.features_instances_destination_reached = np.logical_or(
+                self.tai.features_instances_destination_reached,
+                dist_squared <= ((self.tai.features_step_length_mean[self.tai.features_ids] / 2) ** 2)
             )
 
             # check which of co-locations instances has all of its feature instances with reached destination point
-            collocations_instances_global_ids_not_reached_idndices = collocations_instances_global_ids[np.logical_not(features_instances_destination_reached)]
-            collocations_instances_global_ids_not_reached_idndices = np.unique(ar=collocations_instances_global_ids_not_reached_idndices)
-            collocations_instances_global_ids_reached_flag = np.ones_like(a=collocations_instances_global_ids_repeats, dtype=bool)
-            collocations_instances_global_ids_reached_flag[collocations_instances_global_ids_not_reached_idndices] = False
-            features_instances_new_destination_needed_flag = np.repeat(a=collocations_instances_global_ids_reached_flag, repeats=collocations_instances_global_ids_repeats)
+            collocations_instances_global_ids_not_reached_ids = self.tai.collocations_instances_global_ids[np.logical_not(self.tai.features_instances_destination_reached)]
+            collocations_instances_global_ids_not_reached_ids = np.unique(ar=collocations_instances_global_ids_not_reached_ids)
+            collocations_instances_global_ids_reached = np.ones_like(a=self.tai.collocations_instances_global_ids_repeats, dtype=bool)
+            collocations_instances_global_ids_reached[collocations_instances_global_ids_not_reached_ids] = False
+            features_instances_new_destination_needed = np.repeat(a=collocations_instances_global_ids_reached, repeats=self.tai.collocations_instances_global_ids_repeats)
 
             # set new destination points of features instances of the given co-location if all of these features have reached their own destination points
-            collocation_instances_destination_coor[collocations_instances_global_ids_reached_flag] = np.random.randint(low=self.tai.area_in_cell_dim, size=(collocations_instances_global_ids_reached_flag.sum(), 2))
-            collocation_instances_destination_coor[collocations_instances_global_ids_reached_flag] *= self.tap.cell_size
-            # collocation_instances_destination_coor = collocation_instances_destination_coor.astype(dtype=np.float64)
-            features_instances_destination_coor[features_instances_new_destination_needed_flag] = collocation_instances_destination_coor[collocations_instances_global_ids[features_instances_new_destination_needed_flag]]
-            features_instances_destination_coor[features_instances_new_destination_needed_flag] += np.random.uniform(high=self.tap.cell_size, size=(features_instances_new_destination_needed_flag.sum(), 2))
+            self.tai.collocations_instances_destination_coor[collocations_instances_global_ids_reached] = np.random.randint(low=self.tai.area_in_cell_dim, size=(collocations_instances_global_ids_reached.sum(), 2))
+            self.tai.collocations_instances_destination_coor[collocations_instances_global_ids_reached] *= self.tap.cell_size
+            # self.tai.collocations_instances_destination_coor = self.tai.collocations_instances_destination_coor.astype(dtype=np.float64)
+            self.tai.features_instances_destination_coor[features_instances_new_destination_needed] = self.tai.collocations_instances_destination_coor[self.tai.collocations_instances_global_ids[features_instances_new_destination_needed]]
+            self.tai.features_instances_destination_coor[features_instances_new_destination_needed] += np.random.uniform(high=self.tap.cell_size, size=(features_instances_new_destination_needed.sum(), 2))
 
             # generate vector of time frame ids of current time frame
             time_frame_ids = np.full(shape=self.tai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
@@ -199,16 +148,16 @@ if __name__ == "__main__":
     tap = TravelApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=5,
-        lambda_1=5,
-        lambda_2=10,
+        n_colloc=3,
+        lambda_1=4,
+        lambda_2=3,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0.5,
         ncfn=0.5,
         ncf_proportional=False,
-        ndf=5,
-        ndfn=50,
+        ndf=3,
+        ndfn=10,
         random_seed=0,
         step_length_mean=10.0,
         step_length_method=StepLengthMethod.UNIFORM,
