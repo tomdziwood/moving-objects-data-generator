@@ -16,6 +16,7 @@ class TravelApproachInitiation(StandardInitiation):
         self.collocations_instances_destination_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.features_instances_destination_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.features_instances_destination_reached: np.ndarray = np.array([], dtype=bool)
+        self.collocations_instances_waiting_countdown: np.ndarray = np.array([], dtype=np.int32)
         self.features_step_length_mean: np.ndarray = np.array([], dtype=np.float64)
         self.features_step_length_max: np.ndarray = np.array([], dtype=np.float64)
         self.features_step_length_std: np.ndarray = np.array([], dtype=np.float64)
@@ -64,6 +65,9 @@ class TravelApproachInitiation(StandardInitiation):
         # create boolean array which tells if the given feature instance reached its own destination point
         self.features_instances_destination_reached = np.zeros(shape=self.features_instances_sum, dtype=bool)
 
+        # create countdown array which tells how many time frames remain of waiting for the rest of features instances of the given co-location instances
+        self.collocations_instances_waiting_countdown = np.full(shape=self.collocations_instances_global_sum, fill_value=-1, dtype=np.int32)
+
         # determine travel step length settings of each feature type
         self.features_step_length_mean = np.random.gamma(shape=tap.step_length_mean, scale=1.0, size=self.features_sum)
         print("features_step_length_mean=%s" % str(self.features_step_length_mean))
@@ -75,7 +79,9 @@ class TravelApproachInitiation(StandardInitiation):
             print("features_step_length_std=%s" % str(self.features_step_length_std))
 
         # determine travel step angle settings of each feature type
-        self.features_step_angle_range = np.random.gamma(shape=tap.step_angle_range, scale=1.0, size=self.features_sum)
+        self.features_step_angle_range = np.random.gamma(shape=tap.step_angle_range_mean, scale=1.0, size=self.features_sum)
+        self.features_step_angle_range[self.features_step_angle_range < -tap.step_angle_range_limit] = -tap.step_angle_range_limit
+        self.features_step_angle_range[self.features_step_angle_range > tap.step_angle_range_limit] = tap.step_angle_range_limit
         print("features_step_angle_range=%s" % str(self.features_step_angle_range))
         if tap.step_angle_method == StepAngleMethod.NORMAL:
             self.features_step_angle_std = tap.step_angle_std_ratio * self.features_step_angle_range
