@@ -25,7 +25,10 @@ class SpatioTemporalTravelApproachGenerator:
         """
         Create object of a spatio-temporal data generator with given set of parameters.
 
-        :param tap: The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
+        Parameters
+        ----------
+        tap: TravelApproachParameters
+            The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
             of the `TravelApproachParameters` class.
         """
 
@@ -41,6 +44,22 @@ class SpatioTemporalTravelApproachGenerator:
             time_frames_number: int = 10,
             output_filename: str = "SpatioTemporalTravelApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
+        """
+        Generate spatio-temporal data.
+
+        Parameters
+        ----------
+        time_frames_number : int
+            The number of time frames in which spatio-temporal data will be generated.
+
+        output_filename : str
+            The filename to which output will be written.
+
+        output_filename_timestamp : bool
+            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            It helps to automatically recognize different output of generator.
+        """
+
         print("SpatioTemporalTravelApproachGenerator.generate()")
 
         # open file to which output will be written

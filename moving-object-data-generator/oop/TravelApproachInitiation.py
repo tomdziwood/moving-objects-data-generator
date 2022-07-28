@@ -6,7 +6,71 @@ from oop.TravelApproachParameters import TravelApproachParameters
 
 
 class TravelApproachInitiation(StandardInitiation):
+    """
+    The class of a `SpatioTemporalTravelApproachGenerator` initiation. Object of this class stores all initial data, which is required to generate spatio-temporal data
+    in each time frame.
+
+    Attributes
+    ----------
+    travel_approach_parameters : TravelApproachParameters
+        The object of class `TravelApproachParameters`, which holds all the required parameters of the `SpatioTemporalTravelApproachGenerator` generator.
+
+    collocations_instances_global_ids : np.ndarray
+        The array's size is equal to the number of features' instances. The i-th value represents the global id of the co-location instance,
+        to which the i-th feature instance belongs.
+
+    collocations_instances_global_sum : int
+        The number of all specified collocation global instances.
+
+    collocations_instances_global_ids_repeats : np.ndarray
+        The array's size is equal to the number of co-locations instances. The i-th value represents the number of features' instances,
+        which belong to the i-th co-location instance.
+
+    collocations_instances_destination_coor : np.ndarray
+        The array's size is equal to the number of co-locations instances. The i-th value represents the coordinates of the destination point of the i-th co-location instance.
+
+    features_instances_destination_coor : np.ndarray
+        The array's size is equal to the number of features' instances. The i-th value represents the coordinates of the destination point of the i-th feature instance.
+
+    features_instances_destination_reached : np.ndarray
+        The array's size is equal to the number of features' instances. The i-th value tells if i-th feature instance has reached its destination point.
+
+    collocations_instances_waiting_countdown : np.ndarray
+        The array's size is equal to the number of co-locations instances. The i-th value represents remaining time frames of waiting for the rest
+        of the features' instances of the i-th co-location instance to reach their destination point. When counter is inactive, the value is equal ``-1``.
+
+    features_step_length_mean : np.ndarray
+        The array's size is equal to the number of features' types. The i-th value represents mean value of the step's length of a feature's instance
+        of the i-th feature's type.
+
+    features_step_length_uniform_min : np.ndarray
+        The array's size is equal to the number of features' types. The array is initialized, when the generator's parameter ``step_length_method``
+        is equal to ``StepLengthMethod.UNIFORM``. The i-th value represents lower boundary of the uniform distribution of the step's length of the i-th feature's type.
+
+    features_step_length_uniform_max : np.ndarray
+        The array's size is equal to the number of features' types. The array is initialized, when the generator's parameter ``step_length_method``
+        is equal to ``StepLengthMethod.UNIFORM``. The i-th value represents upper boundary of the uniform distribution of the step's length of the i-th feature's type.
+
+    features_step_length_normal_std : np.ndarray
+        The array's size is equal to the number of features' types. The array is initialized, when the generator's parameter ``step_length_method``
+        is equal to ``StepLengthMethod.NORMAL``. The i-th value represents standard deviation of the normal distribution of the step's length of the i-th feature's type.
+
+    features_step_angle_range : np.ndarray
+        The array's size is equal to the number of features' types. The i-th value represents the maximum step's angle to the direction of destination point
+        of the i-th feature's type.
+
+    features_step_angle_normal_std : np.ndarray
+        The array's size is equal to the number of features' types. The array is initialized, when the generator's parameter ``step_angle_method``
+        is equal to ``StepAngleMethod.NORMAL``. The i-th value represents the standard deviation of the normal distribution of the step's angle
+        to the direction of destination point of the i-th feature's type.
+
+    """
+
     def __init__(self):
+        """
+        Construct empty object of the `TravelApproachInitiation` class.
+        """
+
         super().__init__()
 
         self.travel_approach_parameters: TravelApproachParameters = TravelApproachParameters()
@@ -21,10 +85,20 @@ class TravelApproachInitiation(StandardInitiation):
         self.features_step_length_uniform_min: np.ndarray = np.array([], dtype=np.float64)
         self.features_step_length_uniform_max: np.ndarray = np.array([], dtype=np.float64)
         self.features_step_length_normal_std: np.ndarray = np.array([], dtype=np.float64)
-        self.features_step_angle_range = np.array([], dtype=np.float64)
-        self.features_step_angle_normal_std = np.array([], dtype=np.float64)
+        self.features_step_angle_range: np.ndarray = np.array([], dtype=np.float64)
+        self.features_step_angle_normal_std: np.ndarray = np.array([], dtype=np.float64)
 
     def initiate(self, tap: TravelApproachParameters = TravelApproachParameters()):
+        """
+        Initiate required data to generate spatio-temporal data in each time frame.
+
+        Parameters
+        ----------
+        tap: TravelApproachParameters
+            The object of class `TravelApproachParameters`, which holds all the required parameters of the `SpatioTemporalTravelApproachGenerator` generator.
+            Its attributes will be used to initialize required data.
+        """
+
         super().initiate(sp=tap)
 
         self.travel_approach_parameters = tap
