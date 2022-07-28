@@ -6,27 +6,24 @@ class StepLengthMethod(Enum):
     StepLengthMethod enum is used to distinguish different strategies of choosing step's length for the given instance of the specified feature.
     """
 
-    CONSTANT = auto()
-    """
-    Every instance of the specified feature changes its location with constant step length. Different feature type has different constant length value.
-    """
-
     UNIFORM = auto()
     """
-    Every instance of the specified feature changes its location with step length drawn from uniform distribution with value from `0` to `max_value`.
-    Different feature type has different distribution maximum range.
+    Every instance of the specified feature type changes its location with step length drawn from uniform distribution with value from ``min_value`` to ``max_value``.
+    Boundary values are calculated based on the given mean (``step_length_mean``) and the given ratio of minimal value to the mean (``step_length_uniform_low_to_mean_ratio``).
+    For details, see documentation of the `TravelApproachParameters` class. Different feature types has different uniform distribution.
     """
 
-    GAUSS = auto()
+    GAMMA = auto()
     """
-    Every instance of the specified feature changes its location with step length drawn from gauss distribution (gamma with scale=1) with the given mean value.
-    Different feature type has different gauss distribution with different mean value.
+    Every instance of the specified feature type changes its location with step length drawn from gamma distribution with the given shape and the scale equals ``1.0``.
+    This distribution is an extension from integer to real domain of the Poisson distribution with lambda equals the given shape.
+    Different feature types has different gauss distribution with different mean value.
     """
 
     NORMAL = auto()
     """
-    Every instance of the specified feature changes its location with step length drawn from normal distribution with the given mean and standard deviation values.
-    Different feature type has different normal distribution with different mean and standard deviation values.
+    Every instance of the specified feature type changes its location with step length drawn from normal distribution with the given mean and standard deviation values.
+    Different feature types has different normal distribution with different mean and standard deviation values.
     """
 
 

@@ -109,8 +109,8 @@ def main():
     # visualize_gif(input_filename="..\\oop\\SpatioTemporalStandardGenerator_output_file.txt")
     # visualize_gif(input_filename="..\\oop\\SpatioTemporalStaticInteractionApproachGenerator_output_file.txt", fps=25)
     # visualize_gif(input_filename="..\\oop\\SpatioTemporalStaticInteractionApproachGenerator_output_file_2022-07-18_092218.520075.txt", fps=25)
-    # visualize_gif(input_filename="..\\oop\\SpatioTemporalTravelApproachGenerator_output_file.txt", fps=25)
-    visualize_gif(input_filename="..\\oop\\SpatioTemporalTravelApproachGenerator_output_file_2022-07-27_160406.000361.txt", fps=25)
+    visualize_gif(input_filename="..\\oop\\SpatioTemporalTravelApproachGenerator_output_file.txt", fps=25)
+    # visualize_gif(input_filename="..\\oop\\SpatioTemporalTravelApproachGenerator_output_file_2022-07-27_160406.000361.txt", fps=25)
 
 
 if __name__ == "__main__":

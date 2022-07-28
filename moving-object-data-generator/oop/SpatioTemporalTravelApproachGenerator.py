@@ -8,9 +8,27 @@ from oop.TravelApproachParameters import TravelApproachParameters
 
 
 class SpatioTemporalTravelApproachGenerator:
+    """
+    The class of a spatio-temporal data generator. The main idea of the generator is that features' instances are changing their positions
+    by making steps into direction of the individually defined destination points. When a current destination point is achieved, then a new destination point is defined.
+    There are allowed different values of step's length and different values of step's angle to the direction of destination point of the given feature's instance.
+
+    Feature's instances, which tend to occur together as a co-location instance, they have closely located their destination points - similar like when
+    these feature's instance positions are defined at the starting position according to `SpatialStandardPlacement` procedure. In case of the given co-location instance,
+    only when all the features' instances reach the current destination points, the new destination points are defined. It is possible to get new destination
+    thanks to the elapsed time frames according to the `waiting_time_frames` parameter value.
+    """
+
     def __init__(
             self,
             tap: TravelApproachParameters = TravelApproachParameters()):
+        """
+        Create object of a spatio-temporal data generator with given set of parameters.
+
+        :param tap: The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
+            of the `TravelApproachParameters` class.
+        """
+
         # store parameters of the generator
         self.tap = tap
 
@@ -64,14 +82,12 @@ class SpatioTemporalTravelApproachGenerator:
 
             # determine travel step length of each feature instance
             features_instances_step_length = np.array([], dtype=np.float64)
-            if self.tap.step_length_method == StepLengthMethod.CONSTANT:
-                features_instances_step_length = self.tai.features_step_length_mean[self.tai.features_ids]
-            elif self.tap.step_length_method == StepLengthMethod.UNIFORM:
-                features_instances_step_length = np.random.uniform(high=self.tai.features_step_length_max[self.tai.features_ids], size=self.tai.features_instances_sum)
-            elif self.tap.step_length_method == StepLengthMethod.GAUSS:
+            if self.tap.step_length_method == StepLengthMethod.UNIFORM:
+                features_instances_step_length = np.random.uniform(low=self.tai.features_step_length_uniform_min[self.tai.features_ids], high=self.tai.features_step_length_uniform_max[self.tai.features_ids], size=self.tai.features_instances_sum)
+            elif self.tap.step_length_method == StepLengthMethod.GAMMA:
                 features_instances_step_length = np.random.gamma(shape=self.tai.features_step_length_mean[self.tai.features_ids], scale=1.0, size=self.tai.features_instances_sum)
             elif self.tap.step_length_method == StepLengthMethod.NORMAL:
-                features_instances_step_length = np.random.normal(loc=self.tai.features_step_length_mean[self.tai.features_ids], scale=self.tai.features_step_length_std[self.tai.features_ids], size=self.tai.features_instances_sum)
+                features_instances_step_length = np.random.normal(loc=self.tai.features_step_length_mean[self.tai.features_ids], scale=self.tai.features_step_length_normal_std[self.tai.features_ids], size=self.tai.features_instances_sum)
 
             # calculate coordinates change when each feature instance move directly to the destination point in straight line
             instances_coor_delta_direct = np.divide(features_instances_step_length, dist, out=np.zeros_like(features_instances_step_length), where=dist != 0)
@@ -82,7 +98,7 @@ class SpatioTemporalTravelApproachGenerator:
             if self.tap.step_angle_method == StepAngleMethod.UNIFORM:
                 features_instances_step_angle = np.random.uniform(low=-self.tai.features_step_angle_range[self.tai.features_ids], high=self.tai.features_step_angle_range[self.tai.features_ids], size=self.tai.features_instances_sum)
             elif self.tap.step_angle_method == StepAngleMethod.NORMAL:
-                features_instances_step_angle = np.random.normal(loc=0.0, scale=self.tai.features_step_angle_std[self.tai.features_ids], size=self.tai.features_instances_sum)
+                features_instances_step_angle = np.random.normal(loc=0.0, scale=self.tai.features_step_angle_normal_std[self.tai.features_ids], size=self.tai.features_instances_sum)
 
                 # if the angle of feature instance has been drawn outside of feature type range, the angle is drawn again with uniform distribution within its feature type range
                 angle_out_of_range_indices = np.flatnonzero(np.logical_or(
@@ -174,9 +190,9 @@ if __name__ == "__main__":
     tap = TravelApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=3,
-        lambda_1=4,
-        lambda_2=3,
+        n_colloc=5,
+        lambda_1=5,
+        lambda_2=30,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0,
@@ -187,17 +203,18 @@ if __name__ == "__main__":
         random_seed=0,
         step_length_mean=10.0,
         step_length_method=StepLengthMethod.UNIFORM,
-        step_length_std_ratio=0.5,
-        step_angle_range_mean=np.pi / 2,
+        step_length_uniform_low_to_mean_ratio=-3,
+        step_length_normal_std_ratio=1 / 3,
+        step_angle_range_mean=np.pi / 4,
         step_angle_range_limit=np.pi / 2,
-        step_angle_method=StepAngleMethod.UNIFORM,
-        step_angle_std_ratio=1/3,
+        step_angle_method=StepAngleMethod.NORMAL,
+        step_angle_normal_std_ratio=1 / 3,
         waiting_time_frames=20
     )
 
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
-        time_frames_number=500,
+        time_frames_number=100,
         output_filename="SpatioTemporalTravelApproachGenerator_output_file.txt",
-        output_filename_timestamp=True
+        output_filename_timestamp=False
     )

@@ -18,10 +18,11 @@ class TravelApproachInitiation(StandardInitiation):
         self.features_instances_destination_reached: np.ndarray = np.array([], dtype=bool)
         self.collocations_instances_waiting_countdown: np.ndarray = np.array([], dtype=np.int32)
         self.features_step_length_mean: np.ndarray = np.array([], dtype=np.float64)
-        self.features_step_length_max: np.ndarray = np.array([], dtype=np.float64)
-        self.features_step_length_std: np.ndarray = np.array([], dtype=np.float64)
+        self.features_step_length_uniform_min: np.ndarray = np.array([], dtype=np.float64)
+        self.features_step_length_uniform_max: np.ndarray = np.array([], dtype=np.float64)
+        self.features_step_length_normal_std: np.ndarray = np.array([], dtype=np.float64)
         self.features_step_angle_range = np.array([], dtype=np.float64)
-        self.features_step_angle_std = np.array([], dtype=np.float64)
+        self.features_step_angle_normal_std = np.array([], dtype=np.float64)
 
     def initiate(self, tap: TravelApproachParameters = TravelApproachParameters()):
         super().initiate(sp=tap)
@@ -72,11 +73,13 @@ class TravelApproachInitiation(StandardInitiation):
         self.features_step_length_mean = np.random.gamma(shape=tap.step_length_mean, scale=1.0, size=self.features_sum)
         print("features_step_length_mean=%s" % str(self.features_step_length_mean))
         if tap.step_length_method == StepLengthMethod.UNIFORM:
-            self.features_step_length_max = self.features_step_length_mean * 2
-            print("features_step_length_max=%s" % str(self.features_step_length_max))
+            self.features_step_length_uniform_min = self.features_step_length_mean * tap.step_length_uniform_low_to_mean_ratio
+            print("features_step_length_uniform_min=%s" % str(self.features_step_length_uniform_min))
+            self.features_step_length_uniform_max = 2 * self.features_step_length_mean - self.features_step_length_uniform_min
+            print("features_step_length_uniform_max=%s" % str(self.features_step_length_uniform_max))
         elif tap.step_length_method == StepLengthMethod.NORMAL:
-            self.features_step_length_std = tap.step_length_std_ratio * self.features_step_length_mean
-            print("features_step_length_std=%s" % str(self.features_step_length_std))
+            self.features_step_length_normal_std = tap.step_length_normal_std_ratio * self.features_step_length_mean
+            print("features_step_length_normal_std=%s" % str(self.features_step_length_normal_std))
 
         # determine travel step angle settings of each feature type
         self.features_step_angle_range = np.random.gamma(shape=tap.step_angle_range_mean, scale=1.0, size=self.features_sum)
@@ -84,5 +87,5 @@ class TravelApproachInitiation(StandardInitiation):
         self.features_step_angle_range[self.features_step_angle_range > tap.step_angle_range_limit] = tap.step_angle_range_limit
         print("features_step_angle_range=%s" % str(self.features_step_angle_range))
         if tap.step_angle_method == StepAngleMethod.NORMAL:
-            self.features_step_angle_std = tap.step_angle_std_ratio * self.features_step_angle_range
-            print("features_step_angle_std=%s" % str(self.features_step_angle_std))
+            self.features_step_angle_normal_std = tap.step_angle_normal_std_ratio * self.features_step_angle_range
+            print("features_step_angle_normal_std=%s" % str(self.features_step_angle_normal_std))

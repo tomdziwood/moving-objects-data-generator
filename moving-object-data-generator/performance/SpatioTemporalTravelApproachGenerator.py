@@ -146,7 +146,7 @@ def test_out_of_range_correction():
     features_ids = np.random.randint(low=features_sum, size=features_instances_sum)
 
     parameters = {
-        "features_step_angle_std": features_step_angle_std,
+        "features_step_angle_normal_std": features_step_angle_std,
         "features_instances_sum": features_instances_sum,
         "features_step_angle_range": features_step_angle_range,
         "features_ids": features_ids
