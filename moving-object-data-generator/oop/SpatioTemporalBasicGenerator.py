@@ -65,7 +65,7 @@ if __name__ == "__main__":
         n_colloc=2,
         lambda_1=3,
         lambda_2=3,
-        m_clumpy=3,
+        m_clumpy=2,
         m_overlap=2,
         ncfr=0.5,
         ncfn=0.5,
@@ -79,5 +79,5 @@ if __name__ == "__main__":
     stbg.generate(
         time_frames_number=10,
         output_filename="SpatioTemporalBasicGenerator_output_file.txt",
-        output_filename_timestamp=True
+        output_filename_timestamp=False
     )

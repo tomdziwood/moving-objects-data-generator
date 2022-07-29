@@ -233,7 +233,7 @@ if __name__ == "__main__":
 
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
-        time_frames_number=500,
+        time_frames_number=10,
         output_filename="SpatioTemporalTravelApproachGenerator_output_file.txt",
-        output_filename_timestamp=True
+        output_filename_timestamp=False
     )

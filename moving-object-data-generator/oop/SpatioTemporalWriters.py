@@ -140,6 +140,8 @@ def write_basic_initiation_values(f: TextIO, bi: BasicInitiation):
     f.write("# additional_noise_features:\t%s\n" % str(bi.additional_noise_features))
     f.write("# additional_noise_features_instances_counts:\t%s\n" % str(bi.additional_noise_features_instances_counts))
     f.write("# features_instances_sum:\t%s\n" % str(bi.features_instances_sum))
+    f.write("# collocations_instances_global_sum:\t%d\n" % bi.collocations_instances_global_sum)
+    f.write("# collocations_clumpy_instances_global_sum:\t%s\n" % str(bi.collocations_clumpy_instances_global_sum))
 
 
 class SpatioTemporalBasicWriter(SpatioTemporalWriter):
@@ -244,7 +246,6 @@ class SpatioTemporalTravelApproachWriter(SpatioTemporalWriter):
         # write basic statistics of created features
         self.f.write("# ---------- initiated values ----------\n")
         write_basic_initiation_values(self.f, tai)
-        self.f.write("# collocations_instances_global_sum:\t%d\n" % tai.collocations_instances_global_sum)
         self.f.write("# features_step_length_mean:\t%s\n" % str(tai.features_step_length_mean))
         self.f.write("# features_step_length_uniform_min:\t%s\n" % str(tai.features_step_length_uniform_max))
         self.f.write("# features_step_length_uniform_max:\t%s\n" % str(tai.features_step_length_uniform_max))

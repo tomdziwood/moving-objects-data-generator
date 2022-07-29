@@ -4,7 +4,32 @@ from oop.BasicParameters import BasicParameters
 
 
 class BasicInitiation:
+    """
+    The class of a `SpatioTemporalBasicGenerator` initiation. Object of this class stores all initial data, which is required to generate spatio-temporal data
+    in each time frame.
+
+    Attributes
+    ----------
+    basic_parameters : BasicParameters
+        The object of class `BasicParameters`, which holds all the required parameters of the `SpatioTemporalBasicGenerator` generator.
+
+    collocations_instances_global_ids : np.ndarray
+        The array's size is equal to the number of features' instances. The i-th value represents the global id of the co-location instance,
+        to which the i-th feature instance belongs.
+
+    collocations_instances_global_sum : int
+        The number of all specified collocation global instances.
+
+    collocations_instances_global_ids_repeats : np.ndarray
+        The array's size is equal to the number of co-locations instances. The i-th value represents the number of features' instances,
+        which belong to the i-th co-location instance.
+    """
+
     def __init__(self):
+        """
+        Construct empty object of the `BasicInitiation` class.
+        """
+
         self.basic_parameters: BasicParameters = BasicParameters()
         self.base_collocation_lengths: np.ndarray = np.array([], dtype=np.int32)
         self.collocation_lengths: np.ndarray = np.array([], dtype=np.int32)
@@ -29,8 +54,25 @@ class BasicInitiation:
         self.features_ids: np.ndarray = np.array([], dtype=np.int32)
         self.features_instances_ids: np.ndarray = np.array([], dtype=np.int32)
         self.features_instances_sum: int = 0
+        self.collocations_instances_global_ids: np.ndarray = np.array([], dtype=np.int32)
+        self.collocations_instances_global_sum: int = 0
+        self.collocations_instances_global_ids_repeats: np.ndarray = np.array([], dtype=np.int32)
+        self.collocation_clumpy_instances_counts: np.ndarray = np.array([], dtype=np.int32)
+        self.collocations_clumpy_instances_global_ids: np.ndarray = np.array([], dtype=np.int32)
+        self.collocations_clumpy_instances_global_sum: int = 0
+        self.collocations_clumpy_instances_global_ids_repeats: np.ndarray = np.array([], dtype=np.int32)
 
     def initiate(self, bp: BasicParameters = BasicParameters()):
+        """
+        Initiate required data to generate spatio-temporal data in each time frame.
+
+        Parameters
+        ----------
+        bp: BasicParameters
+            The object of class `BasicParameters`, which holds all the required parameters of the `SpatioTemporalBasicGenerator` generator.
+            Its attributes will be used to initialize required data.
+        """
+
         self.basic_parameters = bp
 
         # set random seed value
@@ -178,3 +220,73 @@ class BasicInitiation:
         # sum number of all features instances
         self.features_instances_sum = self.features_ids.size
         print("features_instances_sum=%s" % str(self.features_instances_sum))
+
+        # ---begin--- collocation instances global initiation
+        # sum of all specified collocation global instances
+        self.collocations_instances_global_sum = self.collocation_instances_counts.sum() + self.collocation_noise_features_instances_sum + bp.ndfn
+        print("collocations_instances_global_sum=%d" % self.collocations_instances_global_sum)
+
+        # save number of repeats of the consecutive co-locations instances global ids
+        self.collocations_instances_global_ids_repeats = np.concatenate((
+            np.repeat(a=self.collocation_lengths, repeats=self.collocation_instances_counts),
+            np.ones(shape=self.collocation_noise_features_instances_sum + bp.ndfn, dtype=np.int32)
+        ))
+
+        # prepare array of co-locations instances global ids to which features belong
+        self.collocations_instances_global_ids = np.repeat(a=np.arange(self.collocations_instances_global_sum), repeats=self.collocations_instances_global_ids_repeats)
+        # ----end---- collocation instances global initiation
+
+        # ---begin--- collocation "clumpy" instances global initiation
+        if bp.m_clumpy == 1:
+            # m_clumpy parameter doesn't bring any changes in co-locations instances ids
+            self.collocation_clumpy_instances_counts = self.collocation_instances_counts
+            self.collocations_clumpy_instances_global_sum = self.collocations_instances_global_sum
+            self.collocations_clumpy_instances_global_ids_repeats = self.collocations_instances_global_ids_repeats
+            self.collocations_clumpy_instances_global_ids = self.collocations_instances_global_ids
+        else:
+            # determine number of "clumpy" instances to each of the co-locations - co-locations instances gathered by ``m_clumpy`` parameter are counted as one
+            self.collocation_clumpy_instances_counts = (self.collocation_instances_counts - 1) // bp.m_clumpy + 1
+
+            # prepare array of co-locations "clumpy" instances global ids to which features belong
+            self.collocations_clumpy_instances_global_ids = np.array([], dtype=np.int32)
+            last_collocation_clumpy_instance_global_id = 0
+            for i_colloc in range(bp.n_colloc * bp.m_overlap):
+                i_colloc_collocations_clumpy_instances_global_ids = np.repeat(
+                    a=np.arange(last_collocation_clumpy_instance_global_id, last_collocation_clumpy_instance_global_id + self.collocation_clumpy_instances_counts[i_colloc]),
+                    repeats=self.collocation_lengths[i_colloc] * bp.m_clumpy
+                )
+                self.collocations_clumpy_instances_global_ids = np.concatenate((
+                    self.collocations_clumpy_instances_global_ids,
+                    i_colloc_collocations_clumpy_instances_global_ids[:self.collocation_instances_counts[i_colloc] * self.collocation_lengths[i_colloc]]
+                ))
+                last_collocation_clumpy_instance_global_id += self.collocation_clumpy_instances_counts[i_colloc]
+
+            # sum of all specified collocation global "clumpy" instances
+            self.collocations_clumpy_instances_global_sum = last_collocation_clumpy_instance_global_id + self.collocation_noise_features_instances_sum + bp.ndfn
+            print("collocations_clumpy_instances_global_sum=%d" % self.collocations_clumpy_instances_global_sum)
+
+            # every single noise feature instance is assigned to the unique individual co-location "clumpy" instance global id
+            self.collocations_clumpy_instances_global_ids = np.concatenate((
+                self.collocations_clumpy_instances_global_ids,
+                np.arange(last_collocation_clumpy_instance_global_id, self.collocations_clumpy_instances_global_sum)
+            ))
+
+            # save number of repeats of the consecutive co-locations "clumpy" instances global ids
+            self.collocations_clumpy_instances_global_ids_repeats = np.array([], dtype=np.int32)
+            for i_colloc in range(bp.n_colloc * bp.m_overlap):
+                i_colloc_collocations_clumpy_instances_global_ids_repeats = np.repeat(
+                    a=self.collocation_lengths[i_colloc] * bp.m_clumpy,
+                    repeats=self.collocation_clumpy_instances_counts[i_colloc]
+                )
+                i_colloc_collocations_clumpy_instances_global_ids_repeats[-1] = self.collocation_lengths[i_colloc] * ((self.collocation_instances_counts[i_colloc] - 1) % bp.m_clumpy + 1)
+                self.collocations_clumpy_instances_global_ids_repeats = np.concatenate((
+                    self.collocations_clumpy_instances_global_ids_repeats,
+                    i_colloc_collocations_clumpy_instances_global_ids_repeats
+                ))
+
+            # every co-location "clumpy" instance global id of single noise feature instance is repeated only once
+            self.collocations_clumpy_instances_global_ids_repeats = np.concatenate((
+                self.collocations_clumpy_instances_global_ids_repeats,
+                np.ones(shape=self.collocation_noise_features_instances_sum + bp.ndfn, dtype=np.int32)
+            ))
+        # ----end---- collocation "clumpy" instances global initiation

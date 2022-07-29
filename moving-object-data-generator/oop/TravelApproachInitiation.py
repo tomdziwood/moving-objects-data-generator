@@ -15,17 +15,6 @@ class TravelApproachInitiation(BasicInitiation):
     travel_approach_parameters : TravelApproachParameters
         The object of class `TravelApproachParameters`, which holds all the required parameters of the `SpatioTemporalTravelApproachGenerator` generator.
 
-    collocations_instances_global_ids : np.ndarray
-        The array's size is equal to the number of features' instances. The i-th value represents the global id of the co-location instance,
-        to which the i-th feature instance belongs.
-
-    collocations_instances_global_sum : int
-        The number of all specified collocation global instances.
-
-    collocations_instances_global_ids_repeats : np.ndarray
-        The array's size is equal to the number of co-locations instances. The i-th value represents the number of features' instances,
-        which belong to the i-th co-location instance.
-
     collocations_instances_destination_coor : np.ndarray
         The array's size is equal to the number of co-locations instances. The i-th value represents the coordinates of the destination point of the i-th co-location instance.
 
@@ -74,9 +63,6 @@ class TravelApproachInitiation(BasicInitiation):
         super().__init__()
 
         self.travel_approach_parameters: TravelApproachParameters = TravelApproachParameters()
-        self.collocations_instances_global_ids: np.ndarray = np.array([], dtype=np.int32)
-        self.collocations_instances_global_sum: int = 0
-        self.collocations_instances_global_ids_repeats: np.ndarray = np.array([], dtype=np.int32)
         self.collocations_instances_destination_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.features_instances_destination_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.features_instances_destination_reached: np.ndarray = np.array([], dtype=bool)
@@ -102,33 +88,6 @@ class TravelApproachInitiation(BasicInitiation):
         super().initiate(bp=tap)
 
         self.travel_approach_parameters = tap
-
-        # prepare array of co-locations instances global ids to which features belong
-        self.collocations_instances_global_ids = np.array([], dtype=np.int32)
-        last_collocation_instance_global_id = 0
-        for i_colloc in range(tap.n_colloc * tap.m_overlap):
-            i_colloc_collocations_instances_global_ids = np.repeat(
-                a=np.arange(last_collocation_instance_global_id, last_collocation_instance_global_id + self.collocation_instances_counts[i_colloc]),
-                repeats=self.collocation_lengths[i_colloc]
-            )
-            self.collocations_instances_global_ids = np.concatenate((self.collocations_instances_global_ids, i_colloc_collocations_instances_global_ids))
-            last_collocation_instance_global_id += self.collocation_instances_counts[i_colloc]
-
-        # sum of all specified collocation global instances
-        self.collocations_instances_global_sum = last_collocation_instance_global_id + self.collocation_noise_features_instances_sum + tap.ndfn
-        print("collocations_instances_global_sum=%d" % self.collocations_instances_global_sum)
-
-        # every single noise feature instance is assigned to the unique individual co-location instance global id
-        self.collocations_instances_global_ids = np.concatenate((
-            self.collocations_instances_global_ids,
-            np.arange(last_collocation_instance_global_id, self.collocations_instances_global_sum)
-        ))
-
-        # save number of repeats of the consecutive co-locations instances global ids - required data at detection of reached co-locations
-        self.collocations_instances_global_ids_repeats = np.concatenate((
-            np.repeat(a=self.collocation_lengths, repeats=self.collocation_instances_counts),
-            np.ones(shape=self.collocation_noise_features_instances_sum + tap.ndfn, dtype=np.int32)
-        ))
 
         # set destination point of every feature instance
         self.collocations_instances_destination_coor = np.random.randint(low=self.area_in_cell_dim, size=(self.collocations_instances_global_sum, 2))
