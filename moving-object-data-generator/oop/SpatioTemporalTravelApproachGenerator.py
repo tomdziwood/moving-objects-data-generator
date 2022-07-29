@@ -82,12 +82,12 @@ class SpatioTemporalTravelApproachGenerator:
             time_frame_ids=time_frame_ids,
             features_ids=self.tai.features_ids,
             features_instances_ids=self.tai.features_instances_ids,
-            x=sbp.x,
-            y=sbp.y
+            x=sbp.features_instances_coor[:, 0],
+            y=sbp.features_instances_coor[:, 1]
         )
 
-        # get coordinates of features instances into single array
-        instances_coor = np.column_stack(tup=(sbp.x, sbp.y))
+        # copy coordinates of features instances
+        instances_coor = np.copy(sbp.features_instances_coor)
 
         # generate data for each time frame
         for time_frame in range(1, time_frames_number):

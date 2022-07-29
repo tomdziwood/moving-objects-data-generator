@@ -68,8 +68,8 @@ class StaticInteractionApproachInitiation(BasicInitiation):
         # place all objects at starting position
         self.spatial_basic_placement.place(bi=self)
 
-        # keep instances coordinates in one array
-        self.instances_coor = np.column_stack(tup=(self.spatial_basic_placement.x, self.spatial_basic_placement.y))
+        # copy coordinates of features instances
+        self.instances_coor = np.copy(self.spatial_basic_placement.features_instances_coor)
 
         if siap.mass_param < 0:
             # create array of instances mass all equals to -mass_param

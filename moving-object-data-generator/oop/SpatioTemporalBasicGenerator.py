@@ -48,8 +48,8 @@ class SpatioTemporalBasicGenerator:
                     time_frame_ids=time_frame_ids,
                     features_ids=self.bi.features_ids,
                     features_instances_ids=self.bi.features_instances_ids,
-                    x=sbp.x,
-                    y=sbp.y
+                    x=sbp.features_instances_coor[:, 0],
+                    y=sbp.features_instances_coor[:, 1]
             )
 
         # end of file writing
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         cell_size=5,
         n_colloc=2,
         lambda_1=3,
-        lambda_2=3,
+        lambda_2=6,
         m_clumpy=2,
         m_overlap=2,
         ncfr=0.5,

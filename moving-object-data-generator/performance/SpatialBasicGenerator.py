@@ -3,6 +3,9 @@ import sys
 import numpy as np
 
 from timeit import default_timer as timer
+
+from oop.BasicInitiation import BasicInitiation
+from oop.BasicParameters import BasicParameters
 from scripts.iterative import SpatialBasicGenerator as isbg
 from scripts.vectorized import SpatialBasicGenerator as vsbg
 
@@ -944,13 +947,120 @@ def test_spatial_basic_generator():
     print("average time execution of function vsbg.generate:\t%.12f [s]" % ((end - start) / loops_number))
 
 
+def generate_all_features_1(bi: BasicInitiation):
+    # delete previous placement of the objects
+    x = np.array([], dtype=np.float64)
+    y = np.array([], dtype=np.float64)
+
+    # take parameters which were used in basic initiation
+    bp = bi.basic_parameters
+
+    # generate data of every co-location in given time frame
+    for i_colloc in range(bp.n_colloc * bp.m_overlap):
+        # calculate total number of all co-location feature instances
+        collocation_features_instances_sum = bi.collocation_instances_counts[i_colloc] * bi.collocation_lengths[i_colloc]
+
+        # generate vector of x coordinates of all the consecutive instances
+        collocation_features_instances_x = np.random.randint(low=bi.area_in_cell_dim, size=(bi.collocation_instances_counts[i_colloc] - 1) // bp.m_clumpy + 1)
+        collocation_features_instances_x *= bp.cell_size
+        collocation_features_instances_x = collocation_features_instances_x.astype(dtype=np.float64)
+        collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=bp.m_clumpy)[:bi.collocation_instances_counts[i_colloc]]
+        collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=bi.collocation_lengths[i_colloc])
+        collocation_features_instances_x += np.random.uniform(high=bp.cell_size, size=collocation_features_instances_sum)
+
+        # generate vector of y coordinates of all the consecutive instances
+        collocation_features_instances_y = np.random.randint(low=bi.area_in_cell_dim, size=(bi.collocation_instances_counts[i_colloc] - 1) // bp.m_clumpy + 1)
+        collocation_features_instances_y *= bp.cell_size
+        collocation_features_instances_y = collocation_features_instances_y.astype(dtype=np.float64)
+        collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=bp.m_clumpy)[:bi.collocation_instances_counts[i_colloc]]
+        collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=bi.collocation_lengths[i_colloc])
+        collocation_features_instances_y += np.random.uniform(high=bp.cell_size, size=collocation_features_instances_sum)
+
+        # remember data of current co-location features
+        x = np.concatenate((x, collocation_features_instances_x))
+        y = np.concatenate((y, collocation_features_instances_y))
+
+    # generate data of every co-location noise feature in given time frame
+    # generate vectors of x and y coordinates of all the consecutive instances of co-location noise features
+    collocation_noise_features_instances_x = np.random.uniform(high=bp.area, size=bi.collocation_noise_features_instances_sum)
+    collocation_noise_features_instances_y = np.random.uniform(high=bp.area, size=bi.collocation_noise_features_instances_sum)
+
+    # remember data of co-location noise features
+    x = np.concatenate((x, collocation_noise_features_instances_x))
+    y = np.concatenate((y, collocation_noise_features_instances_y))
+
+    # generate additional noise features if they are requested in given time frame
+    if bp.ndf > 0:
+        # generate vectors of x and y coordinates of all the consecutive instances of additional noise features
+        additional_noise_features_instances_x = np.random.uniform(high=bp.area, size=bp.ndfn)
+        additional_noise_features_instances_y = np.random.uniform(high=bp.area, size=bp.ndfn)
+
+        # remember data of additional noise features
+        x = np.concatenate((x, additional_noise_features_instances_x))
+        y = np.concatenate((y, additional_noise_features_instances_y))
+
+
+def generate_all_features_2(bi: BasicInitiation):
+
+    # take parameters which were used in basic initiation
+    bp = bi.basic_parameters
+
+    # vectorized method of generating all features instances coordinates - with the awareness of the m_clumpy parameter
+    collocations_clumpy_instances_coor = np.random.randint(low=bi.area_in_cell_dim, size=(bi.collocations_clumpy_instances_global_sum, 2))
+    collocations_clumpy_instances_coor *= bp.cell_size
+    collocations_clumpy_instances_coor = collocations_clumpy_instances_coor.astype(dtype=np.float64)
+    features_instances_coor = collocations_clumpy_instances_coor[bi.collocations_clumpy_instances_global_ids]
+    features_instances_coor += np.random.uniform(high=bp.cell_size, size=features_instances_coor.shape)
+
+
+def test_generate_all_features():
+    # average time execution of function generate_all_features_1:	0.002148352800 [s]
+    # average time execution of function generate_all_features_2:	0.000386859190 [s]
+
+    print("test_generate_all_features execute")
+
+    bp = BasicParameters(
+        area=1000,
+        cell_size=5,
+        n_colloc=10,
+        lambda_1=4,
+        lambda_2=50,
+        m_clumpy=3,
+        m_overlap=2,
+        ncfr=0.5,
+        ncfn=0.5,
+        ncf_proportional=False,
+        ndf=5,
+        ndfn=250,
+        random_seed=0
+    )
+
+    bi = BasicInitiation()
+    bi.initiate(bp=bp)
+
+    loops_number = 1000
+    start = timer()
+    for _ in range(loops_number):
+        generate_all_features_1(bi=bi)
+    end = timer()
+    print("average time execution of function generate_all_features_1:\t%.12f [s]" % ((end - start) / loops_number))
+
+    loops_number = 10000
+    start = timer()
+    for _ in range(loops_number):
+        generate_all_features_2(bi=bi)
+    end = timer()
+    print("average time execution of function generate_all_features_2:\t%.12f [s]" % ((end - start) / loops_number))
+
+
 def main():
     # test_generate_collocation_feature()
     # test_generate_collocation_feature_and_write()
     # test_generate_collocation_noise_feature()
     # test_write_collocation_noise_feature()
     # test_generate_additional_noise_feature()
-    test_spatial_basic_generator()
+    # test_spatial_basic_generator()
+    test_generate_all_features()
 
 
 if __name__ == "__main__":
