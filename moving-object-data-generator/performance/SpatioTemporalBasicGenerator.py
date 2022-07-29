@@ -1,12 +1,13 @@
 import sys
 
 from timeit import default_timer as timer
-from scripts.iterative import SpatioTemporalStandardGenerator as istsg
-from scripts.vectorized import SpatioTemporalStandardGenerator as vstsg
+from scripts.iterative import SpatioTemporalBasicGenerator as istbg
+from scripts.vectorized import SpatioTemporalBasicGenerator as vstbg
+
 
 def test_spatio_temporal_standard_generator():
-    # average time execution of function istsg.generate:	47.366100700000 [s]
-    # average time execution of function vstsg.generate:	5.756012590000 [s]
+    # average time execution of function istbg.generate:	47.366100700000 [s]
+    # average time execution of function vstbg.generate:	5.756012590000 [s]
 
     print("test_spatio_temporal_standard_generator execute")
 
@@ -32,20 +33,20 @@ def test_spatio_temporal_standard_generator():
     sys.stdout = open('trash.txt', 'w')
     start = timer()
     for _ in range(loops_number):
-        istsg.generate(**parameters)
+        istbg.generate(**parameters)
     end = timer()
     sys.stdout = save_stdout
-    print("average time execution of function istsg.generate:\t%.12f [s]" % ((end - start) / loops_number))
+    print("average time execution of function istbg.generate:\t%.12f [s]" % ((end - start) / loops_number))
 
     loops_number = 10
     save_stdout = sys.stdout
     sys.stdout = open('trash.txt', 'w')
     start = timer()
     for _ in range(loops_number):
-        vstsg.generate(**parameters)
+        vstbg.generate(**parameters)
     end = timer()
     sys.stdout = save_stdout
-    print("average time execution of function vstsg.generate:\t%.12f [s]" % ((end - start) / loops_number))
+    print("average time execution of function vstbg.generate:\t%.12f [s]" % ((end - start) / loops_number))
 
 
 def main():

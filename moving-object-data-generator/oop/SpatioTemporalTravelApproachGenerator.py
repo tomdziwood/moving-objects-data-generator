@@ -1,6 +1,6 @@
 import numpy as np
 
-from oop.SpatialStandardPlacement import SpatialStandardPlacement
+from oop.SpatialBasicPlacement import SpatialBasicPlacement
 from oop.SpatioTemporalWriters import SpatioTemporalTravelApproachWriter
 from oop.TravelApproachInitiation import TravelApproachInitiation
 from oop.TravelApproachEnums import StepLengthMethod, StepAngleMethod
@@ -14,7 +14,7 @@ class SpatioTemporalTravelApproachGenerator:
     There are allowed different values of step's length and different values of step's angle to the direction of destination point of the given feature's instance.
 
     Feature's instances, which tend to occur together as a co-location instance, they have closely located their destination points - similar like when
-    these feature's instance positions are defined at the starting position according to `SpatialStandardPlacement` procedure. In case of the given co-location instance,
+    these feature's instance positions are defined at the starting position according to `SpatialBasicPlacement` procedure. In case of the given co-location instance,
     only when all the features' instances reach the current destination points, the new destination points are defined. It is possible to get new destination
     thanks to the elapsed time frames according to the `waiting_time_frames` parameter value.
     """
@@ -69,10 +69,10 @@ class SpatioTemporalTravelApproachGenerator:
         stta_writer.write_comment(tai=self.tai)
 
         # create class object, which holds all data of the objects placement
-        ssp = SpatialStandardPlacement()
+        sbp = SpatialBasicPlacement()
 
         # place all objects at starting position
-        ssp.place(si=self.tai)
+        sbp.place(bi=self.tai)
 
         # generate vector of time frame ids of starting time frame
         time_frame_ids = np.full(shape=self.tai.features_instances_sum, fill_value=0, dtype=np.int32)
@@ -82,12 +82,12 @@ class SpatioTemporalTravelApproachGenerator:
             time_frame_ids=time_frame_ids,
             features_ids=self.tai.features_ids,
             features_instances_ids=self.tai.features_instances_ids,
-            x=ssp.x,
-            y=ssp.y
+            x=sbp.x,
+            y=sbp.y
         )
 
         # get coordinates of features instances into single array
-        instances_coor = np.column_stack(tup=(ssp.x, ssp.y))
+        instances_coor = np.column_stack(tup=(sbp.x, sbp.y))
 
         # generate data for each time frame
         for time_frame in range(1, time_frames_number):
@@ -209,31 +209,31 @@ if __name__ == "__main__":
     tap = TravelApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=5,
+        n_colloc=3,
         lambda_1=5,
-        lambda_2=30,
+        lambda_2=20,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0,
         ncfn=0,
         ncf_proportional=False,
-        ndf=0,
-        ndfn=0,
+        ndf=3,
+        ndfn=30,
         random_seed=0,
         step_length_mean=10.0,
         step_length_method=StepLengthMethod.UNIFORM,
-        step_length_uniform_low_to_mean_ratio=-3,
+        step_length_uniform_low_to_mean_ratio=1,
         step_length_normal_std_ratio=1 / 3,
         step_angle_range_mean=np.pi / 4,
         step_angle_range_limit=np.pi / 2,
-        step_angle_method=StepAngleMethod.NORMAL,
+        step_angle_method=StepAngleMethod.UNIFORM,
         step_angle_normal_std_ratio=1 / 3,
         waiting_time_frames=20
     )
 
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
-        time_frames_number=100,
+        time_frames_number=500,
         output_filename="SpatioTemporalTravelApproachGenerator_output_file.txt",
-        output_filename_timestamp=False
+        output_filename_timestamp=True
     )

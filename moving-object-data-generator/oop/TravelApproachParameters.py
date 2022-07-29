@@ -1,10 +1,10 @@
 import numpy as np
 
-from oop.StandardParameters import StandardParameters
+from oop.BasicParameters import BasicParameters
 from oop.TravelApproachEnums import StepLengthMethod, StepAngleMethod
 
 
-class TravelApproachParameters(StandardParameters):
+class TravelApproachParameters(BasicParameters):
     """
     The class represents set of parameters used by the `SpatioTemporalTravelApproachGenerator` class of a spatio-temporal data generator.
     """
@@ -72,7 +72,7 @@ class TravelApproachParameters(StandardParameters):
             then new destination points will be defined.
 
         kwargs
-            Other parameters passed to super constructor of derived class `StandardParameters`.
+            Other parameters passed to super constructor of derived class `BasicParameters`.
         """
 
         super().__init__(**kwargs)

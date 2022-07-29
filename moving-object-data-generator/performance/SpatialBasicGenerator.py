@@ -3,8 +3,8 @@ import sys
 import numpy as np
 
 from timeit import default_timer as timer
-from scripts.iterative import SpatialStandardGenerator as issg
-from scripts.vectorized import SpatialStandardGenerator as vssg
+from scripts.iterative import SpatialBasicGenerator as isbg
+from scripts.vectorized import SpatialBasicGenerator as vsbg
 
 
 def generate_collocation_feature_1(area, cell_size, n_colloc, lambda_1, lambda_2, m_clumpy, m_overlap):
@@ -901,11 +901,11 @@ def test_generate_additional_noise_feature():
     print("average time execution of function generate_additional_noise_features_2:\t%.12f [s]" % ((end - start) / loops_number))
 
 
-def test_spatial_standard_generator():
-    # average time execution of function issg.generate:	5.189230070000 [s]
-    # average time execution of function vssg.generate:	0.534279507000 [s]
+def test_spatial_basic_generator():
+    # average time execution of function isbg.generate:	5.189230070000 [s]
+    # average time execution of function vsbg.generate:	0.534279507000 [s]
 
-    print("test_spatial_standard_generator execute")
+    print("test_spatial_basic_generator execute")
 
     # generating parameters
     parameters = {
@@ -928,20 +928,20 @@ def test_spatial_standard_generator():
     sys.stdout = open('trash.txt', 'w')
     start = timer()
     for _ in range(loops_number):
-        issg.generate(**parameters)
+        isbg.generate(**parameters)
     end = timer()
     sys.stdout = save_stdout
-    print("average time execution of function issg.generate:\t%.12f [s]" % ((end - start) / loops_number))
+    print("average time execution of function isbg.generate:\t%.12f [s]" % ((end - start) / loops_number))
 
     loops_number = 100
     save_stdout = sys.stdout
     sys.stdout = open('trash.txt', 'w')
     start = timer()
     for _ in range(loops_number):
-        vssg.generate(**parameters)
+        vsbg.generate(**parameters)
     end = timer()
     sys.stdout = save_stdout
-    print("average time execution of function vssg.generate:\t%.12f [s]" % ((end - start) / loops_number))
+    print("average time execution of function vsbg.generate:\t%.12f [s]" % ((end - start) / loops_number))
 
 
 def main():
@@ -950,7 +950,7 @@ def main():
     # test_generate_collocation_noise_feature()
     # test_write_collocation_noise_feature()
     # test_generate_additional_noise_feature()
-    test_spatial_standard_generator()
+    test_spatial_basic_generator()
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-class StandardParameters:
+class BasicParameters:
     def __init__(
             self,
             area=1000,

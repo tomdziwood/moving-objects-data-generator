@@ -1,11 +1,11 @@
 import numpy as np
 
-from oop.StandardParameters import StandardParameters
+from oop.BasicParameters import BasicParameters
 
 
-class StandardInitiation:
+class BasicInitiation:
     def __init__(self):
-        self.standard_parameters: StandardParameters = StandardParameters()
+        self.basic_parameters: BasicParameters = BasicParameters()
         self.base_collocation_lengths: np.ndarray = np.array([], dtype=np.int32)
         self.collocation_lengths: np.ndarray = np.array([], dtype=np.int32)
         self.collocation_instances_counts: np.ndarray = np.array([], dtype=np.int32)
@@ -30,33 +30,34 @@ class StandardInitiation:
         self.features_instances_ids: np.ndarray = np.array([], dtype=np.int32)
         self.features_instances_sum: int = 0
 
-    def initiate(self, sp: StandardParameters = StandardParameters()):
-        self.standard_parameters = sp
+    def initiate(self, bp: BasicParameters = BasicParameters()):
+        self.basic_parameters = bp
 
         # set random seed value
-        if sp.random_seed is not None:
-            np.random.seed(sp.random_seed)
+        if bp.random_seed is not None:
+            np.random.seed(bp.random_seed)
 
         # determine length to each of the n_colloc basic co-locations with poisson distribution (lam=lambda_1)
-        self.base_collocation_lengths = np.random.poisson(lam=sp.lambda_1, size=sp.n_colloc)
+        self.base_collocation_lengths = np.random.poisson(lam=bp.lambda_1, size=bp.n_colloc)
         self.base_collocation_lengths[self.base_collocation_lengths < 2] = 2
         print("base_collocation_lengths=%s" % str(self.base_collocation_lengths))
 
         # set final length to each of the co-locations according to the m_overlap parameter value
-        if sp.m_overlap > 1:
-            self.collocation_lengths = np.repeat(a=self.base_collocation_lengths + 1, repeats=sp.m_overlap)
+        if bp.m_overlap > 1:
+            self.collocation_lengths = np.repeat(a=self.base_collocation_lengths + 1, repeats=bp.m_overlap)
         else:
             self.collocation_lengths = self.base_collocation_lengths
         print("collocation_lengths=%s" % str(self.collocation_lengths))
 
         # determine number of instances to each of the co-locations with poisson distribution (lam=lambda_2)
-        self.collocation_instances_counts = np.random.poisson(lam=sp.lambda_2, size=sp.n_colloc * sp.m_overlap)
+        self.collocation_instances_counts = np.random.poisson(lam=bp.lambda_2, size=bp.n_colloc * bp.m_overlap)
+        self.collocation_instances_counts[self.collocation_instances_counts == 0] = 1
         print("collocation_instances_counts=%s" % str(self.collocation_instances_counts))
 
         # determine the total number of features, which take part in co-locations
         self.collocation_features_sum = np.sum(self.base_collocation_lengths)
-        if sp.m_overlap > 1:
-            self.collocation_features_sum += sp.n_colloc * sp.m_overlap
+        if bp.m_overlap > 1:
+            self.collocation_features_sum += bp.n_colloc * bp.m_overlap
         print("collocation_features_sum=%d" % self.collocation_features_sum)
 
         # prepare count of all instances of every i'th co-location feature
@@ -68,11 +69,11 @@ class StandardInitiation:
 
         # gather data for each co-location
         collocation_start_feature_id = 0
-        for i_colloc in range(sp.n_colloc * sp.m_overlap):
+        for i_colloc in range(bp.n_colloc * bp.m_overlap):
 
             # get the features ids of current co-location
             collocation_features = np.arange(collocation_start_feature_id, collocation_start_feature_id + self.collocation_lengths[i_colloc])
-            collocation_features[-1] += i_colloc % sp.m_overlap
+            collocation_features[-1] += i_colloc % bp.m_overlap
             print("collocation_features=%s" % str(collocation_features))
 
             # generate vector of features ids of all the consecutive instances in current co-location
@@ -98,8 +99,8 @@ class StandardInitiation:
             self.collocation_features_instances_counts[collocation_features] += self.collocation_instances_counts[i_colloc]
 
             # change starting feature of next co-location according to the m_overlap parameter value
-            if (i_colloc + 1) % sp.m_overlap == 0:
-                collocation_start_feature_id += self.collocation_lengths[i_colloc] + sp.m_overlap - 1
+            if (i_colloc + 1) % bp.m_overlap == 0:
+                collocation_start_feature_id += self.collocation_lengths[i_colloc] + bp.m_overlap - 1
         print("collocation_features_instances_counts=%s" % str(self.collocation_features_instances_counts))
 
         # determine the total number of features, which take part in co-locations
@@ -107,11 +108,11 @@ class StandardInitiation:
         print("collocation_features_instances_sum=%d" % self.collocation_features_instances_sum)
 
         # express area dimension in spatial cell unit
-        self.area_in_cell_dim = sp.area // sp.cell_size
+        self.area_in_cell_dim = bp.area // bp.cell_size
         print("area_in_cell_dim: ", self.area_in_cell_dim)
 
         # determine the total number of features, which take part in co-locations and also are used to generate noise
-        self.collocation_noise_features_sum = round(sp.ncfr * self.collocation_features_sum)
+        self.collocation_noise_features_sum = round(bp.ncfr * self.collocation_features_sum)
         print("collocation_noise_features_sum=%d" % self.collocation_noise_features_sum)
 
         # initiate the remaining data of co-location noise features if there are any
@@ -123,8 +124,8 @@ class StandardInitiation:
             print("collocation_noise_features=%s" % str(self.collocation_noise_features))
 
             # prepare array which holds counts of created instances of the co-location noise feature
-            self.collocation_noise_features_instances_sum = round(sp.ncfn * self.collocation_features_instances_sum)
-            if sp.ncf_proportional:
+            self.collocation_noise_features_instances_sum = round(bp.ncfn * self.collocation_features_instances_sum)
+            if bp.ncf_proportional:
                 # number of the instances of given co-location noise feature is proportional to the number of instances of given feature, which are participating in co-locations
                 self.collocation_noise_features_instances_counts = self.collocation_noise_features_instances_sum * self.collocation_features_instances_counts[self.collocation_noise_features] / self.collocation_features_instances_counts[self.collocation_noise_features].sum()
                 self.collocation_noise_features_instances_counts = self.collocation_noise_features_instances_counts.astype(np.int32)
@@ -150,9 +151,9 @@ class StandardInitiation:
             # print("collocation_noise_features_instances_ids=%s" % self.collocation_noise_features_instances_ids)
 
         # initiate basic data of the additional noise features if they are requested
-        if sp.ndf > 0:
+        if bp.ndf > 0:
             # determine number of each of the additional noise features
-            self.additional_noise_features_ids = np.random.randint(low=sp.ndf, size=sp.ndfn) + self.collocation_features_sum
+            self.additional_noise_features_ids = np.random.randint(low=bp.ndf, size=bp.ndfn) + self.collocation_features_sum
             (self.additional_noise_features, self.additional_noise_features_instances_counts) = np.unique(ar=self.additional_noise_features_ids, return_counts=True)
             print("additional_noise_features=%s" % str(self.additional_noise_features))
             print("additional_noise_features_instances_counts=%s" % str(self.additional_noise_features_instances_counts))
@@ -164,14 +165,14 @@ class StandardInitiation:
             self.additional_noise_features_instances_ids = np.repeat(
                 a=(self.additional_noise_features_instances_counts - self.additional_noise_features_instances_counts.cumsum()),
                 repeats=self.additional_noise_features_instances_counts
-            ) + np.arange(sp.ndfn)
+            ) + np.arange(bp.ndfn)
 
         # concatenate all features ids and features instances ids into single arrays
         self.features_ids = np.concatenate((self.collocation_features_ids, self.collocation_noise_features_ids, self.additional_noise_features_ids))
         self.features_instances_ids = np.concatenate((self.collocation_features_instances_ids, self.collocation_noise_features_instances_ids, self.additional_noise_features_instances_ids))
 
         # the total number of features (co-location and additional noise)
-        self.features_sum = self.collocation_features_sum + sp.ndf
+        self.features_sum = self.collocation_features_sum + bp.ndf
         print("features_sum=%s" % str(self.features_sum))
 
         # sum number of all features instances

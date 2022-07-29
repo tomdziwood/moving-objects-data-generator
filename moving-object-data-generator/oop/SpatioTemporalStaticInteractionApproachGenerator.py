@@ -43,8 +43,8 @@ class SpatioTemporalStaticInteractionApproachGenerator:
             time_frame_ids=time_frame_ids,
             features_ids=self.siai.features_ids,
             features_instances_ids=self.siai.features_instances_ids,
-            x=self.siai.spatial_standard_placement.x,
-            y=self.siai.spatial_standard_placement.y
+            x=self.siai.spatial_basic_placement.x,
+            y=self.siai.spatial_basic_placement.y
         )
 
         # get arrays where new coordinates and velocities of instances will be calculated
@@ -186,23 +186,23 @@ class SpatioTemporalStaticInteractionApproachGenerator:
 
 
 if __name__ == "__main__":
-    print("SpatioTemporalGravitationApproachGenerator main()")
+    print("SpatioTemporalStaticInteractionApproachGenerator main()")
 
     siap = StaticInteractionApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=2,
-        lambda_1=5,
-        lambda_2=2,
+        n_colloc=0,
+        lambda_1=4,
+        lambda_2=20,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0.0,
-        ncfn=0.0,
+        ncfr=0.5,
+        ncfn=0.3,
         ncf_proportional=False,
-        ndf=2,
-        ndfn=10,
-        random_seed=6,
-        time_unit=1.0,
+        ndf=10,
+        ndfn=70,
+        random_seed=0,
+        time_unit=1,
         distance_unit=1.0,
         approx_steps_number=10,
         min_dist=0.5,
@@ -211,13 +211,13 @@ if __name__ == "__main__":
         mass_param=1.0,
         velocity_param=0.0,
         faraway_limit=1000,
-        identical_features_interaction_mode=IdenticalFeaturesInteractionMode.REPEL,
-        different_features_interaction_mode=DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL
+        identical_features_interaction_mode=IdenticalFeaturesInteractionMode.ATTRACT,
+        different_features_interaction_mode=DifferentFeaturesInteractionMode.ATTRACT
     )
 
     stsiag = SpatioTemporalStaticInteractionApproachGenerator(siap=siap)
     stsiag.generate(
         time_frames_number=500,
         output_filename="SpatioTemporalStaticInteractionApproachGenerator_output_file.txt",
-        output_filename_timestamp=False
+        output_filename_timestamp=True
     )

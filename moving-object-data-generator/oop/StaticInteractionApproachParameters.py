@@ -1,10 +1,10 @@
 import numpy as np
 
 from oop.FeatureInteractionModes import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode
-from oop.StandardParameters import StandardParameters
+from oop.BasicParameters import BasicParameters
 
 
-class StaticInteractionApproachParameters(StandardParameters):
+class StaticInteractionApproachParameters(BasicParameters):
     def __init__(
             self,
             time_unit: float = 1.0,

@@ -1,12 +1,12 @@
 import numpy as np
 
 from oop.FeatureInteractionModes import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode
-from oop.SpatialStandardPlacement import SpatialStandardPlacement
-from oop.StandardInitiation import StandardInitiation
+from oop.SpatialBasicPlacement import SpatialBasicPlacement
+from oop.BasicInitiation import BasicInitiation
 from oop.StaticInteractionApproachParameters import StaticInteractionApproachParameters
 
 
-class StaticInteractionApproachInitiation(StandardInitiation):
+class StaticInteractionApproachInitiation(BasicInitiation):
     def __init__(self):
         super().__init__()
 
@@ -18,7 +18,7 @@ class StaticInteractionApproachInitiation(StandardInitiation):
         self.velocity: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.time_interval: float = 1.0
         self.approx_step_time_interval: float = 1.0
-        self.spatial_standard_placement: SpatialStandardPlacement = SpatialStandardPlacement()
+        self.spatial_basic_placement: SpatialBasicPlacement = SpatialBasicPlacement()
         self.features_instances_interaction: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
 
     def __define_features_instances_interaction(self, different_collocations_interaction_value=0, identical_features_interaction_value=1, noise_features_interaction_value=1):
@@ -44,7 +44,7 @@ class StaticInteractionApproachInitiation(StandardInitiation):
 
             # change starting feature of next co-location according to the m_overlap parameter value
             if (i_colloc + 1) % self.static_interaction_approach_parameters.m_overlap == 0:
-                collocation_start_feature_id += self.collocation_lengths[i_colloc] + self.standard_parameters.m_overlap - 1
+                collocation_start_feature_id += self.collocation_lengths[i_colloc] + self.static_interaction_approach_parameters.m_overlap - 1
 
         # initiate interaction matrix of features instances with default value of interaction noise feature with any other feature
         self.features_instances_interaction = np.full(fill_value=noise_features_interaction_value, shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
@@ -58,18 +58,18 @@ class StaticInteractionApproachInitiation(StandardInitiation):
         self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = identical_features_interaction_value
 
     def initiate(self, siap: StaticInteractionApproachParameters = StaticInteractionApproachParameters()):
-        super().initiate(sp=siap)
+        super().initiate(bp=siap)
 
         self.static_interaction_approach_parameters = siap
 
         # create class object, which holds all data of the objects starting placement
-        self.spatial_standard_placement = SpatialStandardPlacement()
+        self.spatial_basic_placement = SpatialBasicPlacement()
 
         # place all objects at starting position
-        self.spatial_standard_placement.place(si=self)
+        self.spatial_basic_placement.place(bi=self)
 
         # keep instances coordinates in one array
-        self.instances_coor = np.column_stack(tup=(self.spatial_standard_placement.x, self.spatial_standard_placement.y))
+        self.instances_coor = np.column_stack(tup=(self.spatial_basic_placement.x, self.spatial_basic_placement.y))
 
         if siap.mass_param < 0:
             # create array of instances mass all equals to -mass_param
@@ -77,7 +77,7 @@ class StaticInteractionApproachInitiation(StandardInitiation):
         else:
             # each type of feature has own mean mass value drawn from gamma distribution
             feature_mass_mu = np.random.gamma(shape=siap.mass_param, scale=1.0, size=self.features_sum)
-            print("feature_mass_mu=%s" % str(feature_mass_mu))
+
             # each instance of given type feature has own mass value drawn from normal distribution
             self.mass = np.random.normal(loc=feature_mass_mu[self.features_ids], scale=feature_mass_mu[self.features_ids] / 5, size=self.features_instances_sum)
             self.mass[self.mass < 0] *= -1
