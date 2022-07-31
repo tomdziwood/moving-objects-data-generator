@@ -33,6 +33,7 @@ class BasicInitiation:
         self.basic_parameters: BasicParameters = BasicParameters()
         self.base_collocation_lengths: np.ndarray = np.array([], dtype=np.int32)
         self.collocation_lengths: np.ndarray = np.array([], dtype=np.int32)
+        self.collocations_sum: int = 0
         self.collocation_instances_counts: np.ndarray = np.array([], dtype=np.int32)
         self.collocation_features_sum: int = 0
         self.collocation_features_instances_counts: np.ndarray = np.array([], dtype=np.int32)
@@ -91,8 +92,12 @@ class BasicInitiation:
             self.collocation_lengths = self.base_collocation_lengths
         print("collocation_lengths=%s" % str(self.collocation_lengths))
 
+        # the total number of co-locations patterns
+        self.collocations_sum = self.collocation_lengths.size
+        print("collocations_sum=%s" % str(self.collocations_sum))
+
         # determine number of instances to each of the co-locations with poisson distribution (lam=lambda_2)
-        self.collocation_instances_counts = np.random.poisson(lam=bp.lambda_2, size=bp.n_colloc * bp.m_overlap)
+        self.collocation_instances_counts = np.random.poisson(lam=bp.lambda_2, size=self.collocations_sum)
         self.collocation_instances_counts[self.collocation_instances_counts == 0] = 1
         print("collocation_instances_counts=%s" % str(self.collocation_instances_counts))
 
@@ -111,7 +116,7 @@ class BasicInitiation:
 
         # gather data for each co-location
         collocation_start_feature_id = 0
-        for i_colloc in range(bp.n_colloc * bp.m_overlap):
+        for i_colloc in range(self.collocations_sum):
 
             # get the features ids of current co-location
             collocation_features = np.arange(collocation_start_feature_id, collocation_start_feature_id + self.collocation_lengths[i_colloc])
@@ -250,7 +255,7 @@ class BasicInitiation:
             # prepare array of co-locations "clumpy" instances global ids to which features belong
             self.collocations_clumpy_instances_global_ids = np.array([], dtype=np.int32)
             last_collocation_clumpy_instance_global_id = 0
-            for i_colloc in range(bp.n_colloc * bp.m_overlap):
+            for i_colloc in range(self.collocations_sum):
                 i_colloc_collocations_clumpy_instances_global_ids = np.repeat(
                     a=np.arange(last_collocation_clumpy_instance_global_id, last_collocation_clumpy_instance_global_id + self.collocation_clumpy_instances_counts[i_colloc]),
                     repeats=self.collocation_lengths[i_colloc] * bp.m_clumpy
@@ -273,7 +278,7 @@ class BasicInitiation:
 
             # save number of repeats of the consecutive co-locations "clumpy" instances global ids
             self.collocations_clumpy_instances_global_ids_repeats = np.array([], dtype=np.int32)
-            for i_colloc in range(bp.n_colloc * bp.m_overlap):
+            for i_colloc in range(self.collocations_sum):
                 i_colloc_collocations_clumpy_instances_global_ids_repeats = np.repeat(
                     a=self.collocation_lengths[i_colloc] * bp.m_clumpy,
                     repeats=self.collocation_clumpy_instances_counts[i_colloc]

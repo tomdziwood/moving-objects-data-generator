@@ -34,7 +34,7 @@ class StaticInteractionApproachInitiation(BasicInitiation):
         collocation_features_interaction = np.full(fill_value=different_collocations_interaction_value, shape=(self.collocation_features_sum, self.collocation_features_sum), dtype=np.int32)
 
         collocation_start_feature_id = 0
-        for i_colloc in range(self.collocation_lengths.size):
+        for i_colloc in range(self.collocations_sum):
             # get the features ids of current co-location
             collocation_features = np.arange(collocation_start_feature_id, collocation_start_feature_id + self.collocation_lengths[i_colloc])
             collocation_features[-1] += i_colloc % self.static_interaction_approach_parameters.m_overlap
