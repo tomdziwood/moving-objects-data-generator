@@ -1,6 +1,6 @@
 import numpy as np
 
-from oop.FeatureInteractionModes import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode
+from oop.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
 from oop.SpatioTemporalWriters import SpatioTemporalStaticInteractionApproachWriter
 from oop.StaticInteractionApproachInitiation import StaticInteractionApproachInitiation
 from oop.StaticInteractionApproachParameters import StaticInteractionApproachParameters
@@ -43,8 +43,8 @@ class SpatioTemporalStaticInteractionApproachGenerator:
             time_frame_ids=time_frame_ids,
             features_ids=self.siai.features_ids,
             features_instances_ids=self.siai.features_instances_ids,
-            x=self.siai.spatial_basic_placement.x,
-            y=self.siai.spatial_basic_placement.y
+            x=self.siai.spatial_basic_placement.features_instances_coor[:, 0],
+            y=self.siai.spatial_basic_placement.features_instances_coor[:, 1]
         )
 
         # get arrays where new coordinates and velocities of instances will be calculated
@@ -208,8 +208,11 @@ if __name__ == "__main__":
         min_dist=0.5,
         max_force=np.inf,
         k_force=10,
-        mass_param=1.0,
-        velocity_param=0.0,
+        mass_mode=MassMode.CONSTANT,
+        mass_mean=1.0,
+        mass_normal_std_ratio=1 / 5,
+        velocity_mode=VelocityMode.CONSTANT,
+        velocity_mean=0.0,
         faraway_limit=1000,
         identical_features_interaction_mode=IdenticalFeaturesInteractionMode.ATTRACT,
         different_features_interaction_mode=DifferentFeaturesInteractionMode.ATTRACT
@@ -219,5 +222,5 @@ if __name__ == "__main__":
     stsiag.generate(
         time_frames_number=500,
         output_filename="SpatioTemporalStaticInteractionApproachGenerator_output_file.txt",
-        output_filename_timestamp=True
+        output_filename_timestamp=False
     )

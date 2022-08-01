@@ -1,6 +1,6 @@
 import numpy as np
 
-from oop.FeatureInteractionModes import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode
+from oop.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
 from oop.SpatialBasicPlacement import SpatialBasicPlacement
 from oop.BasicInitiation import BasicInitiation
 from oop.StaticInteractionApproachParameters import StaticInteractionApproachParameters
@@ -71,33 +71,44 @@ class StaticInteractionApproachInitiation(BasicInitiation):
         # copy coordinates of features instances
         self.instances_coor = np.copy(self.spatial_basic_placement.features_instances_coor)
 
-        if siap.mass_param < 0:
-            # create array of instances mass all equals to -mass_param
-            self.mass = np.full(shape=self.features_instances_sum, fill_value=-siap.mass_param, dtype=np.float64)
-        else:
-            # each type of feature has own mean mass value drawn from gamma distribution
-            feature_mass_mu = np.random.gamma(shape=siap.mass_param, scale=1.0, size=self.features_sum)
+        if siap.mass_mode == MassMode.CONSTANT:
+            # create array of instances' mass, all equal to the 'mass_mean' parameter value
+            self.mass = np.full(shape=self.features_instances_sum, fill_value=siap.mass_mean, dtype=np.float64)
 
-            # each instance of given type feature has own mass value drawn from normal distribution
-            self.mass = np.random.normal(loc=feature_mass_mu[self.features_ids], scale=feature_mass_mu[self.features_ids] / 5, size=self.features_instances_sum)
+        elif siap.mass_mode == MassMode.FEATURE_CONSTANT:
+            # each type of feature has own constant mass value drawn from gamma distribution
+            feature_mass_const = np.random.gamma(shape=siap.mass_mean, scale=1.0, size=self.features_sum)
+
+            # each instance of the given type feature has mass value which is equal to the feature's constant mass value
+            self.mass = feature_mass_const[self.features_ids]
+
+        elif siap.mass_mode == MassMode.NORMAL:
+            # each type of feature has own mean mass value drawn from gamma distribution
+            feature_mass_mu = np.random.gamma(shape=siap.mass_mean, scale=1.0, size=self.features_sum)
+
+            # each instance of the given type feature has own mass value drawn from normal distribution
+            self.mass = np.random.normal(loc=feature_mass_mu[self.features_ids], scale=feature_mass_mu[self.features_ids] * siap.mass_normal_std_ratio, size=self.features_instances_sum)
             self.mass[self.mass < 0] *= -1
 
         self.mass_sum = self.mass.sum()
         self.center = np.sum(a=self.instances_coor * self.mass[:, None], axis=0) / self.mass_sum
 
-        if siap.velocity_param == 0:
-            # create array of instances velocity all equals to 0
-            self.velocity = np.zeros_like(self.instances_coor)
-        elif siap.velocity_param < 0:
-            # create array of instances velocity all with constant value in random direction
+        if siap.velocity_mode == VelocityMode.CONSTANT:
+            if siap.velocity_mean == 0.0:
+                # create array of instances velocity all equals to 0
+                self.velocity = np.zeros_like(self.instances_coor, dtype=np.float64)
+
+            else:
+                # create array of instances' velocities, all with constant value in random direction
+                velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_instances_sum)
+                self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
+                self.velocity *= siap.velocity_mean
+
+        elif siap.velocity_mode == VelocityMode.GAMMA:
+            # create array of instances' velocities, all with gamma distribution value in random direction
             velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_instances_sum)
             self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
-            self.velocity *= -siap.velocity_param
-        else:
-            # create array of instances velocity all with gamma distribution value in random direction
-            velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_instances_sum)
-            self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
-            self.velocity *= np.random.gamma(shape=siap.velocity_param, scale=1.0, size=self.features_instances_sum)[:, None]
+            self.velocity *= np.random.gamma(shape=siap.velocity_mean, scale=1.0, size=self.features_instances_sum)[:, None]
 
         # define time interval between time frames
         self.time_interval = 1 / siap.time_unit
@@ -109,20 +120,27 @@ class StaticInteractionApproachInitiation(BasicInitiation):
         if self.static_interaction_approach_parameters.identical_features_interaction_mode is IdenticalFeaturesInteractionMode.ATTRACT:
             if self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.ATTRACT:
                 self.features_instances_interaction = 1
+
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.REPEL:
                 self.features_instances_interaction = -np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
                 self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = 1
+
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL:
                 self.__define_features_instances_interaction(different_collocations_interaction_value=0, identical_features_interaction_value=1)
+
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL:
                 self.__define_features_instances_interaction(different_collocations_interaction_value=-1, identical_features_interaction_value=1)
+
         elif self.static_interaction_approach_parameters.identical_features_interaction_mode is IdenticalFeaturesInteractionMode.REPEL:
             if self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.ATTRACT:
                 self.features_instances_interaction = np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
                 self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = -1
+
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.REPEL:
                 self.features_instances_interaction = -1
+
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL:
                 self.__define_features_instances_interaction(different_collocations_interaction_value=0, identical_features_interaction_value=-1)
+
             elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL:
                 self.__define_features_instances_interaction(different_collocations_interaction_value=-1, identical_features_interaction_value=-1)
