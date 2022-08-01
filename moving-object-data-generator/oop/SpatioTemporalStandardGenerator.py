@@ -69,21 +69,20 @@ class SpatioTemporalStandardGenerator:
                 high=self.si.collocation_instances_counts[collocations_spatial_prevalence_flags] + 1
             )
 
-            # boolean vector which tells if the given co-locations instance occurs in the current time frame
-            collocations_instances_spatial_prevalent_flags = np.array([], dtype=bool)
+            # ---begin--- create boolean vector which tells if the given co-locations instance occurs in the current time frame
+            collocation_instances_counts_cumsum = np.cumsum(self.si.collocation_instances_counts)
 
-            # todo try to vectorize
-            # determine values of the 'collocations_instances_spatial_prevalent_flags' vector
-            for i_colloc in range(self.si.collocations_sum):
-                # choose indices of the instances of the 'i_colloc' co-location which actually create co-location in the current time frame
-                i_colloc_spatial_prevalent_instances_ids = np.random.choice(a=self.si.collocation_instances_counts[i_colloc], size=collocations_spatial_prevalent_instances_number[i_colloc], replace=False)
+            shuffled_values = np.repeat(
+                a=self.si.collocation_instances_counts - collocation_instances_counts_cumsum,
+                repeats=self.si.collocation_instances_counts
+            ) + np.arange(1, self.si.collocations_instances_sum + 1)
 
-                # create boolean vector which tells if the given instance of the 'i_colloc' co-location occurs in the current time frame
-                i_colloc_spatial_prevalent_instances_flags = np.zeros(shape=self.si.collocation_instances_counts[i_colloc], dtype=bool)
-                i_colloc_spatial_prevalent_instances_flags[i_colloc_spatial_prevalent_instances_ids] = True
+            ind_begin = np.concatenate(([0], collocation_instances_counts_cumsum[: -1]))
 
-                # append flags of the instances of the 'i_colloc' co-location
-                collocations_instances_spatial_prevalent_flags = np.concatenate((collocations_instances_spatial_prevalent_flags, i_colloc_spatial_prevalent_instances_flags))
+            [np.random.shuffle(shuffled_values[ind_begin[i]: collocation_instances_counts_cumsum[i]]) for i in range(self.si.collocations_sum)]
+
+            collocations_instances_spatial_prevalent_flags = shuffled_values <= np.repeat(a=collocations_spatial_prevalent_instances_number, repeats=self.si.collocation_instances_counts)
+            # ----end---- create boolean vector which tells if the given co-locations instance occurs in the current time frame
 
             # expand co-locations' instances' flags into features' instances' flags
             features_instances_spatial_prevalent_flags = np.repeat(
