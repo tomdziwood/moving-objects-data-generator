@@ -35,6 +35,7 @@ class BasicInitiation:
         self.collocation_lengths: np.ndarray = np.array([], dtype=np.int32)
         self.collocations_sum: int = 0
         self.collocation_instances_counts: np.ndarray = np.array([], dtype=np.int32)
+        self.collocations_instances_sum: int = 0
         self.collocation_features_sum: int = 0
         self.collocation_features_instances_counts: np.ndarray = np.array([], dtype=np.int32)
         self.collocation_features_instances_sum: int = 0
@@ -100,6 +101,10 @@ class BasicInitiation:
         self.collocation_instances_counts = np.random.poisson(lam=bp.lambda_2, size=self.collocations_sum)
         self.collocation_instances_counts[self.collocation_instances_counts == 0] = 1
         print("collocation_instances_counts=%s" % str(self.collocation_instances_counts))
+
+        # the total number of co-locations' instances
+        self.collocations_instances_sum = self.collocation_instances_counts.sum()
+        print("collocations_instances_sum=%s" % str(self.collocations_instances_sum))
 
         # determine the total number of features, which take part in co-locations
         self.collocation_features_sum = np.sum(self.base_collocation_lengths)
@@ -228,7 +233,7 @@ class BasicInitiation:
 
         # ---begin--- collocation instances global initiation
         # sum of all specified collocation global instances
-        self.collocations_instances_global_sum = self.collocation_instances_counts.sum() + self.collocation_noise_features_instances_sum + bp.ndfn
+        self.collocations_instances_global_sum = self.collocations_instances_sum + self.collocation_noise_features_instances_sum + bp.ndfn
         print("collocations_instances_global_sum=%d" % self.collocations_instances_global_sum)
 
         # save number of repeats of the consecutive co-locations instances global ids

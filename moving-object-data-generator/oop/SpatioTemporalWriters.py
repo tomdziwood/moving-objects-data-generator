@@ -119,6 +119,7 @@ def write_basic_initiation_values(f: TextIO, bi: BasicInitiation):
     f.write("# collocation_lengths:\t%s\n" % str(bi.collocation_lengths))
     f.write("# collocation_features_sum:\t%s\n" % str(bi.collocation_features_sum))
     f.write("# collocation_instances_counts:\t%s\n" % str(bi.collocation_instances_counts))
+    f.write("# collocations_instances_sum:\t%s\n" % str(bi.collocations_instances_sum))
     f.write("# collocation_features_instances_sum:\t%s\n" % str(bi.collocation_features_instances_sum))
     f.write("# collocation_features_instances_counts:\t%s\n" % str(bi.collocation_features_instances_counts))
 
@@ -210,6 +211,10 @@ class SpatioTemporalStandardWriter(SpatioTemporalWriter):
         # write basic statistics of created features
         self.f.write("# ---------- initiated values ----------\n")
         write_basic_initiation_values(self.f, si)
+        self.f.write("# persistent_collocations_sum:\t%s\n" % str(si.persistent_collocations_sum))
+        self.f.write("# persistent_collocations_ids:\t%s\n" % str(si.persistent_collocations_ids))
+        self.f.write("# transient_collocations_sum:\t%s\n" % str(si.transient_collocations_sum))
+        self.f.write("# transient_collocations_ids:\t%s\n" % str(si.transient_collocations_ids))
         self.f.write("#\n")
 
 

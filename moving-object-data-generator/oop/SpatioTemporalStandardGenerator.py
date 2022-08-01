@@ -69,19 +69,53 @@ class SpatioTemporalStandardGenerator:
                 high=self.si.collocation_instances_counts[collocations_spatial_prevalence_flags] + 1
             )
 
-            # todo
+            # boolean vector which tells if the given co-locations instance occurs in the current time frame
+            collocations_instances_spatial_prevalent_flags = np.array([], dtype=bool)
 
-            # # generate vector of time frame ids of current time frame
-            # time_frame_ids = np.full(shape=self.si.features_instances_sum, fill_value=time_frame, dtype=np.int32)
-            #
-            # # write data of all the features to the output file
-            # sts_writer.write(
-            #         time_frame_ids=time_frame_ids,
-            #         features_ids=self.si.features_ids,
-            #         features_instances_ids=self.si.features_instances_ids,
-            #         x=None,  # todo
-            #         y=None   # todo
-            # )
+            # todo try to vectorize
+            # determine values of the 'collocations_instances_spatial_prevalent_flags' vector
+            for i_colloc in range(self.si.collocations_sum):
+                # choose indices of the instances of the 'i_colloc' co-location which actually create co-location in the current time frame
+                i_colloc_spatial_prevalent_instances_ids = np.random.choice(a=self.si.collocation_instances_counts[i_colloc], size=collocations_spatial_prevalent_instances_number[i_colloc], replace=False)
+
+                # create boolean vector which tells if the given instance of the 'i_colloc' co-location occurs in the current time frame
+                i_colloc_spatial_prevalent_instances_flags = np.zeros(shape=self.si.collocation_instances_counts[i_colloc], dtype=bool)
+                i_colloc_spatial_prevalent_instances_flags[i_colloc_spatial_prevalent_instances_ids] = True
+
+                # append flags of the instances of the 'i_colloc' co-location
+                collocations_instances_spatial_prevalent_flags = np.concatenate((collocations_instances_spatial_prevalent_flags, i_colloc_spatial_prevalent_instances_flags))
+
+            # expand co-locations' instances' flags into features' instances' flags
+            features_instances_spatial_prevalent_flags = np.repeat(
+                a=collocations_instances_spatial_prevalent_flags,
+                repeats=self.si.collocations_instances_global_ids_repeats[:self.si.collocations_instances_sum]
+            )
+
+            # initialize features' instances' coordinates as if there were no co-locations' instances occurrences at all
+            features_instances_coor = np.random.uniform(high=self.si.area_in_cell_dim * self.sp.cell_size, size=(self.si.features_instances_sum, 2))
+
+            # initialize features' instances' coordinates as if there occurred every co-locations' instance
+            collocations_instances_coor_all_collocations_instances_occured = np.random.randint(low=self.si.area_in_cell_dim, size=(self.si.collocations_instances_global_sum, 2))
+            collocations_instances_coor_all_collocations_instances_occured *= self.sp.cell_size
+            collocations_instances_coor_all_collocations_instances_occured = collocations_instances_coor_all_collocations_instances_occured.astype(dtype=np.float64)
+            features_instances_coor_all_collocations_instances_occured = collocations_instances_coor_all_collocations_instances_occured[self.si.collocations_instances_global_ids]
+            features_instances_coor_all_collocations_instances_occured += np.random.uniform(high=self.sp.cell_size, size=features_instances_coor.shape)
+
+            # mix features' instances' coordinates according to the 'features_instances_spatial_prevalent_flags'
+            features_instances_coor[:self.si.collocation_features_instances_sum][features_instances_spatial_prevalent_flags] =\
+                features_instances_coor_all_collocations_instances_occured[:self.si.collocation_features_instances_sum][features_instances_spatial_prevalent_flags]
+
+            # generate vector of time frame ids of the current time frame
+            time_frame_ids = np.full(shape=self.si.features_instances_sum, fill_value=time_frame, dtype=np.int32)
+
+            # write data of all the features to the output file
+            sts_writer.write(
+                    time_frame_ids=time_frame_ids,
+                    features_ids=self.si.features_ids,
+                    features_instances_ids=self.si.features_instances_ids,
+                    x=features_instances_coor[:, 0],
+                    y=features_instances_coor[:, 1]
+            )
 
             # actualize the remaining number of the time frames when the given co-location pattern is spatial prevalent
             collocations_remaining_time_frames_numbers_of_spatial_prevalence -= collocations_spatial_prevalence_flags
@@ -91,21 +125,21 @@ class SpatioTemporalStandardGenerator:
 
 
 if __name__ == "__main__":
-    print("SpatioTemporalBasicGenerator main()")
+    print("SpatioTemporalStandardGenerator main()")
 
     sp = StandardParameters(
         area=1000,
         cell_size=5,
-        n_colloc=20,
+        n_colloc=2,
         lambda_1=3,
-        lambda_2=6,
-        m_clumpy=2,
-        m_overlap=2,
-        ncfr=0.5,
-        ncfn=0.5,
+        lambda_2=2,
+        m_clumpy=1,
+        m_overlap=1,
+        ncfr=0,
+        ncfn=0,
         ncf_proportional=False,
-        ndf=1,
-        ndfn=5,
+        ndf=0,
+        ndfn=0,
         random_seed=0,
         persistent_ratio=0.5,
         spatial_prevalence_threshold=0.5,
@@ -115,6 +149,6 @@ if __name__ == "__main__":
     stsg = SpatioTemporalStandardGenerator(sp=sp)
     stsg.generate(
         time_frames_number=10,
-        output_filename="SpatioTemporalBasicGenerator_output_file.txt",
+        output_filename="SpatioTemporalStandardGenerator_output_file.txt",
         output_filename_timestamp=False
     )
