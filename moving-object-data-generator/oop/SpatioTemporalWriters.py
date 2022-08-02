@@ -286,7 +286,7 @@ class SpatioTemporalCircularMotionApproachWriter(SpatioTemporalWriter):
 
         # write basic statistics of created features
         self.f.write("# ---------- initiated values ----------\n")
-        write_basic_initiation_values(self.f, cmai)  # todo
+        write_basic_initiation_values(self.f, cmai)
         self.f.write("#\n")
 
 

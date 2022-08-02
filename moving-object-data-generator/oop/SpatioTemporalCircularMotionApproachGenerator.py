@@ -69,27 +69,28 @@ if __name__ == "__main__":
     cmap = CircularMotionApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=3,
+        n_colloc=2,
         lambda_1=5,
-        lambda_2=5,
+        lambda_2=2,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0,
         ncfn=0,
         ncf_proportional=False,
         ndf=1,
-        ndfn=7,
+        ndfn=2,
         random_seed=0,
         circle_chain_size=5,
         omega_min=2 * np.pi / 200,
         omega_max=2 * np.pi / 50,
         circle_r_min=20.0,
-        circle_r_max=200.0
+        circle_r_max=200.0,
+        center_noise_displacement=5.0
     )
 
     stoag = SpatioTemporalCircularMotionApproachGenerator(cmap=cmap)
     stoag.generate(
-        time_frames_number=500,
+        time_frames_number=100,
         output_filename="SpatioTemporalCircularMotionApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )
