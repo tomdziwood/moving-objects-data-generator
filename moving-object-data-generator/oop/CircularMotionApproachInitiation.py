@@ -30,32 +30,38 @@ class CircularMotionApproachInitiation(BasicInitiation):
 
         # copy coordinates of features instances
         features_instances_start_coor = np.copy(spatial_basic_placement.features_instances_coor)
-        print(features_instances_start_coor)
 
-        # determine orbit centers of the co-locations' instances
-        collocations_instances_orbit_center = np.random.uniform(high=self.area_in_cell_dim * cmap.cell_size, size=(self.collocations_instances_global_sum, 2))
+        # draw orbit centers of the co-locations' instances
+        collocations_instances_orbit_center = np.random.uniform(high=self.area_in_cell_dim * cmap.cell_size, size=(cmap.circle_chain_size, self.collocations_instances_global_sum, 2))
 
         # determine orbit centers of the features which belong to the given co-location's instance
-        features_instances_orbit_center = np.repeat(a=collocations_instances_orbit_center, repeats=self.collocations_instances_global_ids_repeats, axis=0)
+        features_instances_orbit_center = np.repeat(a=collocations_instances_orbit_center, repeats=self.collocations_instances_global_ids_repeats, axis=1)
 
         # remember starting position of calculating orbital position
-        self.start_orbit_center_coor = features_instances_orbit_center
+        self.start_orbit_center_coor = features_instances_orbit_center[0]
 
-        # calculate coordinates difference between feature instance and its orbit center
-        coor_diff = features_instances_start_coor - features_instances_orbit_center
+        # prepare calculation of coordinates difference by concatenating orbit centers coordinates and features instances coordinates
+        before_coor_diff = np.append(arr=features_instances_orbit_center, values=features_instances_start_coor[None, :, :], axis=0)
+
+        # calculate coordinates difference between consecutive circular orbits - with np.diff
+        coor_diff = np.diff(a=before_coor_diff, axis=0)
 
         # calculate length of the orbit radius
         self.radius_length = np.sqrt(np.sum(a=coor_diff ** 2, axis=-1))
 
-        # calculate angular velocity based on the given linear velocity parameter value
-        self.angular_velocity = cmap.linear_velocity_mean / self.radius_length
+        # draw angular velocity values of the co-locations instances from uniform distribution according to boundaries values passed in parameters
+        collocations_instances_angular_velocity = np.random.uniform(low=cmap.omega_min, high=cmap.omega_max, size=(cmap.circle_chain_size, self.collocations_instances_global_sum))
+
+        # determine angular velocity values of the features which belong to the given co-location's instance
+        self.angular_velocity = np.repeat(a=collocations_instances_angular_velocity, repeats=self.collocations_instances_global_ids_repeats, axis=1)
 
         # determine direction of the rotation - features of the given co-location have the same direction
         angular_velocity_clockwise = np.repeat(
-            a=np.random.randint(2, size=self.collocations_instances_global_sum, dtype=bool),
-            repeats=self.collocations_instances_global_ids_repeats
+            a=np.random.randint(2, size=(cmap.circle_chain_size, self.collocations_instances_global_sum), dtype=bool),
+            repeats=self.collocations_instances_global_ids_repeats,
+            axis=1
         )
         self.angular_velocity[angular_velocity_clockwise] *= -1
 
-        # calculate angle value at the beginning
-        self.start_angle = np.arctan2(coor_diff[:, 1], coor_diff[:, 0])
+        # calculate angle value at the starting time point of every circular orbit
+        self.start_angle = np.arctan2(coor_diff[:, :, 1], coor_diff[:, :, 0])

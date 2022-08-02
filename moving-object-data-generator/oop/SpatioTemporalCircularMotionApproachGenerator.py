@@ -35,13 +35,16 @@ class SpatioTemporalCircularMotionApproachGenerator:
         for time_frame in range(0, time_frames_number):
             print("time_frame %d of %d" % (time_frame + 1, time_frames_number))
 
+            # start features instances coordinates at the center of first circular orbit in circles chain of the given feature instance
             instances_coor = np.copy(self.cmai.start_orbit_center_coor)
 
+            # calculate position determined by each of circular orbit - position calculated in reference system of the given circular orbit center
             x = self.cmai.radius_length * np.cos(self.cmai.angular_velocity * time_frame + self.cmai.start_angle)
             y = self.cmai.radius_length * np.sin(self.cmai.angular_velocity * time_frame + self.cmai.start_angle)
 
-            instances_coor[:, 0] += x
-            instances_coor[:, 1] += y
+            # calculate final coordinates by summing all circles coordinates along axis 'x' and 'y'
+            instances_coor[:, 0] += np.sum(a=x, axis=0)
+            instances_coor[:, 1] += np.sum(a=y, axis=0)
 
             # generate vector of time frame ids of starting time frame
             time_frame_ids = np.full(shape=self.cmai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
@@ -66,18 +69,20 @@ if __name__ == "__main__":
     cmap = CircularMotionApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=2,
-        lambda_1=4,
-        lambda_2=3,
-        m_clumpy=3,
-        m_overlap=2,
+        n_colloc=3,
+        lambda_1=5,
+        lambda_2=5,
+        m_clumpy=1,
+        m_overlap=1,
         ncfr=0,
         ncfn=0,
         ncf_proportional=False,
         ndf=0,
         ndfn=0,
         random_seed=0,
-        linear_velocity_mean=50
+        circle_chain_size=5,
+        omega_min=2 * np.pi / 200,
+        omega_max=2 * np.pi / 50
     )
 
     stoag = SpatioTemporalCircularMotionApproachGenerator(cmap=cmap)
