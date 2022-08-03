@@ -1,8 +1,8 @@
 import numpy as np
 
-from oop.BasicInitiation import BasicInitiation
-from oop.StandardParameters import StandardParameters
-from oop.TravelApproachParameters import TravelApproachParameters
+from algorithms.initiation.BasicInitiation import BasicInitiation
+from algorithms.parameters.StandardParameters import StandardParameters
+from algorithms.parameters.TravelApproachParameters import TravelApproachParameters
 
 
 class StandardInitiation(BasicInitiation):

@@ -1,9 +1,9 @@
 import numpy as np
 
-from oop.SpatialBasicPlacement import SpatialBasicPlacement
-from oop.SpatioTemporalWriters import SpatioTemporalBasicWriter
-from oop.BasicInitiation import BasicInitiation
-from oop.BasicParameters import BasicParameters
+from algorithms.utils.SpatialBasicPlacement import SpatialBasicPlacement
+from algorithms.utils.SpatioTemporalWriters import SpatioTemporalBasicWriter
+from algorithms.initiation.BasicInitiation import BasicInitiation
+from algorithms.parameters.BasicParameters import BasicParameters
 
 
 class SpatioTemporalBasicGenerator:
@@ -20,7 +20,7 @@ class SpatioTemporalBasicGenerator:
     def generate(
             self,
             time_frames_number: int = 10,
-            output_filename: str = "SpatioTemporalBasicGenerator_output_file.txt",
+            output_filename: str = "output\\SpatioTemporalBasicGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
         print("SpatioTemporalBasicGenerator.generate()")
 
@@ -78,6 +78,6 @@ if __name__ == "__main__":
     stbg = SpatioTemporalBasicGenerator(bp=bp)
     stbg.generate(
         time_frames_number=10,
-        output_filename="SpatioTemporalBasicGenerator_output_file.txt",
+        output_filename="output\\SpatioTemporalBasicGenerator_output_file.txt",
         output_filename_timestamp=False
     )

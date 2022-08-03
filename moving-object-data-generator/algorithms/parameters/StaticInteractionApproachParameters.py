@@ -1,7 +1,7 @@
 import numpy as np
 
-from oop.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
-from oop.BasicParameters import BasicParameters
+from algorithms.enums.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
+from algorithms.parameters.BasicParameters import BasicParameters
 
 
 class StaticInteractionApproachParameters(BasicParameters):

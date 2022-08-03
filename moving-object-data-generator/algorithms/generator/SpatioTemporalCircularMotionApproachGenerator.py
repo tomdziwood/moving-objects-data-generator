@@ -1,8 +1,8 @@
 import numpy as np
 
-from oop.CircularMotionApproachInitiation import CircularMotionApproachInitiation
-from oop.CircularMotionApproachParameters import CircularMotionApproachParameters
-from oop.SpatioTemporalWriters import SpatioTemporalCircularMotionApproachWriter
+from algorithms.initiation.CircularMotionApproachInitiation import CircularMotionApproachInitiation
+from algorithms.parameters.CircularMotionApproachParameters import CircularMotionApproachParameters
+from algorithms.utils.SpatioTemporalWriters import SpatioTemporalCircularMotionApproachWriter
 
 
 class SpatioTemporalCircularMotionApproachGenerator:
@@ -20,7 +20,7 @@ class SpatioTemporalCircularMotionApproachGenerator:
     def generate(
             self,
             time_frames_number: int = 10,
-            output_filename: str = "SpatioTemporalCircularMotionApproachGenerator_output_file.txt",
+            output_filename: str = "output\\SpatioTemporalCircularMotionApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
 
         print("SpatioTemporalCircularMotionApproachGenerator.generate()")
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     stoag = SpatioTemporalCircularMotionApproachGenerator(cmap=cmap)
     stoag.generate(
-        time_frames_number=100,
-        output_filename="SpatioTemporalCircularMotionApproachGenerator_output_file.txt",
+        time_frames_number=500,
+        output_filename="output\\SpatioTemporalCircularMotionApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )

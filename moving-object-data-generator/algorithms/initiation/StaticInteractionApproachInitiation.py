@@ -1,9 +1,9 @@
 import numpy as np
 
-from oop.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
-from oop.SpatialBasicPlacement import SpatialBasicPlacement
-from oop.BasicInitiation import BasicInitiation
-from oop.StaticInteractionApproachParameters import StaticInteractionApproachParameters
+from algorithms.enums.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
+from algorithms.utils.SpatialBasicPlacement import SpatialBasicPlacement
+from algorithms.initiation.BasicInitiation import BasicInitiation
+from algorithms.parameters.StaticInteractionApproachParameters import StaticInteractionApproachParameters
 
 
 class StaticInteractionApproachInitiation(BasicInitiation):

@@ -1,8 +1,8 @@
 import numpy as np
 
-from oop.BasicInitiation import BasicInitiation
-from oop.TravelApproachEnums import StepLengthMethod, StepAngleMethod
-from oop.TravelApproachParameters import TravelApproachParameters
+from algorithms.initiation.BasicInitiation import BasicInitiation
+from algorithms.enums.TravelApproachEnums import StepLengthMethod, StepAngleMethod
+from algorithms.parameters.TravelApproachParameters import TravelApproachParameters
 
 
 class TravelApproachInitiation(BasicInitiation):

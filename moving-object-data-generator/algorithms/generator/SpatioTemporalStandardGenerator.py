@@ -2,9 +2,9 @@ import math
 
 import numpy as np
 
-from oop.SpatioTemporalWriters import SpatioTemporalStandardWriter
-from oop.StandardInitiation import StandardInitiation
-from oop.StandardParameters import StandardParameters
+from algorithms.utils.SpatioTemporalWriters import SpatioTemporalStandardWriter
+from algorithms.initiation.StandardInitiation import StandardInitiation
+from algorithms.parameters.StandardParameters import StandardParameters
 
 
 class SpatioTemporalStandardGenerator:
@@ -22,7 +22,7 @@ class SpatioTemporalStandardGenerator:
     def generate(
             self,
             time_frames_number: int = 10,
-            output_filename: str = "SpatioTemporalStandardGenerator_output_file.txt",
+            output_filename: str = "output\\SpatioTemporalStandardGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
 
         print("SpatioTemporalStandardGenerator.generate()")
@@ -148,6 +148,6 @@ if __name__ == "__main__":
     stsg = SpatioTemporalStandardGenerator(sp=sp)
     stsg.generate(
         time_frames_number=10,
-        output_filename="SpatioTemporalStandardGenerator_output_file.txt",
+        output_filename="output\\SpatioTemporalStandardGenerator_output_file.txt",
         output_filename_timestamp=False
     )

@@ -1,10 +1,10 @@
 import numpy as np
 
-from oop.SpatialBasicPlacement import SpatialBasicPlacement
-from oop.SpatioTemporalWriters import SpatioTemporalTravelApproachWriter
-from oop.TravelApproachInitiation import TravelApproachInitiation
-from oop.TravelApproachEnums import StepLengthMethod, StepAngleMethod
-from oop.TravelApproachParameters import TravelApproachParameters
+from algorithms.utils.SpatialBasicPlacement import SpatialBasicPlacement
+from algorithms.utils.SpatioTemporalWriters import SpatioTemporalTravelApproachWriter
+from algorithms.initiation.TravelApproachInitiation import TravelApproachInitiation
+from algorithms.enums.TravelApproachEnums import StepLengthMethod, StepAngleMethod
+from algorithms.parameters.TravelApproachParameters import TravelApproachParameters
 
 
 class SpatioTemporalTravelApproachGenerator:
@@ -42,7 +42,7 @@ class SpatioTemporalTravelApproachGenerator:
     def generate(
             self,
             time_frames_number: int = 10,
-            output_filename: str = "SpatioTemporalTravelApproachGenerator_output_file.txt",
+            output_filename: str = "output\\SpatioTemporalTravelApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
         """
         Generate spatio-temporal data.
@@ -234,6 +234,6 @@ if __name__ == "__main__":
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
         time_frames_number=10,
-        output_filename="SpatioTemporalTravelApproachGenerator_output_file.txt",
+        output_filename="output\\SpatioTemporalTravelApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )

@@ -4,8 +4,8 @@ import numpy as np
 
 from timeit import default_timer as timer
 
-from oop.BasicInitiation import BasicInitiation
-from oop.BasicParameters import BasicParameters
+from algorithms.initiation.BasicInitiation import BasicInitiation
+from algorithms.parameters.BasicParameters import BasicParameters
 from scripts.iterative import SpatialBasicGenerator as isbg
 from scripts.vectorized import SpatialBasicGenerator as vsbg
 

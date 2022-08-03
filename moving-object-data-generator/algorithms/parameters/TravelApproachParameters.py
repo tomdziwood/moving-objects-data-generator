@@ -1,7 +1,7 @@
 import numpy as np
 
-from oop.BasicParameters import BasicParameters
-from oop.TravelApproachEnums import StepLengthMethod, StepAngleMethod
+from algorithms.parameters.BasicParameters import BasicParameters
+from algorithms.enums.TravelApproachEnums import StepLengthMethod, StepAngleMethod
 
 
 class TravelApproachParameters(BasicParameters):

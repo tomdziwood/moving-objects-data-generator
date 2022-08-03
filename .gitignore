@@ -137,9 +137,9 @@ dmypy.json
 moving-object-data-generator/performance/*.txt
 moving-object-data-generator/scripts/iterative/*.txt
 moving-object-data-generator/scripts/vectorized/*.txt
-moving-object-data-generator/oop/*.txt
+moving-object-data-generator/algorithms/generator/output/*.txt
 
 # Ignore visualization output files
-moving-object-data-generator/visualization/*.png
-moving-object-data-generator/visualization/*.svg
-moving-object-data-generator/visualization/*.gif
+moving-object-data-generator/visualization/output/*.png
+moving-object-data-generator/visualization/output/*.svg
+moving-object-data-generator/visualization/output/*.gif

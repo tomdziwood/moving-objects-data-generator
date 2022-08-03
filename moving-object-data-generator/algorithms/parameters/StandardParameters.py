@@ -1,4 +1,4 @@
-from oop.BasicParameters import BasicParameters
+from algorithms.parameters.BasicParameters import BasicParameters
 
 
 class StandardParameters(BasicParameters):

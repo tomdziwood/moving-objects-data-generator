@@ -1,6 +1,6 @@
 import numpy as np
 
-from oop.BasicInitiation import BasicInitiation
+from algorithms.initiation.BasicInitiation import BasicInitiation
 
 
 class SpatialBasicPlacement:

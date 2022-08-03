@@ -1,8 +1,8 @@
 import numpy as np
 
-from oop.CircularMotionApproachParameters import CircularMotionApproachParameters
-from oop.SpatialBasicPlacement import SpatialBasicPlacement
-from oop.BasicInitiation import BasicInitiation
+from algorithms.parameters.CircularMotionApproachParameters import CircularMotionApproachParameters
+from algorithms.utils.SpatialBasicPlacement import SpatialBasicPlacement
+from algorithms.initiation.BasicInitiation import BasicInitiation
 
 
 class CircularMotionApproachInitiation(BasicInitiation):

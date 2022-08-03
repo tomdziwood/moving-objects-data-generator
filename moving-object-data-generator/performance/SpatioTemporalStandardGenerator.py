@@ -1,7 +1,7 @@
 import numpy as np
 
-from oop.StandardInitiation import StandardInitiation
-from oop.StandardParameters import StandardParameters
+from algorithms.initiation.StandardInitiation import StandardInitiation
+from algorithms.parameters.StandardParameters import StandardParameters
 from performance.Utils import measure_time_execution_of_function
 
 

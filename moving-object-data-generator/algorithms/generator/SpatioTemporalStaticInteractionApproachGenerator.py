@@ -1,9 +1,9 @@
 import numpy as np
 
-from oop.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
-from oop.SpatioTemporalWriters import SpatioTemporalStaticInteractionApproachWriter
-from oop.StaticInteractionApproachInitiation import StaticInteractionApproachInitiation
-from oop.StaticInteractionApproachParameters import StaticInteractionApproachParameters
+from algorithms.enums.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
+from algorithms.utils.SpatioTemporalWriters import SpatioTemporalStaticInteractionApproachWriter
+from algorithms.initiation.StaticInteractionApproachInitiation import StaticInteractionApproachInitiation
+from algorithms.parameters.StaticInteractionApproachParameters import StaticInteractionApproachParameters
 
 
 def view_statistics_of_absolute_values(array, array_name):
@@ -25,7 +25,7 @@ class SpatioTemporalStaticInteractionApproachGenerator:
     def generate(
             self,
             time_frames_number: int = 10,
-            output_filename: str = "SpatioTemporalStaticInteractionApproachGenerator_output_file.txt",
+            output_filename: str = "output\\SpatioTemporalStaticInteractionApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
         print("SpatioTemporalStaticInteractionApproachGenerator.generate()")
 
@@ -221,6 +221,6 @@ if __name__ == "__main__":
     stsiag = SpatioTemporalStaticInteractionApproachGenerator(siap=siap)
     stsiag.generate(
         time_frames_number=500,
-        output_filename="SpatioTemporalStaticInteractionApproachGenerator_output_file.txt",
+        output_filename="output\\SpatioTemporalStaticInteractionApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )

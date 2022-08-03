@@ -3,12 +3,12 @@ from typing import TextIO
 import numpy as np
 from datetime import datetime
 
-from oop.BasicInitiation import BasicInitiation
-from oop.BasicParameters import BasicParameters
-from oop.CircularMotionApproachInitiation import CircularMotionApproachInitiation
-from oop.StandardInitiation import StandardInitiation
-from oop.StaticInteractionApproachInitiation import StaticInteractionApproachInitiation
-from oop.TravelApproachInitiation import TravelApproachInitiation
+from algorithms.initiation.BasicInitiation import BasicInitiation
+from algorithms.parameters.BasicParameters import BasicParameters
+from algorithms.initiation.CircularMotionApproachInitiation import CircularMotionApproachInitiation
+from algorithms.initiation.StandardInitiation import StandardInitiation
+from algorithms.initiation.StaticInteractionApproachInitiation import StaticInteractionApproachInitiation
+from algorithms.initiation.TravelApproachInitiation import TravelApproachInitiation
 
 
 class SpatioTemporalWriter:
