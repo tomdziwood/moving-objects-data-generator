@@ -113,13 +113,14 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
                 dist_center_abs = np.sqrt(np.sum(a=dist_center_diff ** 2, axis=-1))
 
                 # calculate absolute value of force from mass center
-                force_center_abs = np.divide(dist_center_abs - self.odap.faraway_limit, self.odap.faraway_limit, out=np.zeros_like(dist_center_abs), where=dist_center_abs > self.odap.faraway_limit)
+                force_center_abs = np.divide(dist_center_abs - self.odai.faraway_limit, self.odai.faraway_limit, out=np.zeros_like(dist_center_abs), where=dist_center_abs > self.odai.faraway_limit)
                 force_center_abs = force_center_abs ** 2 * self.odai.force_center_multiplier_constant
 
                 # calculate components of force from mass center
                 force_center = np.divide(force_center_abs, dist_center_abs, out=np.zeros_like(force_center_abs), where=dist_center_abs != 0)
                 force_center = force_center[:, None] * dist_center_diff
 
+                # modify the applied force to the given feature instance with force from mass center
                 force_resultant += force_center
                 # ----end---- force escaping objects to stay close to mass center within range of 'faraway_limit'
 

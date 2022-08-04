@@ -20,6 +20,7 @@ class OptimalDistanceApproachInitiation(BasicInitiation):
         self.velocity: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.time_interval: float = 1.0
         self.approx_step_time_interval: float = 1.0
+        self.faraway_limit: float = 1000.0 * np.sqrt(2) / 2
         self.spatial_basic_placement: SpatialBasicPlacement = SpatialBasicPlacement()
         self.common_collocation_instance_flag: np.ndarray = np.empty(shape=(0, 0), dtype=bool)
 
@@ -93,6 +94,9 @@ class OptimalDistanceApproachInitiation(BasicInitiation):
 
         # divide time interval of single time frame into steps of equal duration
         self.approx_step_time_interval = self.time_interval / odap.approx_steps_number
+
+        # define faraway limit
+        self.faraway_limit = odap.faraway_limit_ratio * odap.area
 
         # create boolean array, which tell if the given pair of features instances is located in the common co-location instance
         self.common_collocation_instance_flag = self.collocations_instances_global_ids[None, :] == self.collocations_instances_global_ids[:, None]

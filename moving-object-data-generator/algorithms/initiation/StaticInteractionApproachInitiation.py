@@ -15,9 +15,12 @@ class StaticInteractionApproachInitiation(BasicInitiation):
         self.mass: np.ndarray = np.array([], dtype=np.float64)
         self.mass_sum: float = 0.0
         self.center: np.ndarray = np.zeros(shape=(1, 2), dtype=np.float64)
+        self.force_multiplier_constant: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
+        self.force_center_multiplier_constant: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
         self.velocity: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.time_interval: float = 1.0
         self.approx_step_time_interval: float = 1.0
+        self.faraway_limit: float = 1000.0 * np.sqrt(2) / 2
         self.spatial_basic_placement: SpatialBasicPlacement = SpatialBasicPlacement()
         self.features_instances_interaction: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
 
@@ -71,6 +74,7 @@ class StaticInteractionApproachInitiation(BasicInitiation):
         # copy coordinates of features instances
         self.instances_coor = np.copy(self.spatial_basic_placement.features_instances_coor)
 
+        # create array of instances' mass
         if siap.mass_mode == MassMode.CONSTANT:
             # create array of instances' mass, all equal to the 'mass_mean' parameter value
             self.mass = np.full(shape=self.features_instances_sum, fill_value=siap.mass_mean, dtype=np.float64)
@@ -93,6 +97,13 @@ class StaticInteractionApproachInitiation(BasicInitiation):
         self.mass_sum = self.mass.sum()
         self.center = np.sum(a=self.instances_coor * self.mass[:, None], axis=0) / self.mass_sum
 
+        # calculate constant factor of force between each pair of instances, which depends on 'k_force' parameter and mass of the instances
+        self.force_multiplier_constant = siap.k_force * self.mass[:, None] * self.mass[None, :]
+
+        # calculate constant factor of force between mass center and each instance, which depends on 'k_force' parameter and mass of the instance and center's mass
+        self.force_center_multiplier_constant = siap.k_force * self.mass_sum * self.mass
+
+        # create array of instances' velocity
         if siap.velocity_mode == VelocityMode.CONSTANT:
             if siap.velocity_mean == 0.0:
                 # create array of instances velocity all equals to 0
@@ -110,37 +121,44 @@ class StaticInteractionApproachInitiation(BasicInitiation):
             self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
             self.velocity *= np.random.gamma(shape=siap.velocity_mean, scale=1.0, size=self.features_instances_sum)[:, None]
 
+        # limit initiated velocity across each dimension with 'velocity_limit' parameter value
+        self.velocity[self.velocity > siap.velocity_limit] = siap.velocity_limit
+        self.velocity[self.velocity < -siap.velocity_limit] = -siap.velocity_limit
+
         # define time interval between time frames
         self.time_interval = 1 / siap.time_unit
 
         # divide time interval of single time frame into steps of equal duration
         self.approx_step_time_interval = self.time_interval / siap.approx_steps_number
 
+        # define faraway limit
+        self.faraway_limit = siap.faraway_limit_ratio * siap.area
+
         # define `self.features_instances_interaction` matrix values
-        if self.static_interaction_approach_parameters.identical_features_interaction_mode is IdenticalFeaturesInteractionMode.ATTRACT:
-            if self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.ATTRACT:
+        if siap.identical_features_interaction_mode is IdenticalFeaturesInteractionMode.ATTRACT:
+            if siap.different_features_interaction_mode is DifferentFeaturesInteractionMode.ATTRACT:
                 self.features_instances_interaction = 1
 
-            elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.REPEL:
+            elif siap.different_features_interaction_mode is DifferentFeaturesInteractionMode.REPEL:
                 self.features_instances_interaction = -np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
                 self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = 1
 
-            elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL:
+            elif siap.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL:
                 self.__define_features_instances_interaction(different_collocations_interaction_value=0, identical_features_interaction_value=1)
 
-            elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL:
+            elif siap.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL:
                 self.__define_features_instances_interaction(different_collocations_interaction_value=-1, identical_features_interaction_value=1)
 
-        elif self.static_interaction_approach_parameters.identical_features_interaction_mode is IdenticalFeaturesInteractionMode.REPEL:
-            if self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.ATTRACT:
+        elif siap.identical_features_interaction_mode is IdenticalFeaturesInteractionMode.REPEL:
+            if siap.different_features_interaction_mode is DifferentFeaturesInteractionMode.ATTRACT:
                 self.features_instances_interaction = np.ones(shape=(self.features_instances_sum, self.features_instances_sum), dtype=np.int32)
                 self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = -1
 
-            elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.REPEL:
+            elif siap.different_features_interaction_mode is DifferentFeaturesInteractionMode.REPEL:
                 self.features_instances_interaction = -1
 
-            elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL:
+            elif siap.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_NEUTRAL:
                 self.__define_features_instances_interaction(different_collocations_interaction_value=0, identical_features_interaction_value=-1)
 
-            elif self.static_interaction_approach_parameters.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL:
+            elif siap.different_features_interaction_mode is DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL:
                 self.__define_features_instances_interaction(different_collocations_interaction_value=-1, identical_features_interaction_value=-1)
