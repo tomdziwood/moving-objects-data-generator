@@ -16,6 +16,7 @@ class OptimalDistanceApproachInitiation(BasicInitiation):
         self.mass_sum: float = 0.0
         self.center: np.ndarray = np.zeros(shape=(1, 2), dtype=np.float64)
         self.force_multiplier_constant: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
+        self.force_center_multiplier_constant: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
         self.velocity: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.time_interval: float = 1.0
         self.approx_step_time_interval: float = 1.0
@@ -62,6 +63,9 @@ class OptimalDistanceApproachInitiation(BasicInitiation):
         # calculate constant factor of force between each pair of instances, which depends on 'k_force' parameter and mass of the instances
         self.force_multiplier_constant = odap.k_force * self.mass[:, None] * self.mass[None, :]
 
+        # calculate constant factor of force between mass center and each instance, which depends on 'k_force' parameter and mass of the instance and center's mass
+        self.force_center_multiplier_constant = odap.k_force * self.mass_sum * self.mass
+
         # create array of instances' velocity
         if odap.velocity_mode == VelocityMode.CONSTANT:
             if odap.velocity_mean == 0.0:
@@ -79,6 +83,10 @@ class OptimalDistanceApproachInitiation(BasicInitiation):
             velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_instances_sum)
             self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
             self.velocity *= np.random.gamma(shape=odap.velocity_mean, scale=1.0, size=self.features_instances_sum)[:, None]
+
+        # limit initiated velocity across each dimension with 'velocity_limit' parameter value
+        self.velocity[self.velocity > odap.velocity_limit] = odap.velocity_limit
+        self.velocity[self.velocity < -odap.velocity_limit] = -odap.velocity_limit
 
         # define time interval between time frames
         self.time_interval = 1 / odap.time_unit

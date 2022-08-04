@@ -12,6 +12,7 @@ class OptimalDistanceApproachParameters(BasicParameters):
             k_optimal_distance: float = 1.0,
             k_force: float = 1.0,
             force_limit: float = 5.0,
+            velocity_limit: float = 5.0,
             mass_mode: MassMode = MassMode.CONSTANT,
             mass_mean: float = 1.0,
             mass_normal_std_ratio: float = 1 / 5,
@@ -40,7 +41,11 @@ class OptimalDistanceApproachParameters(BasicParameters):
 
         # check 'force_limit' value
         if force_limit <= 0.0:
-            force_limit = np.inf
+            force_limit = 5.0
+
+        # check 'velocity_limit' value
+        if velocity_limit <= 0.0:
+            velocity_limit = 5.0
 
         # check 'mass_mean' value
         if mass_mean <= 0.0:
@@ -63,6 +68,7 @@ class OptimalDistanceApproachParameters(BasicParameters):
         self.k_optimal_distance = k_optimal_distance
         self.k_force = k_force
         self.force_limit = force_limit
+        self.velocity_limit = velocity_limit
         self.mass_mode = mass_mode
         self.mass_mean = mass_mean
         self.mass_normal_std_ratio = mass_normal_std_ratio

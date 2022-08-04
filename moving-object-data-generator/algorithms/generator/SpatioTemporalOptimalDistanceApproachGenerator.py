@@ -114,7 +114,7 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
 
                 # calculate absolute value of force from mass center
                 force_center_abs = np.divide(dist_center_abs - self.odap.faraway_limit, self.odap.faraway_limit, out=np.zeros_like(dist_center_abs), where=dist_center_abs > self.odap.faraway_limit)
-                force_center_abs = force_center_abs ** 2 * self.odap.k_force * self.odai.mass_sum * self.odai.mass
+                force_center_abs = force_center_abs ** 2 * self.odai.force_center_multiplier_constant
 
                 # calculate components of force from mass center
                 force_center = np.divide(force_center_abs, dist_center_abs, out=np.zeros_like(force_center_abs), where=dist_center_abs != 0)
@@ -129,11 +129,23 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
                 # calculate change of velocity
                 velocity_delta = acceleration * self.odai.approx_step_time_interval
 
+                # calculate velocity of instances at the end of time interval
+                velocity_end = velocity + velocity_delta
+
+                # limit velocity according to the 'velocity_limit' parameter value
+                velocity_limited = np.copy(velocity_end)
+                velocity_limited[velocity_limited > self.odap.velocity_limit] = self.odap.velocity_limit
+                velocity_limited[velocity_limited < -self.odap.velocity_limit] = -self.odap.velocity_limit
+
+                # calculate time of achieving limited velocity
+                time_of_velocity_limit_achieving = np.divide(self.odai.approx_step_time_interval * (velocity_limited - velocity), velocity_delta, out=np.zeros_like(velocity_delta), where=velocity_delta != 0)
+
                 # calculate distance change of instances
                 instances_coor_delta = self.odai.approx_step_time_interval * (velocity + velocity_delta / 2)
+                instances_coor_delta -= (self.odai.approx_step_time_interval - time_of_velocity_limit_achieving) * (velocity_end - velocity_limited) / 2
 
-                # calculate velocity of instances
-                velocity += velocity_delta
+                # remember velocity of instances at the end of time interval
+                velocity = velocity_limited
 
                 # calculate location of instances in next time_frame
                 instances_coor += instances_coor_delta
@@ -162,20 +174,21 @@ if __name__ == "__main__":
         cell_size=5,
         n_colloc=2,
         lambda_1=5,
-        lambda_2=1,
+        lambda_2=3,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0,
-        ncfn=0,
+        ncfr=0.5,
+        ncfn=0.3,
         ncf_proportional=False,
-        ndf=1,
-        ndfn=5,
+        ndf=2,
+        ndfn=10,
         random_seed=0,
         time_unit=1,
-        approx_steps_number=1,
+        approx_steps_number=10,
         k_optimal_distance=10.0,
         k_force=1.0,
         force_limit=5.0,
+        velocity_limit=10.0,
         mass_mode=MassMode.CONSTANT,
         mass_mean=1.0,
         mass_normal_std_ratio=1 / 5,
@@ -186,7 +199,7 @@ if __name__ == "__main__":
 
     stodag = SpatioTemporalOptimalDistanceApproachGenerator(odap=odap)
     stodag.generate(
-        time_frames_number=100,
+        time_frames_number=500,
         output_filename="output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )
