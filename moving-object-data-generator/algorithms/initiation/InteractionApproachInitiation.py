@@ -16,7 +16,7 @@ class InteractionApproachInitiation(BasicInitiation):
         self.mass_sum: float = 0.0
         self.center: np.ndarray = np.zeros(shape=(1, 2), dtype=np.float64)
         self.force_multiplier_constant: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
-        self.force_center_multiplier_constant: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
+        self.force_center_multiplier_constant: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.velocity: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
         self.time_interval: float = 1.0
         self.approx_step_time_interval: float = 1.0

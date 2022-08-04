@@ -60,7 +60,7 @@ class SpatioTemporalInteractionApproachGenerator:
                 # print("\tapprox_step %d of %d" % (approx_step + 1, self.iap.approx_steps_number))
 
                 # calculate coordinates difference of each pair of instances
-                coor_diff = instances_coor[None, :, :] - instances_coor[:, None, :]
+                coor_diff = instances_coor[:, None, :] - instances_coor[None, :, :]
 
                 # translate coordinates difference into distance unit
                 coor_diff /= self.iap.distance_unit
@@ -78,12 +78,12 @@ class SpatioTemporalInteractionApproachGenerator:
                 force_abs *= self.iai.features_instances_interaction
 
                 # calculate components of force between each pair of instances
-                force_div = np.divide(force_abs, dist, out=np.zeros_like(force_abs), where=dist != 0)
+                force_div = np.divide(force_abs, dist, out=np.zeros_like(dist), where=dist != 0)
                 force = force_div[:, :, None] * coor_diff
                 # force = (force_abs / dist)[:, :, None] * coor_diff
 
                 # calculate resultant force for each instance
-                force_resultant = np.sum(a=force, axis=1)
+                force_resultant = np.sum(a=force, axis=0)
 
                 # ---begin--- limit resultant forces which are greater than given 'force_limit' parameter value
                 # calculate absolute value of resultant force for each instance
@@ -165,9 +165,9 @@ if __name__ == "__main__":
     iap = InteractionApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=2,
+        n_colloc=5,
         lambda_1=4,
-        lambda_2=5,
+        lambda_2=50,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0.5,
@@ -178,7 +178,7 @@ if __name__ == "__main__":
         random_seed=0,
         time_unit=1,
         distance_unit=1.0,
-        approx_steps_number=10,
+        approx_steps_number=1,
         k_force=10,
         force_limit=20.0,
         velocity_limit=20.0,
@@ -194,7 +194,7 @@ if __name__ == "__main__":
 
     stiag = SpatioTemporalInteractionApproachGenerator(iap=iap)
     stiag.generate(
-        time_frames_number=500,
+        time_frames_number=10,
         output_filename="output\\SpatioTemporalInteractionApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )
