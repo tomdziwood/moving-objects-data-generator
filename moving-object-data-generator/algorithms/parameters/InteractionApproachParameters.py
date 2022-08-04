@@ -1,10 +1,10 @@
 import numpy as np
 
-from algorithms.enums.StaticInteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
+from algorithms.enums.InteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
 from algorithms.parameters.BasicParameters import BasicParameters
 
 
-class StaticInteractionApproachParameters(BasicParameters):
+class InteractionApproachParameters(BasicParameters):
     def __init__(
             self,
             time_unit: float = 1.0,
