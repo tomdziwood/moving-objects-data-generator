@@ -82,12 +82,12 @@ class SpatioTemporalTravelApproachGenerator:
             time_frame_ids=time_frame_ids,
             features_ids=self.tai.features_ids,
             features_instances_ids=self.tai.features_instances_ids,
-            x=sbp.features_instances_coor[:, 0],
-            y=sbp.features_instances_coor[:, 1]
+            x=self.tai.spatial_standard_placement.features_instances_coor[:, 0],
+            y=self.tai.spatial_standard_placement.features_instances_coor[:, 1],
         )
 
         # copy coordinates of features instances
-        instances_coor = np.copy(sbp.features_instances_coor)
+        instances_coor = np.copy(self.tai.spatial_standard_placement.features_instances_coor)
 
         # generate data for each time frame
         for time_frame in range(1, time_frames_number):
@@ -209,17 +209,19 @@ if __name__ == "__main__":
     tap = TravelApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=3,
+        n_colloc=2,
         lambda_1=5,
-        lambda_2=20,
+        lambda_2=10,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0,
         ncfn=0,
         ncf_proportional=False,
-        ndf=3,
-        ndfn=30,
+        ndf=0,
+        ndfn=0,
         random_seed=0,
+        spatial_prevalent_ratio=1.0,
+        spatial_prevalence_threshold=0.5,
         step_length_mean=10.0,
         step_length_method=StepLengthMethod.UNIFORM,
         step_length_uniform_low_to_mean_ratio=1,
@@ -233,7 +235,7 @@ if __name__ == "__main__":
 
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
-        time_frames_number=10,
+        time_frames_number=100,
         output_filename="output\\SpatioTemporalTravelApproachGenerator_output_file.txt",
-        output_filename_timestamp=False
+        output_filename_timestamp=True
     )

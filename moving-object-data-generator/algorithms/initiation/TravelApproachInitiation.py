@@ -2,10 +2,11 @@ import numpy as np
 
 from algorithms.initiation.BasicInitiation import BasicInitiation
 from algorithms.enums.TravelApproachEnums import StepLengthMethod, StepAngleMethod
+from algorithms.initiation.StandardTimeFrameInitiation import StandardTimeFrameInitiation
 from algorithms.parameters.TravelApproachParameters import TravelApproachParameters
 
 
-class TravelApproachInitiation(BasicInitiation):
+class TravelApproachInitiation(StandardTimeFrameInitiation):
     """
     The class of a `SpatioTemporalTravelApproachGenerator` initiation. Object of this class stores all initial data, which is required to generate spatio-temporal data
     in each time frame.
@@ -85,8 +86,10 @@ class TravelApproachInitiation(BasicInitiation):
             Its attributes will be used to initialize required data.
         """
 
-        super().initiate(bp=tap)
+        # perform the initiation of the super class
+        super().initiate(stfp=tap)
 
+        # store parameters of the initiation
         self.travel_approach_parameters = tap
 
         # set destination point of every feature instance

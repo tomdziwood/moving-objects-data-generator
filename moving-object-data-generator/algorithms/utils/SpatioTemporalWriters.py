@@ -325,9 +325,11 @@ class SpatioTemporalOptimalDistanceApproachWriter(SpatioTemporalWriter):
         # write basic statistics of created features
         self.f.write("# ---------- initiated values ----------\n")
         write_basic_initiation_values(self.f, odai)
+        self.f.write("# mass_sum:\t%s\n" % str(iai.mass_sum))
         self.f.write("# center:\t%s\n" % str(odai.center))
         self.f.write("# time_interval:\t%s\n" % str(odai.time_interval))
         self.f.write("# approx_step_time_interval:\t%s\n" % str(odai.approx_step_time_interval))
+        self.f.write("# faraway_limit:\t%s\n" % str(iai.faraway_limit))
         self.f.write("#\n")
 
 

@@ -1,10 +1,10 @@
 import numpy as np
 
-from algorithms.parameters.BasicParameters import BasicParameters
 from algorithms.enums.TravelApproachEnums import StepLengthMethod, StepAngleMethod
+from algorithms.parameters.StandardTimeFrameParameters import StandardTimeFrameParameters
 
 
-class TravelApproachParameters(BasicParameters):
+class TravelApproachParameters(StandardTimeFrameParameters):
     """
     The class represents set of parameters used by the `SpatioTemporalTravelApproachGenerator` class of a spatio-temporal data generator.
     """
@@ -72,7 +72,7 @@ class TravelApproachParameters(BasicParameters):
             then new destination points will be defined.
 
         kwargs
-            Other parameters passed to super constructor of derived class `BasicParameters`.
+            Other parameters passed to super constructor of derived class `StandardTimeFrameParameters`.
         """
 
         super().__init__(**kwargs)

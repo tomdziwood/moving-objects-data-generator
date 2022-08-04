@@ -2,7 +2,6 @@ import numpy as np
 
 from algorithms.initiation.BasicInitiation import BasicInitiation
 from algorithms.parameters.StandardParameters import StandardParameters
-from algorithms.parameters.TravelApproachParameters import TravelApproachParameters
 
 
 class StandardInitiation(BasicInitiation):
@@ -32,7 +31,7 @@ class StandardInitiation(BasicInitiation):
 
         Parameters
         ----------
-        sp: TravelApproachParameters
+        sp: StandardParameters
             The object of class `StandardParameters`, which holds all the required parameters of the `SpatioTemporalStandardGenerator` generator.
             Its attributes will be used to initialize required data.
         """
