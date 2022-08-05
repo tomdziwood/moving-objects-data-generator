@@ -213,8 +213,8 @@ if __name__ == "__main__":
         ndf=0,
         ndfn=0,
         random_seed=0,
-        spatial_prevalent_ratio=1.0,
-        spatial_prevalence_threshold=1.0,
+        spatial_prevalent_ratio=0.7,
+        spatial_prevalence_threshold=0.9,
         step_length_mean=10.0,
         step_length_method=StepLengthMethod.UNIFORM,
         step_length_uniform_low_to_mean_ratio=1,
@@ -228,7 +228,7 @@ if __name__ == "__main__":
 
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
-        time_frames_number=50,
+        time_frames_number=500,
         output_filename="output\\SpatioTemporalTravelApproachGenerator_output_file.txt",
-        output_filename_timestamp=True
+        output_filename_timestamp=False
     )

@@ -59,8 +59,11 @@ class InteractionApproachInitiation(StandardTimeFrameInitiation):
         self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = identical_features_interaction_value
 
     def initiate(self, iap: InteractionApproachParameters = InteractionApproachParameters()):
+
+        # perform the initiation of the super class
         super().initiate(stfp=iap)
 
+        # store parameters of the initiation
         self.interaction_approach_parameters = iap
 
         # copy coordinates of features instances

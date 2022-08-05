@@ -7,7 +7,7 @@ from algorithms.utils.SpatialStandardPlacement import SpatialStandardPlacement
 
 class StandardTimeFrameInitiation(BasicInitiation):
     """
-    The class of an initiation of many generator types. Object of this class stores all initial data, which is required to begin the spatio-temporal data generating proces.
+    The class of an initiation of many generator types. Object of this class stores all initial data, which is required to begin the spatio-temporal data generating process.
     """
 
     def __init__(self):
@@ -26,13 +26,13 @@ class StandardTimeFrameInitiation(BasicInitiation):
 
     def initiate(self, stfp: StandardTimeFrameParameters = StandardTimeFrameParameters()):
         """
-        Initiate required data to begin the spatio-temporal data generating proces.
+        Initiate required data to begin the spatio-temporal data generating process.
 
         Parameters
         ----------
         stfp: StandardTimeFrameParameters
             The object of class `StandardTimeFrameParameters`, which holds all the required parameters of the initiation.
-            Its attributes will be used to start the spatio-temporal data generating proces.
+            Its attributes will be used to start the spatio-temporal data generating process.
         """
 
         # perform the initiation of the super class
@@ -58,6 +58,32 @@ class StandardTimeFrameInitiation(BasicInitiation):
         self.collocations_spatial_prevalence_flags = np.zeros(shape=self.collocations_sum, dtype=bool)
         self.collocations_spatial_prevalence_flags[self.spatial_prevalent_collocations_ids] = True
 
+        # create class object, which holds all data of the objects placement
         self.spatial_standard_placement = SpatialStandardPlacement(bi=self, collocations_instances_number_spatial_prevalence_threshold=self.collocations_instances_number_spatial_prevalence_threshold)
 
+        # perform placement of all the features
         self.spatial_standard_placement.place(collocations_spatial_prevalence_flags=self.collocations_spatial_prevalence_flags)
+
+        # ---begin--- reindex global ids of co-locations' instances
+        print("---begin--- reindex global ids of co-locations' instances")
+
+        # create boolean vector which tells if the given co-locations instance do not need to be expanded
+        collocations_instances_not_expanded_flag = np.concatenate((self.spatial_standard_placement.collocations_instances_spatial_prevalent_flags, np.ones(shape=self.collocation_noise_features_instances_sum + stfp.ndfn, dtype=bool)))
+
+        # create array which contains repeats of expanding process
+        expand_repeats = np.copy(self.collocations_instances_global_ids_repeats)
+        expand_repeats[collocations_instances_not_expanded_flag] = 1
+
+        # expand co-locations' instances' global ids repeats with correct values
+        self.collocations_instances_global_ids_repeats[np.logical_not(collocations_instances_not_expanded_flag)] = 1
+        self.collocations_instances_global_ids_repeats = np.repeat(a=self.collocations_instances_global_ids_repeats, repeats=expand_repeats)
+
+        # recalculate sum of all specified collocation global instances
+        self.collocations_instances_global_sum = self.collocations_instances_global_ids_repeats.size
+        print("collocations_instances_global_sum=%d" % self.collocations_instances_global_sum)
+
+        # prepare again array of co-locations instances global ids to which features belong
+        self.collocations_instances_global_ids = np.repeat(a=np.arange(self.collocations_instances_global_sum), repeats=self.collocations_instances_global_ids_repeats)
+
+        print("----end---- reindex global ids of co-locations' instances")
+        # ----end---- reindex global ids of co-locations' instances

@@ -1,11 +1,10 @@
 import numpy as np
 
+from algorithms.initiation.StandardTimeFrameInitiation import StandardTimeFrameInitiation
 from algorithms.parameters.CircularMotionApproachParameters import CircularMotionApproachParameters
-from algorithms.utils.SpatialBasicPlacement import SpatialBasicPlacement
-from algorithms.initiation.BasicInitiation import BasicInitiation
 
 
-class CircularMotionApproachInitiation(BasicInitiation):
+class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
     def __init__(self):
 
         super().__init__()
@@ -19,19 +18,13 @@ class CircularMotionApproachInitiation(BasicInitiation):
     def initiate(self, cmap: CircularMotionApproachParameters = CircularMotionApproachParameters()):
 
         # perform the initiation of the super class
-        super().initiate(bp=cmap)
+        super().initiate(stfp=cmap)
 
         # store parameters of the initiation
         self.circular_motion_approach_parameters = cmap
 
-        # create class object, which holds all data of the objects starting placement
-        spatial_basic_placement = SpatialBasicPlacement()
-
-        # place all objects at starting position
-        spatial_basic_placement.place(bi=self)
-
         # copy coordinates of features instances
-        features_instances_start_coor = np.copy(spatial_basic_placement.features_instances_coor)
+        features_instances_start_coor = np.copy(self.spatial_standard_placement.features_instances_coor)
 
         # calculate mean position of each co-location's instance
         slice_ind = np.concatenate(([0], self.collocations_instances_global_ids_repeats.cumsum()[:-1]))

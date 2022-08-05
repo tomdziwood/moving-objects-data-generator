@@ -162,7 +162,7 @@ def write_standard_time_frame_initiation_values(f: TextIO, stfi: StandardTimeFra
         The output file of spatio-temporal data.
 
     stfi : StandardTimeFrameInitiation
-        The object of a `StandardTimeFrameInitiation` class, which stores all initial data, which is required to begin the spatio-temporal data generating proces.
+        The object of a `StandardTimeFrameInitiation` class, which stores all initial data, which is required to begin the spatio-temporal data generating process.
     """
 
     f.write("# collocations_instances_number_spatial_prevalence_threshold:\t%s\n" % str(stfi.collocations_instances_number_spatial_prevalence_threshold))

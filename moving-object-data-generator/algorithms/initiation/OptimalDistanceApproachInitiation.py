@@ -23,8 +23,11 @@ class OptimalDistanceApproachInitiation(StandardTimeFrameInitiation):
         self.common_collocation_instance_flag: np.ndarray = np.empty(shape=(0, 0), dtype=bool)
 
     def initiate(self, odap: OptimalDistanceApproachParameters = OptimalDistanceApproachParameters()):
+
+        # perform the initiation of the super class
         super().initiate(stfp=odap)
 
+        # store parameters of the initiation
         self.optimal_distance_approach_parameters = odap
 
         # copy coordinates of features instances

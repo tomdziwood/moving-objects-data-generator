@@ -1,9 +1,9 @@
 import numpy as np
 
-from algorithms.parameters.BasicParameters import BasicParameters
+from algorithms.parameters.StandardTimeFrameParameters import StandardTimeFrameParameters
 
 
-class CircularMotionApproachParameters(BasicParameters):
+class CircularMotionApproachParameters(StandardTimeFrameParameters):
     def __init__(
             self,
             circle_chain_size: int = 2,

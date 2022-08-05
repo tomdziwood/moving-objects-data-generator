@@ -10,6 +10,7 @@ class SpatialStandardPlacement:
 
         self.bi: BasicInitiation = bi
         self.collocations_instances_number_spatial_prevalence_threshold: np.ndarray = collocations_instances_number_spatial_prevalence_threshold
+        self.collocations_instances_spatial_prevalent_flags: np.ndarray = np.array([], dtype=bool)
         self.features_instances_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
 
     def place(self, collocations_spatial_prevalence_flags):
@@ -40,12 +41,12 @@ class SpatialStandardPlacement:
 
         [np.random.shuffle(shuffled_values[ind_begin[i]: collocation_instances_counts_cumsum[i]]) for i in range(self.bi.collocations_sum)]
 
-        collocations_instances_spatial_prevalent_flags = shuffled_values <= np.repeat(a=collocations_spatial_prevalent_instances_number, repeats=self.bi.collocation_instances_counts)
+        self.collocations_instances_spatial_prevalent_flags = shuffled_values <= np.repeat(a=collocations_spatial_prevalent_instances_number, repeats=self.bi.collocation_instances_counts)
         # ----end---- create boolean vector which tells if the given co-locations instance occurs in the current time frame
 
         # expand co-locations' instances' flags into features' instances' flags
         features_instances_spatial_prevalent_flags = np.repeat(
-            a=collocations_instances_spatial_prevalent_flags,
+            a=self.collocations_instances_spatial_prevalent_flags,
             repeats=self.bi.collocations_instances_global_ids_repeats[:self.bi.collocations_instances_sum]
         )
 
