@@ -1,6 +1,5 @@
 import numpy as np
 
-from algorithms.utils.SpatialBasicPlacement import SpatialBasicPlacement
 from algorithms.utils.SpatioTemporalWriters import SpatioTemporalTravelApproachWriter
 from algorithms.initiation.TravelApproachInitiation import TravelApproachInitiation
 from algorithms.enums.TravelApproachEnums import StepLengthMethod, StepAngleMethod
@@ -67,12 +66,6 @@ class SpatioTemporalTravelApproachGenerator:
 
         # write comment to output file about chosen configuration
         stta_writer.write_comment(tai=self.tai)
-
-        # create class object, which holds all data of the objects placement
-        sbp = SpatialBasicPlacement()
-
-        # place all objects at starting position
-        sbp.place(bi=self.tai)
 
         # generate vector of time frame ids of starting time frame
         time_frame_ids = np.full(shape=self.tai.features_instances_sum, fill_value=0, dtype=np.int32)
@@ -211,8 +204,8 @@ if __name__ == "__main__":
         cell_size=5,
         n_colloc=2,
         lambda_1=5,
-        lambda_2=10,
-        m_clumpy=1,
+        lambda_2=5,
+        m_clumpy=3,
         m_overlap=1,
         ncfr=0,
         ncfn=0,
@@ -221,7 +214,7 @@ if __name__ == "__main__":
         ndfn=0,
         random_seed=0,
         spatial_prevalent_ratio=1.0,
-        spatial_prevalence_threshold=0.5,
+        spatial_prevalence_threshold=1.0,
         step_length_mean=10.0,
         step_length_method=StepLengthMethod.UNIFORM,
         step_length_uniform_low_to_mean_ratio=1,
@@ -235,7 +228,7 @@ if __name__ == "__main__":
 
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
-        time_frames_number=100,
+        time_frames_number=50,
         output_filename="output\\SpatioTemporalTravelApproachGenerator_output_file.txt",
         output_filename_timestamp=True
     )

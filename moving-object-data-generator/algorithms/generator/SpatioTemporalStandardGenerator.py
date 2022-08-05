@@ -38,7 +38,7 @@ class SpatioTemporalStandardGenerator:
         ssp = SpatialStandardPlacement(bi=self.si, collocations_instances_number_spatial_prevalence_threshold=self.si.collocations_instances_number_spatial_prevalence_threshold)
 
         # calculate the minimal number of time frames which makes a co-location becomes persistent
-        time_frames_threshold = math.ceil(self.sp.time_prevalence_threshold * time_frames_number)
+        time_frames_threshold = np.ceil(self.sp.time_prevalence_threshold * time_frames_number).astype(np.int32)
 
         # determine the number of time frames when the given co-location pattern is spatial prevalent
         collocations_time_frames_numbers_of_spatial_prevalence = np.zeros(shape=self.si.collocations_sum, dtype=np.int32)
@@ -86,25 +86,25 @@ if __name__ == "__main__":
     sp = StandardParameters(
         area=1000,
         cell_size=5,
-        n_colloc=4,
+        n_colloc=1,
         lambda_1=3,
-        lambda_2=100,
-        m_clumpy=1,
+        lambda_2=5,
+        m_clumpy=3,
         m_overlap=1,
-        ncfr=0.5,
-        ncfn=0.3,
+        ncfr=0,
+        ncfn=0,
         ncf_proportional=False,
         ndf=1,
         ndfn=5,
-        random_seed=0,
-        persistent_ratio=0.6,
+        random_seed=4,
+        persistent_ratio=1.0,
         spatial_prevalence_threshold=1.0,
-        time_prevalence_threshold=0.7
+        time_prevalence_threshold=1.0
     )
 
     stsg = SpatioTemporalStandardGenerator(sp=sp)
     stsg.generate(
         time_frames_number=10,
         output_filename="output\\SpatioTemporalStandardGenerator_output_file.txt",
-        output_filename_timestamp=False
+        output_filename_timestamp=True
     )

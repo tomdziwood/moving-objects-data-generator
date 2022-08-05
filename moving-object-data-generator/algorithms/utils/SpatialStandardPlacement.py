@@ -52,12 +52,12 @@ class SpatialStandardPlacement:
         # initialize features' instances' coordinates as if there were no co-locations' instances occurrences at all
         self.features_instances_coor = np.random.uniform(high=self.bi.area_in_cell_dim * bp.cell_size, size=(self.bi.features_instances_sum, 2))
 
-        # initialize features' instances' coordinates as if there occurred every co-locations' instance
-        collocations_instances_coor_all_collocations_instances_occured = np.random.randint(low=self.bi.area_in_cell_dim, size=(self.bi.collocations_instances_global_sum, 2))
-        collocations_instances_coor_all_collocations_instances_occured *= bp.cell_size
-        collocations_instances_coor_all_collocations_instances_occured = collocations_instances_coor_all_collocations_instances_occured.astype(dtype=np.float64)
-        features_instances_coor_all_collocations_instances_occured = collocations_instances_coor_all_collocations_instances_occured[self.bi.collocations_instances_global_ids]
-        features_instances_coor_all_collocations_instances_occured += np.random.uniform(high=bp.cell_size, size=self.features_instances_coor.shape)
+        # initialize features' instances' coordinates as if there occurred every co-locations' instance - with the awareness of the m_clumpy parameter
+        collocations_clumpy_instances_coor_all_collocations_instances_occured = np.random.randint(low=self.bi.area_in_cell_dim, size=(self.bi.collocations_clumpy_instances_global_sum, 2))
+        collocations_clumpy_instances_coor_all_collocations_instances_occured *= bp.cell_size
+        collocations_clumpy_instances_coor_all_collocations_instances_occured = collocations_clumpy_instances_coor_all_collocations_instances_occured.astype(dtype=np.float64)
+        features_instances_coor_all_collocations_instances_occured = collocations_clumpy_instances_coor_all_collocations_instances_occured[self.bi.collocations_clumpy_instances_global_ids]
+        features_instances_coor_all_collocations_instances_occured += np.random.uniform(high=bp.cell_size, size=features_instances_coor_all_collocations_instances_occured.shape)
 
         # mix features' instances' coordinates according to the 'features_instances_spatial_prevalent_flags'
         self.features_instances_coor[:self.bi.collocation_features_instances_sum][features_instances_spatial_prevalent_flags] = \

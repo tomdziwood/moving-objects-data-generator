@@ -255,7 +255,7 @@ class BasicInitiation:
             self.collocations_clumpy_instances_global_ids = self.collocations_instances_global_ids
         else:
             # determine number of "clumpy" instances to each of the co-locations - co-locations instances gathered by ``m_clumpy`` parameter are counted as one
-            self.collocation_clumpy_instances_counts = (self.collocation_instances_counts - 1) // bp.m_clumpy + 1
+            self.collocation_clumpy_instances_counts = np.ceil(self.collocation_instances_counts / bp.m_clumpy).astype(np.int32)
 
             # prepare array of co-locations "clumpy" instances global ids to which features belong
             self.collocations_clumpy_instances_global_ids = np.array([], dtype=np.int32)
@@ -289,6 +289,7 @@ class BasicInitiation:
                     repeats=self.collocation_clumpy_instances_counts[i_colloc]
                 )
                 i_colloc_collocations_clumpy_instances_global_ids_repeats[-1] = self.collocation_lengths[i_colloc] * ((self.collocation_instances_counts[i_colloc] - 1) % bp.m_clumpy + 1)
+                # i_colloc_collocations_clumpy_instances_global_ids_repeats[-1] = self.collocation_lengths[i_colloc] * (self.collocation_instances_counts[i_colloc] - (self.collocation_clumpy_instances_counts[i_colloc] - 1) * bp.m_clumpy)
                 self.collocations_clumpy_instances_global_ids_repeats = np.concatenate((
                     self.collocations_clumpy_instances_global_ids_repeats,
                     i_colloc_collocations_clumpy_instances_global_ids_repeats
