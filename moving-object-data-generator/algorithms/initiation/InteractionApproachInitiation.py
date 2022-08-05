@@ -1,12 +1,11 @@
 import numpy as np
 
 from algorithms.enums.InteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
-from algorithms.utils.SpatialBasicPlacement import SpatialBasicPlacement
-from algorithms.initiation.BasicInitiation import BasicInitiation
+from algorithms.initiation.StandardTimeFrameInitiation import StandardTimeFrameInitiation
 from algorithms.parameters.InteractionApproachParameters import InteractionApproachParameters
 
 
-class InteractionApproachInitiation(BasicInitiation):
+class InteractionApproachInitiation(StandardTimeFrameInitiation):
     def __init__(self):
         super().__init__()
 
@@ -21,7 +20,6 @@ class InteractionApproachInitiation(BasicInitiation):
         self.time_interval: float = 1.0
         self.approx_step_time_interval: float = 1.0
         self.faraway_limit: float = 1000.0 * np.sqrt(2) / 2
-        self.spatial_basic_placement: SpatialBasicPlacement = SpatialBasicPlacement()
         self.features_instances_interaction: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
 
     def __define_features_instances_interaction(self, different_collocations_interaction_value=0, identical_features_interaction_value=1, noise_features_interaction_value=1):
@@ -61,18 +59,12 @@ class InteractionApproachInitiation(BasicInitiation):
         self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = identical_features_interaction_value
 
     def initiate(self, iap: InteractionApproachParameters = InteractionApproachParameters()):
-        super().initiate(bp=iap)
+        super().initiate(stfp=iap)
 
         self.interaction_approach_parameters = iap
 
-        # create class object, which holds all data of the objects starting placement
-        self.spatial_basic_placement = SpatialBasicPlacement()
-
-        # place all objects at starting position
-        self.spatial_basic_placement.place(bi=self)
-
         # copy coordinates of features instances
-        self.instances_coor = np.copy(self.spatial_basic_placement.features_instances_coor)
+        self.instances_coor = np.copy(self.spatial_standard_placement.features_instances_coor)
 
         # create array of instances' mass
         if iap.mass_mode == MassMode.CONSTANT:

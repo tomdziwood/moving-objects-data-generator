@@ -1,12 +1,11 @@
 import numpy as np
 
 from algorithms.enums.OptimalDistanceApproachEnums import MassMode, VelocityMode
+from algorithms.initiation.StandardTimeFrameInitiation import StandardTimeFrameInitiation
 from algorithms.parameters.OptimalDistanceApproachParameters import OptimalDistanceApproachParameters
-from algorithms.utils.SpatialBasicPlacement import SpatialBasicPlacement
-from algorithms.initiation.BasicInitiation import BasicInitiation
 
 
-class OptimalDistanceApproachInitiation(BasicInitiation):
+class OptimalDistanceApproachInitiation(StandardTimeFrameInitiation):
     def __init__(self):
         super().__init__()
 
@@ -21,22 +20,15 @@ class OptimalDistanceApproachInitiation(BasicInitiation):
         self.time_interval: float = 1.0
         self.approx_step_time_interval: float = 1.0
         self.faraway_limit: float = 1000.0 * np.sqrt(2) / 2
-        self.spatial_basic_placement: SpatialBasicPlacement = SpatialBasicPlacement()
         self.common_collocation_instance_flag: np.ndarray = np.empty(shape=(0, 0), dtype=bool)
 
     def initiate(self, odap: OptimalDistanceApproachParameters = OptimalDistanceApproachParameters()):
-        super().initiate(bp=odap)
+        super().initiate(stfp=odap)
 
         self.optimal_distance_approach_parameters = odap
 
-        # create class object, which holds all data of the objects starting placement
-        self.spatial_basic_placement = SpatialBasicPlacement()
-
-        # place all objects at starting position
-        self.spatial_basic_placement.place(bi=self)
-
         # copy coordinates of features instances
-        self.instances_coor = np.copy(self.spatial_basic_placement.features_instances_coor)
+        self.instances_coor = np.copy(self.spatial_standard_placement.features_instances_coor)
 
         # create array of instances' mass
         if odap.mass_mode == MassMode.CONSTANT:

@@ -43,8 +43,8 @@ class SpatioTemporalInteractionApproachGenerator:
             time_frame_ids=time_frame_ids,
             features_ids=self.iai.features_ids,
             features_instances_ids=self.iai.features_instances_ids,
-            x=self.iai.spatial_basic_placement.features_instances_coor[:, 0],
-            y=self.iai.spatial_basic_placement.features_instances_coor[:, 1]
+            x=self.iai.spatial_standard_placement.features_instances_coor[:, 0],
+            y=self.iai.spatial_standard_placement.features_instances_coor[:, 1]
         )
 
         # get arrays where new coordinates and velocities of instances will be calculated
@@ -165,22 +165,24 @@ if __name__ == "__main__":
     iap = InteractionApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=5,
+        n_colloc=3,
         lambda_1=4,
-        lambda_2=50,
+        lambda_2=20,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0.5,
-        ncfn=0.3,
+        ncfr=0,
+        ncfn=0,
         ncf_proportional=False,
-        ndf=3,
-        ndfn=30,
+        ndf=0,
+        ndfn=0,
         random_seed=0,
+        spatial_prevalent_ratio=0.7,
+        spatial_prevalence_threshold=0.9,
         time_unit=1,
         distance_unit=1.0,
-        approx_steps_number=1,
-        k_force=10,
-        force_limit=20.0,
+        approx_steps_number=5,
+        k_force=10000,
+        force_limit=2000.0,
         velocity_limit=20.0,
         faraway_limit_ratio=np.sqrt(2) / 2,
         mass_mode=MassMode.CONSTANT,
@@ -188,13 +190,13 @@ if __name__ == "__main__":
         mass_normal_std_ratio=1 / 5,
         velocity_mode=VelocityMode.CONSTANT,
         velocity_mean=0.0,
-        identical_features_interaction_mode=IdenticalFeaturesInteractionMode.ATTRACT,
-        different_features_interaction_mode=DifferentFeaturesInteractionMode.ATTRACT
+        identical_features_interaction_mode=IdenticalFeaturesInteractionMode.REPEL,
+        different_features_interaction_mode=DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL
     )
 
     stiag = SpatioTemporalInteractionApproachGenerator(iap=iap)
     stiag.generate(
-        time_frames_number=10,
+        time_frames_number=500,
         output_filename="output\\SpatioTemporalInteractionApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )

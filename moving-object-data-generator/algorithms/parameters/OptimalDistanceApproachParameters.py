@@ -1,10 +1,10 @@
 import numpy as np
 
 from algorithms.enums.OptimalDistanceApproachEnums import MassMode, VelocityMode
-from algorithms.parameters.BasicParameters import BasicParameters
+from algorithms.parameters.StandardTimeFrameParameters import StandardTimeFrameParameters
 
 
-class OptimalDistanceApproachParameters(BasicParameters):
+class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
     def __init__(
             self,
             time_unit: float = 1.0,

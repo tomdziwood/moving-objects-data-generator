@@ -39,8 +39,8 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
             time_frame_ids=time_frame_ids,
             features_ids=self.odai.features_ids,
             features_instances_ids=self.odai.features_instances_ids,
-            x=self.odai.spatial_basic_placement.features_instances_coor[:, 0],
-            y=self.odai.spatial_basic_placement.features_instances_coor[:, 1]
+            x=self.odai.spatial_standard_placement.features_instances_coor[:, 0],
+            y=self.odai.spatial_standard_placement.features_instances_coor[:, 1]
         )
 
         # get arrays where new coordinates and velocities of instances will be calculated
@@ -175,15 +175,17 @@ if __name__ == "__main__":
         cell_size=5,
         n_colloc=2,
         lambda_1=5,
-        lambda_2=3,
+        lambda_2=5,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0.5,
-        ncfn=0.3,
+        ncfr=0,
+        ncfn=0,
         ncf_proportional=False,
-        ndf=2,
-        ndfn=10,
+        ndf=0,
+        ndfn=0,
         random_seed=0,
+        spatial_prevalent_ratio=0.7,
+        spatial_prevalence_threshold=0.9,
         time_unit=1,
         approx_steps_number=10,
         k_optimal_distance=10.0,

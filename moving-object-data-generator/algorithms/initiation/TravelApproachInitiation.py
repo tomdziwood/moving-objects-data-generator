@@ -1,6 +1,5 @@
 import numpy as np
 
-from algorithms.initiation.BasicInitiation import BasicInitiation
 from algorithms.enums.TravelApproachEnums import StepLengthMethod, StepAngleMethod
 from algorithms.initiation.StandardTimeFrameInitiation import StandardTimeFrameInitiation
 from algorithms.parameters.TravelApproachParameters import TravelApproachParameters
