@@ -112,12 +112,12 @@ def main():
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalStandardGenerator_output_file_2022-07-29_142325.758471.txt", fps=1)
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalInteractionApproachGenerator_output_file.txt", fps=25)
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalInteractionApproachGenerator_output_file_2022-08-04_120813.994445.txt", fps=25)
-    # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalCircularMotionApproachGenerator_output_file.txt", fps=25)
+    visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalCircularMotionApproachGenerator_output_file.txt", fps=25)
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalCircularMotionApproachGenerator_output_file_2022-07-29_142325.758471.txt", fps=1)
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file.txt", fps=25)
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_2022-08-04_092614.520252.txt", fps=25)
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalTravelApproachGenerator_output_file.txt", fps=2)
-    visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalTravelApproachGenerator_output_file_2022-08-05_000452.803911.txt", fps=25)
+    # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalTravelApproachGenerator_output_file_2022-08-05_000452.803911.txt", fps=25)
 
 
 if __name__ == "__main__":

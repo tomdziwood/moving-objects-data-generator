@@ -6,14 +6,11 @@ from algorithms.initiation.BasicInitiation import BasicInitiation
 class SpatialStandardPlacement:
     def __init__(self,
                  bi: BasicInitiation = BasicInitiation(),
-                 spatial_prevalence_threshold: float = 1.0):
+                 collocations_instances_number_spatial_prevalence_threshold: np.ndarray = np.array([], dtype=np.int32)):
 
         self.bi: BasicInitiation = bi
+        self.collocations_instances_number_spatial_prevalence_threshold: np.ndarray = collocations_instances_number_spatial_prevalence_threshold
         self.features_instances_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
-
-        # determine the minimal number of the given co-location instances occurrence, which makes the co-location becomes spatial prevalent
-        self.__collocations_instances_number_spatial_prevalence_threshold = np.ceil(spatial_prevalence_threshold * self.bi.collocation_instances_counts).astype(np.int32)
-        print("collocations_instances_number_spatial_prevalence_threshold=%s" % str(self.__collocations_instances_number_spatial_prevalence_threshold))
 
     def place(self, collocations_spatial_prevalence_flags):
 
@@ -24,10 +21,10 @@ class SpatialStandardPlacement:
         collocations_spatial_prevalent_instances_number = np.zeros(shape=self.bi.collocations_sum, dtype=np.int32)
         collocations_spatial_prevalent_instances_number[np.logical_not(collocations_spatial_prevalence_flags)] = np.random.randint(
             low=0,
-            high=self.__collocations_instances_number_spatial_prevalence_threshold[np.logical_not(collocations_spatial_prevalence_flags)]
+            high=self.collocations_instances_number_spatial_prevalence_threshold[np.logical_not(collocations_spatial_prevalence_flags)]
         )
         collocations_spatial_prevalent_instances_number[collocations_spatial_prevalence_flags] = np.random.randint(
-            low=self.__collocations_instances_number_spatial_prevalence_threshold[collocations_spatial_prevalence_flags],
+            low=self.collocations_instances_number_spatial_prevalence_threshold[collocations_spatial_prevalence_flags],
             high=self.bi.collocation_instances_counts[collocations_spatial_prevalence_flags] + 1
         )
 

@@ -18,6 +18,7 @@ class StandardTimeFrameInitiation(BasicInitiation):
         super().__init__()
 
         self.standard_time_frame_parameters: StandardTimeFrameParameters = StandardTimeFrameParameters()
+        self.collocations_instances_number_spatial_prevalence_threshold: np.ndarray = np.array([], dtype=np.int32)
         self.spatial_prevalent_collocations_sum: int = 0
         self.spatial_prevalent_collocations_ids: np.ndarray = np.array([], dtype=np.int32)
         self.collocations_spatial_prevalence_flags: np.ndarray = np.array([], dtype=bool)
@@ -40,6 +41,10 @@ class StandardTimeFrameInitiation(BasicInitiation):
         # store parameters of the initiation
         self.standard_time_frame_parameters = stfp
 
+        # determine the minimal number of the given co-location instances occurrence, which makes the co-location becomes spatial prevalent
+        self.collocations_instances_number_spatial_prevalence_threshold = np.ceil(stfp.spatial_prevalence_threshold * self.collocation_instances_counts).astype(np.int32)
+        print("collocations_instances_number_spatial_prevalence_threshold=%s" % str(self.collocations_instances_number_spatial_prevalence_threshold))
+
         # calculate the number of spatial prevalent co-locations
         self.spatial_prevalent_collocations_sum = int(self.collocations_sum * stfp.spatial_prevalent_ratio)
         print("spatial_prevalent_collocations_sum=%d" % self.spatial_prevalent_collocations_sum)
@@ -53,6 +58,6 @@ class StandardTimeFrameInitiation(BasicInitiation):
         self.collocations_spatial_prevalence_flags = np.zeros(shape=self.collocations_sum, dtype=bool)
         self.collocations_spatial_prevalence_flags[self.spatial_prevalent_collocations_ids] = True
 
-        self.spatial_standard_placement = SpatialStandardPlacement(bi=self, spatial_prevalence_threshold=stfp.spatial_prevalence_threshold)
+        self.spatial_standard_placement = SpatialStandardPlacement(bi=self, collocations_instances_number_spatial_prevalence_threshold=self.collocations_instances_number_spatial_prevalence_threshold)
 
         self.spatial_standard_placement.place(collocations_spatial_prevalence_flags=self.collocations_spatial_prevalence_flags)

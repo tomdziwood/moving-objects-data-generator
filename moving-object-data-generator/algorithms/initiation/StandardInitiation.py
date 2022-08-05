@@ -18,6 +18,7 @@ class StandardInitiation(BasicInitiation):
         super().__init__()
 
         self.standard_parameters: StandardParameters = StandardParameters()
+        self.collocations_instances_number_spatial_prevalence_threshold: np.ndarray = np.array([], dtype=np.int32)
         self.persistent_collocations_sum: int = 0
         self.persistent_collocations_ids: np.ndarray = np.array([], dtype=np.int32)
         self.collocations_persistence_flags: np.ndarray = np.array([], dtype=bool)
@@ -41,6 +42,10 @@ class StandardInitiation(BasicInitiation):
 
         # store parameters of the initiation
         self.standard_parameters = sp
+
+        # determine the minimal number of the given co-location instances occurrence, which makes the co-location becomes spatial prevalent
+        self.collocations_instances_number_spatial_prevalence_threshold = np.ceil(sp.spatial_prevalence_threshold * self.collocation_instances_counts).astype(np.int32)
+        print("collocations_instances_number_spatial_prevalence_threshold=%s" % str(self.collocations_instances_number_spatial_prevalence_threshold))
 
         # calculate the number of persistent co-locations
         self.persistent_collocations_sum = int(self.collocations_sum * sp.persistent_ratio)
