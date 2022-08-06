@@ -92,17 +92,17 @@ class TravelApproachInitiation(StandardTimeFrameInitiation):
         self.travel_approach_parameters = tap
 
         # set destination point of every feature instance
-        self.collocations_instances_destination_coor = np.random.randint(low=self.area_in_cell_dim, size=(self.collocations_instances_global_sum, 2))
+        self.collocations_instances_destination_coor = np.random.randint(low=self.area_in_cell_dim, size=(self.collocations_clumpy_instances_global_sum, 2))
         self.collocations_instances_destination_coor *= tap.cell_size
         self.collocations_instances_destination_coor = self.collocations_instances_destination_coor.astype(dtype=np.float64)
-        self.features_instances_destination_coor = self.collocations_instances_destination_coor[self.collocations_instances_global_ids]
+        self.features_instances_destination_coor = self.collocations_instances_destination_coor[self.collocations_clumpy_instances_global_ids]
         self.features_instances_destination_coor += np.random.uniform(high=tap.cell_size, size=self.features_instances_destination_coor.shape)
 
         # create boolean array which tells if the given feature instance reached its own destination point
         self.features_instances_destination_reached = np.zeros(shape=self.features_instances_sum, dtype=bool)
 
         # create countdown array which tells how many time frames remain of waiting for the rest of features instances of the given co-location instances
-        self.collocations_instances_waiting_countdown = np.full(shape=self.collocations_instances_global_sum, fill_value=-1, dtype=np.int32)
+        self.collocations_instances_waiting_countdown = np.full(shape=self.collocations_clumpy_instances_global_sum, fill_value=-1, dtype=np.int32)
 
         # determine travel step length settings of each feature type
         self.features_step_length_mean = np.random.gamma(shape=tap.step_length_mean, scale=1.0, size=self.features_sum)

@@ -141,9 +141,9 @@ class SpatioTemporalTravelApproachGenerator:
             )
 
             # create boolean array which tells if the given co-location instance has at least one feature instance with reached destination
-            collocations_instances_global_ids_reached_at_least_one_feature_ids = self.tai.collocations_instances_global_ids[self.tai.features_instances_destination_reached]
+            collocations_instances_global_ids_reached_at_least_one_feature_ids = self.tai.collocations_clumpy_instances_global_ids[self.tai.features_instances_destination_reached]
             collocations_instances_global_ids_reached_at_least_one_feature_ids = np.unique(ar=collocations_instances_global_ids_reached_at_least_one_feature_ids)
-            collocations_instances_global_ids_reached_at_least_one_feature = np.zeros(shape=self.tai.collocations_instances_global_sum, dtype=bool)
+            collocations_instances_global_ids_reached_at_least_one_feature = np.zeros(shape=self.tai.collocations_clumpy_instances_global_sum, dtype=bool)
             collocations_instances_global_ids_reached_at_least_one_feature[collocations_instances_global_ids_reached_at_least_one_feature_ids] = True
 
             # turn on countdown of the given co-location instance whose first of its features instances has reached the destination in current time frame
@@ -156,19 +156,19 @@ class SpatioTemporalTravelApproachGenerator:
             collocations_instances_waiting_countdown_finished = self.tai.collocations_instances_waiting_countdown == 0
 
             # check which of co-locations instances has all of its feature instances with reached destination point
-            collocations_instances_global_ids_not_reached_ids = self.tai.collocations_instances_global_ids[np.logical_not(self.tai.features_instances_destination_reached)]
+            collocations_instances_global_ids_not_reached_ids = self.tai.collocations_clumpy_instances_global_ids[np.logical_not(self.tai.features_instances_destination_reached)]
             collocations_instances_global_ids_not_reached_ids = np.unique(ar=collocations_instances_global_ids_not_reached_ids)
-            collocations_instances_global_ids_reached = np.ones(shape=self.tai.collocations_instances_global_sum, dtype=bool)
+            collocations_instances_global_ids_reached = np.ones(shape=self.tai.collocations_clumpy_instances_global_sum, dtype=bool)
             collocations_instances_global_ids_reached[collocations_instances_global_ids_not_reached_ids] = False
 
             # indicate features instances whose destinations need to be changed based on finished countdowns and reached previous destinations
             collocations_instances_new_destination_needed = np.logical_or(collocations_instances_waiting_countdown_finished, collocations_instances_global_ids_reached)
-            features_instances_new_destination_needed = np.repeat(a=collocations_instances_new_destination_needed, repeats=self.tai.collocations_instances_global_ids_repeats)
+            features_instances_new_destination_needed = collocations_instances_new_destination_needed[self.tai.collocations_clumpy_instances_global_ids]
 
             # set new destination points of features instances of the given co-location if new destination points are needed
             self.tai.collocations_instances_destination_coor[collocations_instances_new_destination_needed] = np.random.randint(low=self.tai.area_in_cell_dim, size=(collocations_instances_new_destination_needed.sum(), 2))
             self.tai.collocations_instances_destination_coor[collocations_instances_new_destination_needed] *= self.tap.cell_size
-            self.tai.features_instances_destination_coor[features_instances_new_destination_needed] = self.tai.collocations_instances_destination_coor[self.tai.collocations_instances_global_ids[features_instances_new_destination_needed]]
+            self.tai.features_instances_destination_coor[features_instances_new_destination_needed] = self.tai.collocations_instances_destination_coor[self.tai.collocations_clumpy_instances_global_ids[features_instances_new_destination_needed]]
             self.tai.features_instances_destination_coor[features_instances_new_destination_needed] += np.random.uniform(high=self.tap.cell_size, size=(features_instances_new_destination_needed.sum(), 2))
 
             # mark new destination points as not reached
@@ -213,8 +213,8 @@ if __name__ == "__main__":
         ndf=0,
         ndfn=0,
         random_seed=0,
-        spatial_prevalent_ratio=0.7,
-        spatial_prevalence_threshold=0.9,
+        spatial_prevalent_ratio=1.0,
+        spatial_prevalence_threshold=0.3,
         step_length_mean=10.0,
         step_length_method=StepLengthMethod.UNIFORM,
         step_length_uniform_low_to_mean_ratio=1,

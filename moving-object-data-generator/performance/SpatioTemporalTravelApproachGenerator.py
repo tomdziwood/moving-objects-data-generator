@@ -191,11 +191,43 @@ def test_calculate_rotation():
     measure_time_execution_of_function(func=calculate_rotation_2, loops_number=10000, parameters=parameters)
 
 
+def repeat_values_1(ids, repeats, val):
+    x = np.repeat(a=val, repeats=repeats)
+
+
+def repeat_values_2(ids, repeats, val):
+    x = val[ids]
+
+
+def test_repeat_values():
+    # average time execution of function repeat_values_1:	0.000123931550 [s]
+    # average time execution of function repeat_values_2:	0.000095797050 [s]
+
+    print("test_repeat_values execute")
+
+    np.random.seed(0)
+
+    size = 250
+    repeats = np.random.randint(low=10, high=200, size=size)
+    ids = np.repeat(a=np.arange(size), repeats=repeats)
+    val = np.random.uniform(high=100.0, size=size)
+
+    parameters = {
+        "ids": ids,
+        "repeats": repeats,
+        "val": val
+    }
+
+    measure_time_execution_of_function(func=repeat_values_1, loops_number=10000, parameters=parameters)
+    measure_time_execution_of_function(func=repeat_values_2, loops_number=10000, parameters=parameters)
+
+
 def main():
-    test_detect_travel_end()
+    # test_detect_travel_end()
     # test_set_destination_point()
     # test_out_of_range_correction()
     # test_calculate_rotation()
+    test_repeat_values()
 
 
 if __name__ == "__main__":

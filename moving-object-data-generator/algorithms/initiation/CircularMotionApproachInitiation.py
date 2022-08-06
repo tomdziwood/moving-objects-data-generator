@@ -27,15 +27,16 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
         features_instances_start_coor = np.copy(self.spatial_standard_placement.features_instances_coor)
 
         # calculate mean position of each co-location's instance
-        slice_ind = np.concatenate(([0], self.collocations_instances_global_ids_repeats.cumsum()[:-1]))
-        collocations_instances_start_coor_sums = np.add.reduceat(features_instances_start_coor, indices=slice_ind, axis=0)
-        collocations_instances_start_coor_mean = collocations_instances_start_coor_sums / self.collocations_instances_global_ids_repeats[:, None]
+        _, inverse, counts = np.unique(self.collocations_clumpy_instances_global_ids, return_inverse=True, return_counts=True)
+        collocations_instances_start_coor_mean = np.empty(shape=(self.collocations_clumpy_instances_global_sum, 2), dtype=np.float64)
+        collocations_instances_start_coor_mean[:, 0] = np.bincount(inverse, features_instances_start_coor[:, 0]) / counts
+        collocations_instances_start_coor_mean[:, 1] = np.bincount(inverse, features_instances_start_coor[:, 1]) / counts
 
         # draw angle value at the starting time point of the every circular orbit of the every co-location's instance
-        collocations_instances_start_angle = np.random.uniform(high=2 * np.pi, size=(cmap.circle_chain_size, self.collocations_instances_global_sum))
+        collocations_instances_start_angle = np.random.uniform(high=2 * np.pi, size=(cmap.circle_chain_size, self.collocations_clumpy_instances_global_sum))
 
         # draw length of the orbit radius of the co-locations instances from uniform distribution according to boundaries values passed in parameters
-        collocations_instances_radius_length = np.random.uniform(low=cmap.circle_r_min, high=cmap.circle_r_max, size=(cmap.circle_chain_size, self.collocations_instances_global_sum))
+        collocations_instances_radius_length = np.random.uniform(low=cmap.circle_r_min, high=cmap.circle_r_max, size=(cmap.circle_chain_size, self.collocations_clumpy_instances_global_sum))
 
         # ---begin--- determine circular orbits' centers of all co-locations' instances
         # calculate position determined by each of circular orbit - position calculated in reference system of the given circular orbit center (per co-location instance)
@@ -47,7 +48,7 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
         circle_delta_y_cumsum = np.cumsum(circle_delta_y[::-1], axis=0)[::-1]
 
         # find starting point of every circular orbit by subtracting cumulative deltas from mean position of co-locations' instances
-        collocations_instances_orbit_centers_coor = np.empty(shape=(cmap.circle_chain_size, self.collocations_instances_global_sum, 2), dtype=np.float64)
+        collocations_instances_orbit_centers_coor = np.empty(shape=(cmap.circle_chain_size, self.collocations_clumpy_instances_global_sum, 2), dtype=np.float64)
         collocations_instances_orbit_centers_coor[:, :, 0] = -circle_delta_x_cumsum
         collocations_instances_orbit_centers_coor[:, :, 1] = -circle_delta_y_cumsum
         collocations_instances_orbit_centers_coor += collocations_instances_start_coor_mean[None, :, :]
@@ -55,7 +56,7 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
 
         # ---begin--- determine circular orbits' centers of all features' instances
         # determine circular orbits' centers of the feature instance which belong to the given co-location's instance
-        features_instances_orbit_centers_coor = np.repeat(a=collocations_instances_orbit_centers_coor, repeats=self.collocations_instances_global_ids_repeats, axis=1)
+        features_instances_orbit_centers_coor = collocations_instances_orbit_centers_coor[:, self.collocations_clumpy_instances_global_ids]
 
         # calculate random position displacement of every circular orbit of the given feature instance according to the 'center_noise_displacement' parameter value
         orbit_center_displacement_theta = np.random.uniform(high=2 * np.pi, size=(cmap.circle_chain_size, self.features_instances_sum))
@@ -86,15 +87,12 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
         self.start_angle = np.arctan2(coor_diff[:, :, 1], coor_diff[:, :, 0])
 
         # draw angular velocity values of the co-locations instances from uniform distribution according to boundaries values passed in parameters
-        collocations_instances_angular_velocity = np.random.uniform(low=cmap.omega_min, high=cmap.omega_max, size=(cmap.circle_chain_size, self.collocations_instances_global_sum))
+        collocations_instances_angular_velocity = np.random.uniform(low=cmap.omega_min, high=cmap.omega_max, size=(cmap.circle_chain_size, self.collocations_clumpy_instances_global_sum))
 
         # determine angular velocity values of the features which belong to the given co-location's instance
-        self.angular_velocity = np.repeat(a=collocations_instances_angular_velocity, repeats=self.collocations_instances_global_ids_repeats, axis=1)
+        self.angular_velocity = collocations_instances_angular_velocity[:, self.collocations_clumpy_instances_global_ids]
 
         # determine direction of the rotation - features of the given co-location have the same direction
-        angular_velocity_clockwise = np.repeat(
-            a=np.random.randint(2, size=(cmap.circle_chain_size, self.collocations_instances_global_sum), dtype=bool),
-            repeats=self.collocations_instances_global_ids_repeats,
-            axis=1
-        )
-        self.angular_velocity[angular_velocity_clockwise] *= -1
+        collocations_instances_angular_velocity_clockwise = np.random.randint(2, size=(cmap.circle_chain_size, self.collocations_clumpy_instances_global_sum), dtype=bool)
+        features_instances_angular_velocity_clockwise = collocations_instances_angular_velocity_clockwise[:, self.collocations_clumpy_instances_global_ids]
+        self.angular_velocity[features_instances_angular_velocity_clockwise] *= -1

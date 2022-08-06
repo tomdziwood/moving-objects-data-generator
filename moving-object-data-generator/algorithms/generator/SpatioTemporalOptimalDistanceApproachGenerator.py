@@ -176,7 +176,7 @@ if __name__ == "__main__":
         n_colloc=2,
         lambda_1=5,
         lambda_2=5,
-        m_clumpy=1,
+        m_clumpy=3,
         m_overlap=1,
         ncfr=0,
         ncfn=0,

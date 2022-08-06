@@ -87,3 +87,42 @@ class StandardTimeFrameInitiation(BasicInitiation):
 
         print("----end---- reindex global ids of co-locations' instances")
         # ----end---- reindex global ids of co-locations' instances
+
+        # ---begin--- reindex global ids of co-locations' "clumpy" instances
+        # important note: self.collocations_clumpy_instances_global_ids_repeats value is meaningless. It can not be used to recreate ids of feature instances, because they are no longer in not-decreasing order.
+        print("---begin--- reindex global ids of co-locations' \"clumpy\" instances")
+
+        if stfp.m_clumpy == 1:
+            # m_clumpy parameter doesn't bring any changes in co-locations instances ids
+            self.collocation_clumpy_instances_counts = self.collocation_instances_counts
+            self.collocations_clumpy_instances_global_sum = self.collocations_instances_global_sum
+            self.collocations_clumpy_instances_global_ids_repeats = self.collocations_instances_global_ids_repeats
+            self.collocations_clumpy_instances_global_ids = self.collocations_instances_global_ids
+        else:
+            # create boolean vector which tells if the given feature instance do not need to have a new co-location's id
+            features_instances_spatial_prevalent_flags = np.concatenate((self.spatial_standard_placement.features_instances_spatial_prevalent_flags, np.ones(shape=self.collocation_noise_features_instances_sum + stfp.ndfn, dtype=bool)))
+
+            # create boolean vector which tells if the given feature instance need to have a new co-location's id
+            features_instances_not_spatial_prevalent_flags = np.logical_not(features_instances_spatial_prevalent_flags)
+
+            # calculate number of new co-locations' ids
+            new_collocation_indices_sum = features_instances_not_spatial_prevalent_flags.sum()
+
+            # assign new co-locations' ids to the requested features' instances
+            self.collocations_clumpy_instances_global_ids[features_instances_not_spatial_prevalent_flags] = np.arange(self.collocations_clumpy_instances_global_sum, self.collocations_clumpy_instances_global_sum + new_collocation_indices_sum)
+
+            # ---begin--- enumerate co-locations' ids again with consecutive integer values
+            # call unique function on currently reassigned ids
+            unique, inverse_ids = np.unique(self.collocations_clumpy_instances_global_ids, return_inverse=True)
+
+            # actual sum of co-locations' clumpy instances is determined by the number of unique values
+            self.collocations_clumpy_instances_global_sum = unique.size
+            print("collocations_clumpy_instances_global_sum=%d" % self.collocations_clumpy_instances_global_sum)
+
+            # indices of the unique array, which can be used to reconstruct original array, becomes actual co-locations' clumpy instances ids of consecutive features' instances
+            self.collocations_clumpy_instances_global_ids = inverse_ids
+
+            # ----end---- enumerate co-locations' ids again with consecutive integer values
+
+        print("----end---- reindex global ids of co-locations' \"clumpy\" instances")
+        # ----end---- reindex global ids of co-locations' instances

@@ -11,6 +11,7 @@ class SpatialStandardPlacement:
         self.bi: BasicInitiation = bi
         self.collocations_instances_number_spatial_prevalence_threshold: np.ndarray = collocations_instances_number_spatial_prevalence_threshold
         self.collocations_instances_spatial_prevalent_flags: np.ndarray = np.array([], dtype=bool)
+        self.features_instances_spatial_prevalent_flags: np.ndarray = np.array([], dtype=bool)
         self.features_instances_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
 
     def place(self, collocations_spatial_prevalence_flags):
@@ -45,7 +46,7 @@ class SpatialStandardPlacement:
         # ----end---- create boolean vector which tells if the given co-locations instance occurs in the current time frame
 
         # expand co-locations' instances' flags into features' instances' flags
-        features_instances_spatial_prevalent_flags = np.repeat(
+        self.features_instances_spatial_prevalent_flags = np.repeat(
             a=self.collocations_instances_spatial_prevalent_flags,
             repeats=self.bi.collocations_instances_global_ids_repeats[:self.bi.collocations_instances_sum]
         )
@@ -61,5 +62,5 @@ class SpatialStandardPlacement:
         features_instances_coor_all_collocations_instances_occured += np.random.uniform(high=bp.cell_size, size=features_instances_coor_all_collocations_instances_occured.shape)
 
         # mix features' instances' coordinates according to the 'features_instances_spatial_prevalent_flags'
-        self.features_instances_coor[:self.bi.collocation_features_instances_sum][features_instances_spatial_prevalent_flags] = \
-            features_instances_coor_all_collocations_instances_occured[:self.bi.collocation_features_instances_sum][features_instances_spatial_prevalent_flags]
+        self.features_instances_coor[:self.bi.collocation_features_instances_sum][self.features_instances_spatial_prevalent_flags] = \
+            features_instances_coor_all_collocations_instances_occured[:self.bi.collocation_features_instances_sum][self.features_instances_spatial_prevalent_flags]

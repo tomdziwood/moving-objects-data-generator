@@ -94,4 +94,4 @@ class OptimalDistanceApproachInitiation(StandardTimeFrameInitiation):
         self.faraway_limit = odap.faraway_limit_ratio * odap.area
 
         # create boolean array, which tell if the given pair of features instances is located in the common co-location instance
-        self.common_collocation_instance_flag = self.collocations_instances_global_ids[None, :] == self.collocations_instances_global_ids[:, None]
+        self.common_collocation_instance_flag = self.collocations_clumpy_instances_global_ids[None, :] == self.collocations_clumpy_instances_global_ids[:, None]
