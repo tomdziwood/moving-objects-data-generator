@@ -1,4 +1,4 @@
-# moving-object-data-generator
+# moving-objects-data-generator
 
 ## Parameterized moving objects data generator for spatial data analysis
 
