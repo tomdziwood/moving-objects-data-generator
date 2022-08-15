@@ -84,19 +84,19 @@ if __name__ == "__main__":
     print("SpatioTemporalStandardGenerator main()")
 
     sp = StandardParameters(
-        area=1000,
+        area=50,
         cell_size=5,
-        n_colloc=1,
-        lambda_1=3,
-        lambda_2=5,
-        m_clumpy=3,
+        n_colloc=10,
+        lambda_1=5,
+        lambda_2=2,
+        m_clumpy=1,
         m_overlap=1,
         ncfr=0,
         ncfn=0,
         ncf_proportional=False,
         ndf=1,
         ndfn=5,
-        random_seed=4,
+        random_seed=0,
         persistent_ratio=1.0,
         spatial_prevalence_threshold=1.0,
         time_prevalence_threshold=1.0
@@ -106,5 +106,5 @@ if __name__ == "__main__":
     stsg.generate(
         time_frames_number=10,
         output_filename="output\\SpatioTemporalStandardGenerator_output_file.txt",
-        output_filename_timestamp=True
+        output_filename_timestamp=False
     )
