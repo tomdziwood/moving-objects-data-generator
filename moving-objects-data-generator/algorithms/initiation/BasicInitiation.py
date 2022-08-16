@@ -81,8 +81,8 @@ class BasicInitiation:
         if bp.random_seed is not None:
             np.random.seed(bp.random_seed)
 
-        # determine length to each of the n_colloc basic co-locations with poisson distribution (lam=lambda_1)
-        self.base_collocation_lengths = np.random.poisson(lam=bp.lambda_1, size=bp.n_colloc)
+        # determine length to each of the n_base basic co-locations with poisson distribution (lam=lambda_1)
+        self.base_collocation_lengths = np.random.poisson(lam=bp.lambda_1, size=bp.n_base)
         self.base_collocation_lengths[self.base_collocation_lengths < 2] = 2
         print("base_collocation_lengths=%s" % str(self.base_collocation_lengths))
 
@@ -109,7 +109,7 @@ class BasicInitiation:
         # determine the total number of features, which take part in co-locations
         self.collocation_features_sum = np.sum(self.base_collocation_lengths)
         if bp.m_overlap > 1:
-            self.collocation_features_sum += bp.n_colloc * bp.m_overlap
+            self.collocation_features_sum += bp.n_base * bp.m_overlap
         print("collocation_features_sum=%d" % self.collocation_features_sum)
 
         # prepare count of all instances of every i'th co-location feature

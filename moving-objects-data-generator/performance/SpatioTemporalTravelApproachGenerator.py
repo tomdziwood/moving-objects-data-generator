@@ -18,17 +18,17 @@ def test_detect_travel_end():
 
     np.random.seed(0)
 
-    n_colloc = 10
-    collocation_lengths = np.random.poisson(lam=5, size=n_colloc)
+    n_base = 10
+    collocation_lengths = np.random.poisson(lam=5, size=n_base)
     print("collocation_lengths=%s" % str(collocation_lengths))
-    collocation_instances_counts = np.random.poisson(lam=30, size=n_colloc)
+    collocation_instances_counts = np.random.poisson(lam=30, size=n_base)
     print("collocation_instances_counts=%s" % str(collocation_instances_counts))
     nfn = 1000
 
     collocations_instances_global_ids = np.array([], dtype=np.int32)
 
     last_id = 0
-    for i_colloc in range(n_colloc):
+    for i_colloc in range(n_base):
         i_colloc_collocations_instances_global_ids = np.repeat(a=np.arange(last_id, last_id + collocation_instances_counts[i_colloc]), repeats=collocation_lengths[i_colloc])
         collocations_instances_global_ids = np.concatenate((collocations_instances_global_ids, i_colloc_collocations_instances_global_ids))
         last_id += collocation_instances_counts[i_colloc]
@@ -65,17 +65,17 @@ def test_set_destination_point():
 
     np.random.seed(0)
 
-    n_colloc = 10
-    collocation_lengths = np.random.poisson(lam=5, size=n_colloc)
+    n_base = 10
+    collocation_lengths = np.random.poisson(lam=5, size=n_base)
     print("collocation_lengths=%s" % str(collocation_lengths))
-    collocation_instances_counts = np.random.poisson(lam=30, size=n_colloc)
+    collocation_instances_counts = np.random.poisson(lam=30, size=n_base)
     print("collocation_instances_counts=%s" % str(collocation_instances_counts))
     nfn = 1000
 
     collocations_instances_global_ids = np.array([], dtype=np.int32)
 
     last_id = 0
-    for i_colloc in range(n_colloc):
+    for i_colloc in range(n_base):
         i_colloc_collocations_instances_global_ids = np.repeat(a=np.arange(last_id, last_id + collocation_instances_counts[i_colloc]), repeats=collocation_lengths[i_colloc])
         collocations_instances_global_ids = np.concatenate((collocations_instances_global_ids, i_colloc_collocations_instances_global_ids))
         last_id += collocation_instances_counts[i_colloc]

@@ -100,7 +100,7 @@ def visualize_gif(input_filename="input_file.txt", output_filename=None, fps=1):
     )
 
 
-def visualize_route(input_filename="input_file.txt", output_filename=None):
+def visualize_route(input_filename="input_file.txt", output_filename=None, start_frame=None, end_frame=None):
     print("SpatioTemporalVisualization visualize_route()")
 
     df = pd.read_csv(input_filename, sep=';', header=None, comment="#")
@@ -108,6 +108,14 @@ def visualize_route(input_filename="input_file.txt", output_filename=None):
     time_frames = df.time_frame.unique()
     sorted(time_frames)
     print("time_frames size: %d" % time_frames.size)
+    print(time_frames)
+    print(time_frames[0])
+    print(time_frames[-1])
+
+    if start_frame is None or start_frame < time_frames[0]:
+        start_frame = 0
+    if end_frame is None or end_frame > time_frames[-1]:
+        end_frame = time_frames[-1]
 
     (x_min, y_min) = (np.int32(df.x.min()), np.int32(df.y.min()))
     print("min coor:\t(%d, %d)" % (x_min, y_min))
@@ -121,7 +129,8 @@ def visualize_route(input_filename="input_file.txt", output_filename=None):
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
 
-    df_sorted = df.sort_values(['feature_id', 'feature_instance_id', 'time_frame'])
+    df_filtered = df[np.logical_and(df.time_frame >= start_frame, df.time_frame <= end_frame)]
+    df_sorted = df_filtered.sort_values(['feature_id', 'feature_instance_id', 'time_frame'])
     df_grouped = df_sorted.groupby(['feature_id', 'feature_instance_id'])
     df_listed = df_grouped.agg({'x': lambda x: list(x), 'y': lambda x: list(x)}).reset_index()
 
@@ -134,14 +143,14 @@ def visualize_route(input_filename="input_file.txt", output_filename=None):
         print("Drawing route of object %d out of %d" % (index + 1, objects_number))
         plt.plot(row.x, row.y)
 
-    output_format = "png"
+    output_format = "svg"
 
     if output_filename is None:
         idx_start = input_filename.rfind('\\') + 1
         idx_stop = input_filename.rfind('.')
         if idx_stop == -1:
             idx_stop = len(input_filename)
-        output_filename = "output\\Route_" + input_filename[idx_start:idx_stop] + ".%s" % output_format
+        output_filename = "output\\Route_" + input_filename[idx_start:idx_stop] + "_%03.d-%03.d.%s" % (start_frame, end_frame, output_format)
 
     plt.savefig(output_filename, format=output_format)
 
@@ -181,7 +190,7 @@ def visualize_time_frame(input_filename="input_file.txt", output_filename=None, 
     colors = [colors_list[x // markers_list_length] for x in df_selected_time_frame.feature_id]
 
     for i in range(len(df_selected_time_frame)):
-        plt.scatter(x=df_selected_time_frame.x[i], y=df_selected_time_frame.y[i], marker=markers[i], color=colors[i])
+        plt.scatter(x=df_selected_time_frame.x[i], y=df_selected_time_frame.y[i], s=20, marker=markers[i], color=colors[i], linewidths=0.5, alpha=0.8)
 
     output_format = "svg"
 
@@ -214,7 +223,18 @@ def main():
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalTravelApproachGenerator_output_file.txt", fps=25)
     # visualize_gif(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalTravelApproachGenerator_output_file_2022-08-05_131819.469017.txt", fps=10)
 
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalBasicGenerator_output_file.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalBasicGenerator_output_file_2022-07-29_142325.758471.txt")
     # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalStandardGenerator_output_file.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalStandardGenerator_output_file_2022-08-05_132504.425978.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalInteractionApproachGenerator_output_file.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalInteractionApproachGenerator_output_file_2022-08-04_120813.994445.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalCircularMotionApproachGenerator_output_file.txt", start_frame=100, end_frame=150)
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalCircularMotionApproachGenerator_output_file_2022-07-29_142325.758471.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_2022-08-04_092614.520252.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalTravelApproachGenerator_output_file.txt")
+    # visualize_route(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalTravelApproachGenerator_output_file_2022-08-05_131819.469017.txt")
 
     visualize_time_frame(input_filename="..\\algorithms\\generator\\output\\SpatioTemporalStandardGenerator_output_file.txt")
 

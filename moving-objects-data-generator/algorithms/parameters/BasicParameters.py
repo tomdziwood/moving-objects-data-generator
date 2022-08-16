@@ -3,7 +3,7 @@ class BasicParameters:
             self,
             area: float = 1000.0,
             cell_size: float = 5.0,
-            n_colloc: int = 3,
+            n_base: int = 3,
             lambda_1: int = 5,
             lambda_2: int = 100,
             m_clumpy: int = 1,
@@ -23,9 +23,9 @@ class BasicParameters:
         if cell_size <= 0.0:
             cell_size = 5.0
 
-        # check 'n_colloc' value
-        if n_colloc < 0:
-            n_colloc = 0
+        # check 'n_base' value
+        if n_base < 0:
+            n_base = 0
 
         # check 'lambda_1' value
         if lambda_1 < 1:
@@ -63,7 +63,7 @@ class BasicParameters:
 
         self.area = area
         self.cell_size = cell_size
-        self.n_colloc = n_colloc
+        self.n_base = n_base
         self.lambda_1 = lambda_1
         self.lambda_2 = lambda_2
         self.m_clumpy = m_clumpy

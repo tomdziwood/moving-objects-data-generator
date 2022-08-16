@@ -100,6 +100,7 @@ class SpatioTemporalTravelApproachGenerator:
                 features_instances_step_length = np.random.gamma(shape=self.tai.features_step_length_mean[self.tai.features_ids], scale=1.0, size=self.tai.features_instances_sum)
             elif self.tap.step_length_method == StepLengthMethod.NORMAL:
                 features_instances_step_length = np.random.normal(loc=self.tai.features_step_length_mean[self.tai.features_ids], scale=self.tai.features_step_length_normal_std[self.tai.features_ids], size=self.tai.features_instances_sum)
+                features_instances_step_length[features_instances_step_length < 0] *= -1
 
             # calculate coordinates change when each feature instance move directly to the destination point in straight line
             instances_coor_delta_direct = np.divide(features_instances_step_length, dist, out=np.zeros_like(features_instances_step_length), where=dist != 0)
@@ -202,10 +203,10 @@ if __name__ == "__main__":
     tap = TravelApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=2,
+        n_base=1,
         lambda_1=5,
         lambda_2=5,
-        m_clumpy=3,
+        m_clumpy=1,
         m_overlap=1,
         ncfr=0,
         ncfn=0,
@@ -214,11 +215,11 @@ if __name__ == "__main__":
         ndfn=0,
         random_seed=0,
         spatial_prevalent_ratio=1.0,
-        spatial_prevalence_threshold=0.3,
+        spatial_prevalence_threshold=1.0,
         step_length_mean=10.0,
-        step_length_method=StepLengthMethod.UNIFORM,
+        step_length_method=StepLengthMethod.NORMAL,
         step_length_uniform_low_to_mean_ratio=1,
-        step_length_normal_std_ratio=1 / 3,
+        step_length_normal_std_ratio=3,
         step_angle_range_mean=np.pi / 4,
         step_angle_range_limit=np.pi / 2,
         step_angle_method=StepAngleMethod.UNIFORM,
@@ -228,7 +229,7 @@ if __name__ == "__main__":
 
     sttag = SpatioTemporalTravelApproachGenerator(tap=tap)
     sttag.generate(
-        time_frames_number=500,
+        time_frames_number=100,
         output_filename="output\\SpatioTemporalTravelApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )

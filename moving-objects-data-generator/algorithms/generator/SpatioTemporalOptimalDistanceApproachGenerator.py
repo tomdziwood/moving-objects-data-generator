@@ -1,6 +1,6 @@
 import numpy as np
 
-from algorithms.enums.OptimalDistanceApproachEnums import MassMode, VelocityMode
+from algorithms.enums.OptimalDistanceApproachEnums import MassMethod, VelocityMethod
 from algorithms.initiation.OptimalDistanceApproachInitiation import OptimalDistanceApproachInitiation
 from algorithms.parameters.OptimalDistanceApproachParameters import OptimalDistanceApproachParameters
 from algorithms.utils.SpatioTemporalWriters import SpatioTemporalOptimalDistanceApproachWriter
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     odap = OptimalDistanceApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=2,
+        n_base=2,
         lambda_1=5,
         lambda_2=5,
         m_clumpy=3,
@@ -193,10 +193,10 @@ if __name__ == "__main__":
         force_limit=5.0,
         velocity_limit=10.0,
         faraway_limit_ratio=np.sqrt(2) / 2,
-        mass_mode=MassMode.CONSTANT,
+        mass_method=MassMethod.CONSTANT,
         mass_mean=1.0,
         mass_normal_std_ratio=1 / 5,
-        velocity_mode=VelocityMode.CONSTANT,
+        velocity_method=VelocityMethod.CONSTANT,
         velocity_mean=0.0
     )
 

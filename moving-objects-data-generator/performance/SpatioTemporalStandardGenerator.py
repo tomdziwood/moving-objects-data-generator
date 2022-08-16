@@ -87,7 +87,7 @@ def test_choose_spatial_prevalent_features():
     sp = StandardParameters(
         area=1000,
         cell_size=5,
-        n_colloc=10,
+        n_base=10,
         lambda_1=4,
         lambda_2=30,
         m_clumpy=3,

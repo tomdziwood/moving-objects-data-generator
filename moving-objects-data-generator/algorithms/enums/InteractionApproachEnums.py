@@ -1,13 +1,13 @@
 from enum import Enum, auto
 
 
-class MassMode(Enum):
+class MassMethod(Enum):
     CONSTANT = auto()
     FEATURE_CONSTANT = auto()
     NORMAL = auto()
 
 
-class VelocityMode(Enum):
+class VelocityMethod(Enum):
     CONSTANT = auto()
     GAMMA = auto()
 

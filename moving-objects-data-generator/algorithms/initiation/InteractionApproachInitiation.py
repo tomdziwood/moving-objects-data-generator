@@ -1,6 +1,6 @@
 import numpy as np
 
-from algorithms.enums.InteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
+from algorithms.enums.InteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMethod, VelocityMethod
 from algorithms.initiation.StandardTimeFrameInitiation import StandardTimeFrameInitiation
 from algorithms.parameters.InteractionApproachParameters import InteractionApproachParameters
 
@@ -70,18 +70,18 @@ class InteractionApproachInitiation(StandardTimeFrameInitiation):
         self.instances_coor = np.copy(self.spatial_standard_placement.features_instances_coor)
 
         # create array of instances' mass
-        if iap.mass_mode == MassMode.CONSTANT:
+        if iap.mass_method == MassMethod.CONSTANT:
             # create array of instances' mass, all equal to the 'mass_mean' parameter value
             self.mass = np.full(shape=self.features_instances_sum, fill_value=iap.mass_mean, dtype=np.float64)
 
-        elif iap.mass_mode == MassMode.FEATURE_CONSTANT:
+        elif iap.mass_method == MassMethod.FEATURE_CONSTANT:
             # each type of feature has own constant mass value drawn from gamma distribution
             feature_mass_const = np.random.gamma(shape=iap.mass_mean, scale=1.0, size=self.features_sum)
 
             # each instance of the given type feature has mass value which is equal to the feature's constant mass value
             self.mass = feature_mass_const[self.features_ids]
 
-        elif iap.mass_mode == MassMode.NORMAL:
+        elif iap.mass_method == MassMethod.NORMAL:
             # each type of feature has own mean mass value drawn from gamma distribution
             feature_mass_mu = np.random.gamma(shape=iap.mass_mean, scale=1.0, size=self.features_sum)
 
@@ -99,7 +99,7 @@ class InteractionApproachInitiation(StandardTimeFrameInitiation):
         self.force_center_multiplier_constant = iap.k_force * self.mass_sum * self.mass
 
         # create array of instances' velocity
-        if iap.velocity_mode == VelocityMode.CONSTANT:
+        if iap.velocity_method == VelocityMethod.CONSTANT:
             if iap.velocity_mean == 0.0:
                 # create array of instances velocity all equals to 0
                 self.velocity = np.zeros_like(self.instances_coor, dtype=np.float64)
@@ -110,7 +110,7 @@ class InteractionApproachInitiation(StandardTimeFrameInitiation):
                 self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))
                 self.velocity *= iap.velocity_mean
 
-        elif iap.velocity_mode == VelocityMode.GAMMA:
+        elif iap.velocity_method == VelocityMethod.GAMMA:
             # create array of instances' velocities, all with gamma distribution value in random direction
             velocity_angle = np.random.uniform(high=2 * np.pi, size=self.features_instances_sum)
             self.velocity = np.column_stack(tup=(np.cos(velocity_angle), np.sin(velocity_angle)))

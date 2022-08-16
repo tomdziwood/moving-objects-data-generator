@@ -62,7 +62,7 @@ if __name__ == "__main__":
     bp = BasicParameters(
         area=1000,
         cell_size=5,
-        n_colloc=2,
+        n_base=2,
         lambda_1=3,
         lambda_2=6,
         m_clumpy=2,

@@ -16,7 +16,7 @@ def test_spatio_temporal_standard_generator():
         "time_frames_number": 10,
         "area": 1000,
         "cell_size": 5,
-        "n_colloc": 10,
+        "n_base": 10,
         "lambda_1": 5,
         "lambda_2": 1000,
         "m_clumpy": 2,

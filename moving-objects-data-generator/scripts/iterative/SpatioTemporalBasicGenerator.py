@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_frames_number=10, area=1000, cell_size=5, n_colloc=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=1.0, ncfn=1.0, ncf_proportional=False, ndf=2, ndfn=5000, random_seed=None):
+def generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_frames_number=10, area=1000, cell_size=5, n_base=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=1.0, ncfn=1.0, ncf_proportional=False, ndf=2, ndfn=5000, random_seed=None):
     print("generate()")
 
     # set random seed value
@@ -11,8 +11,8 @@ def generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_fr
     # open file to which output will be written
     f = open(file=output_file, mode="w")
 
-    # determine length to each of the n_colloc basic co-locations with poisson distribution (lam=lambda_1)
-    base_collocation_lengths = np.random.poisson(lam=lambda_1, size=n_colloc)
+    # determine length to each of the n_base basic co-locations with poisson distribution (lam=lambda_1)
+    base_collocation_lengths = np.random.poisson(lam=lambda_1, size=n_base)
     base_collocation_lengths[base_collocation_lengths < 2] = 2
     print("base_collocation_lengths=%s" % str(base_collocation_lengths))
 
@@ -24,19 +24,19 @@ def generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_fr
     print("collocation_lengths=%s" % str(collocation_lengths))
 
     # determine number of instances to each of the co-locations with poisson distribution (lam=lambda_2)
-    collocation_instances_counts = np.random.poisson(lam=lambda_2, size=n_colloc * m_overlap)
+    collocation_instances_counts = np.random.poisson(lam=lambda_2, size=n_base * m_overlap)
     print("collocation_instances_counts=%s" % str(collocation_instances_counts))
 
     # determine the total number of features, which take part in co-locations
     collocation_features_sum = np.sum(base_collocation_lengths)
     if m_overlap > 1:
-        collocation_features_sum += n_colloc * m_overlap
+        collocation_features_sum += n_base * m_overlap
     print("collocation_features_sum=%d" % collocation_features_sum)
 
     # count all instances of every i'th co-location feature
     collocation_features_instances_counts = np.zeros(shape=collocation_features_sum, dtype=np.int32)
     collocation_start_feature_id = 0
-    for i_colloc in range(n_colloc * m_overlap):
+    for i_colloc in range(n_base * m_overlap):
         collocation_features = np.arange(collocation_start_feature_id, collocation_start_feature_id + collocation_lengths[i_colloc])
         collocation_features[-1] += i_colloc % m_overlap
         collocation_features_instances_counts[collocation_features] += collocation_instances_counts[i_colloc]
@@ -85,7 +85,7 @@ def generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_fr
         collocation_features_instances_counters = np.zeros(shape=collocation_features_sum, dtype=np.int32)
 
         # generate data of every co-location in given time frame
-        for i_colloc in range(n_colloc * m_overlap):
+        for i_colloc in range(n_base * m_overlap):
 
             # get the features ids of current co-location
             collocation_features = np.arange(collocation_start_feature_id, collocation_start_feature_id + collocation_lengths[i_colloc])
@@ -158,7 +158,7 @@ def generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_fr
 def main():
     print("main()")
 
-    generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_frames_number=10, area=1000, cell_size=5, n_colloc=2, lambda_1=5, lambda_2=100, m_clumpy=2, m_overlap=3, ncfr=0.4, ncfn=1, ncf_proportional=False, ndf=5, ndfn=200, random_seed=0)
+    generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_frames_number=10, area=1000, cell_size=5, n_base=2, lambda_1=5, lambda_2=100, m_clumpy=2, m_overlap=3, ncfr=0.4, ncfn=1, ncf_proportional=False, ndf=5, ndfn=200, random_seed=0)
 
 
 if __name__ == "__main__":

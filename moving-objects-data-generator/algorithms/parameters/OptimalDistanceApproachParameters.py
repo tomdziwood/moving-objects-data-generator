@@ -1,6 +1,6 @@
 import numpy as np
 
-from algorithms.enums.OptimalDistanceApproachEnums import MassMode, VelocityMode
+from algorithms.enums.OptimalDistanceApproachEnums import MassMethod, VelocityMethod
 from algorithms.parameters.StandardTimeFrameParameters import StandardTimeFrameParameters
 
 
@@ -14,10 +14,10 @@ class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
             force_limit: float = 5.0,
             velocity_limit: float = 5.0,
             faraway_limit_ratio: float = np.sqrt(2) / 2,
-            mass_mode: MassMode = MassMode.CONSTANT,
+            mass_method: MassMethod = MassMethod.CONSTANT,
             mass_mean: float = 1.0,
             mass_normal_std_ratio: float = 1 / 5,
-            velocity_mode: VelocityMode = VelocityMode.CONSTANT,
+            velocity_method: VelocityMethod = VelocityMethod.CONSTANT,
             velocity_mean: float = 0.0,
             **kwargs):
 
@@ -70,8 +70,8 @@ class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
         self.force_limit = force_limit
         self.velocity_limit = velocity_limit
         self.faraway_limit_ratio = faraway_limit_ratio
-        self.mass_mode = mass_mode
+        self.mass_method = mass_method
         self.mass_mean = mass_mean
         self.mass_normal_std_ratio = mass_normal_std_ratio
-        self.velocity_mode = velocity_mode
+        self.velocity_method = velocity_method
         self.velocity_mean = velocity_mean

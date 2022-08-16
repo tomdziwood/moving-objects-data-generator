@@ -69,7 +69,7 @@ if __name__ == "__main__":
     cmap = CircularMotionApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=2,
+        n_base=2,
         lambda_1=5,
         lambda_2=3,
         m_clumpy=3,

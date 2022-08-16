@@ -1,5 +1,3 @@
-import math
-
 import numpy as np
 
 from algorithms.utils.SpatialStandardPlacement import SpatialStandardPlacement
@@ -86,7 +84,7 @@ if __name__ == "__main__":
     sp = StandardParameters(
         area=50,
         cell_size=5,
-        n_colloc=10,
+        n_base=10,
         lambda_1=5,
         lambda_2=2,
         m_clumpy=1,

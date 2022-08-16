@@ -3,7 +3,7 @@ import numpy as np
 
 from timeit import default_timer as timer
 
-from algorithms.enums.InteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
+from algorithms.enums.InteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMethod, VelocityMethod
 from algorithms.generator.SpatioTemporalInteractionApproachGenerator import SpatioTemporalInteractionApproachGenerator
 from algorithms.parameters.InteractionApproachParameters import InteractionApproachParameters
 from performance.Utils import measure_time_execution_of_function
@@ -303,7 +303,7 @@ def test_spatio_temporal_interaction_approach_generator():
         iap = InteractionApproachParameters(
             area=1000,
             cell_size=5,
-            n_colloc=5,
+            n_base=5,
             lambda_1=4,
             lambda_2=50,
             m_clumpy=1,
@@ -321,10 +321,10 @@ def test_spatio_temporal_interaction_approach_generator():
             force_limit=20.0,
             velocity_limit=20.0,
             faraway_limit_ratio=np.sqrt(2) / 2,
-            mass_mode=MassMode.CONSTANT,
+            mass_method=MassMethod.CONSTANT,
             mass_mean=1.0,
             mass_normal_std_ratio=1 / 5,
-            velocity_mode=VelocityMode.CONSTANT,
+            velocity_method=VelocityMethod.CONSTANT,
             velocity_mean=0.0,
             identical_features_interaction_mode=IdenticalFeaturesInteractionMode.ATTRACT,
             different_features_interaction_mode=DifferentFeaturesInteractionMode.ATTRACT
@@ -351,7 +351,7 @@ def test_spatio_temporal_interaction_approach_generator():
         iap = InteractionApproachParameters(
             area=1000,
             cell_size=3,
-            n_colloc=5,
+            n_base=5,
             lambda_1=4,
             lambda_2=20,
             m_clumpy=1,
@@ -369,10 +369,10 @@ def test_spatio_temporal_interaction_approach_generator():
             force_limit=20.0,
             velocity_limit=20.0,
             faraway_limit_ratio=np.sqrt(2) / 2,
-            mass_mode=MassMode.CONSTANT,
+            mass_method=MassMethod.CONSTANT,
             mass_mean=1.0,
             mass_normal_std_ratio=1 / 5,
-            velocity_mode=VelocityMode.CONSTANT,
+            velocity_method=VelocityMethod.CONSTANT,
             velocity_mean=0.0,
             identical_features_interaction_mode=IdenticalFeaturesInteractionMode.ATTRACT,
             different_features_interaction_mode=DifferentFeaturesInteractionMode.ATTRACT

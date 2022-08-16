@@ -1,6 +1,6 @@
 import numpy as np
 
-from algorithms.enums.InteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMode, VelocityMode
+from algorithms.enums.InteractionApproachEnums import IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode, MassMethod, VelocityMethod
 from algorithms.utils.SpatioTemporalWriters import SpatioTemporalInteractionApproachWriter
 from algorithms.initiation.InteractionApproachInitiation import InteractionApproachInitiation
 from algorithms.parameters.InteractionApproachParameters import InteractionApproachParameters
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     iap = InteractionApproachParameters(
         area=1000,
         cell_size=5,
-        n_colloc=3,
+        n_base=3,
         lambda_1=4,
         lambda_2=20,
         m_clumpy=1,
@@ -185,10 +185,10 @@ if __name__ == "__main__":
         force_limit=2000.0,
         velocity_limit=20.0,
         faraway_limit_ratio=np.sqrt(2) / 2,
-        mass_mode=MassMode.CONSTANT,
+        mass_method=MassMethod.CONSTANT,
         mass_mean=1.0,
         mass_normal_std_ratio=1 / 5,
-        velocity_mode=VelocityMode.CONSTANT,
+        velocity_method=VelocityMethod.CONSTANT,
         velocity_mean=0.0,
         identical_features_interaction_mode=IdenticalFeaturesInteractionMode.REPEL,
         different_features_interaction_mode=DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL
