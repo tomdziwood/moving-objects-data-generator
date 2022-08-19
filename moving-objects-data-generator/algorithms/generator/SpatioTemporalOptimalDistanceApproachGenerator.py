@@ -66,7 +66,7 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
 
                 # ---begin--- calculate resultant repulsion force for each instance
                 # calculate absolute value of repulsion force between each pair of instances
-                force_repulsion_abs = -np.divide(odap.k_optimal_distance ** 2 * self.odai.force_multiplier_constant, dist, out=np.zeros_like(dist), where=dist != 0)
+                force_repulsion_abs = -np.divide(self.odap.k_optimal_distance ** 2 * self.odai.force_multiplier_constant, dist, out=np.zeros_like(dist), where=dist != 0)
 
                 # calculate components of repulsion force between each pair of instances
                 force_repulsion_div = np.divide(force_repulsion_abs, dist, out=np.zeros_like(force_repulsion_abs), where=dist != 0)
@@ -79,7 +79,7 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
 
                 # ---begin--- calculate resultant attraction force for each instance
                 # calculate absolute value of attraction force between each pair of instances
-                force_attraction_abs = dist_squared * self.odai.force_multiplier_constant / odap.k_optimal_distance
+                force_attraction_abs = dist_squared * self.odai.force_multiplier_constant / self.odap.k_optimal_distance
 
                 # reset force attraction where instances are not in the same co-location instance
                 force_attraction_abs *= self.odai.common_collocation_instance_flag
@@ -171,27 +171,27 @@ if __name__ == "__main__":
     print("SpatioTemporalOptimalDistanceApproachGenerator main()")
 
     odap = OptimalDistanceApproachParameters(
-        area=1000,
+        area=100,
         cell_size=5,
-        n_base=2,
-        lambda_1=5,
-        lambda_2=5,
-        m_clumpy=3,
+        n_base=1,
+        lambda_1=6,
+        lambda_2=1,
+        m_clumpy=1,
         m_overlap=1,
         ncfr=0,
         ncfn=0,
         ncf_proportional=False,
         ndf=0,
         ndfn=0,
-        random_seed=0,
-        spatial_prevalent_ratio=0.7,
-        spatial_prevalence_threshold=0.9,
-        time_unit=1,
-        approx_steps_number=10,
-        k_optimal_distance=10.0,
+        random_seed=4,
+        spatial_prevalent_ratio=1.0,
+        spatial_prevalence_threshold=1.0,
+        time_unit=25,
+        approx_steps_number=2,
+        k_optimal_distance=5.0,
         k_force=1.0,
-        force_limit=5.0,
-        velocity_limit=10.0,
+        force_limit=20.0,
+        velocity_limit=2.5,
         faraway_limit_ratio=np.sqrt(2) / 2,
         mass_method=MassMethod.CONSTANT,
         mass_mean=1.0,

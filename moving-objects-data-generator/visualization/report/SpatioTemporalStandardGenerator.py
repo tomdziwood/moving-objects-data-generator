@@ -71,6 +71,7 @@ def visualize_demo_1():
 
     cm = 1 / 2.54
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(20*cm, 20*cm))
+    plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
 
     markers_list = ["o", ",", "^", "+", "*", "x", "2", (6, 1, 0), (6, 2, 0), "h", "v", "<", ">", "1", "3", "4", "D", "8", "s", "p", "P", "H", "X", "d"]
     markers_list_length = len(markers_list)
@@ -85,6 +86,12 @@ def visualize_demo_1():
 
         ax = axs[time_frame // 2, time_frame % 2]
 
+        ax.set_title(r"moment czasowy: $%d$" % time_frame)
+
+        ax.set_aspect('equal')
+        ax.set_xlim(xlim)
+        ax.set_ylim(ylim)
+
         ax.set_xticks(major_ticks)
         ax.set_yticks(major_ticks)
         ax.set_xticks(minor_ticks, minor=True)
@@ -96,11 +103,6 @@ def visualize_demo_1():
 
         for i in range(len(df_tf)):
             ax.scatter(x=df_tf.iloc[[i]].x, y=df_tf.iloc[[i]].y, s=20, marker=markers[i], color=colors[i], linewidths=0.5, alpha=0.8)
-
-        ax.set_title("moment czasowy: %d" % time_frame)
-
-        ax.set_xlim(xlim)
-        ax.set_ylim(ylim)
 
     plt.show()
     fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_1.png")
@@ -173,6 +175,7 @@ def visualize_demo_2():
 
     cm = 1 / 2.54
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(20*cm, 10*cm))
+    plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
 
     markers_list = ["o", ",", "^", "+", "*", "x", "2", (6, 1, 0), (6, 2, 0), "h", "v", "<", ">", "1", "3", "4", "D", "8", "s", "p", "P", "H", "X", "d"]
     markers_list_length = len(markers_list)
@@ -187,6 +190,12 @@ def visualize_demo_2():
 
         ax = axs[time_frame]
 
+        ax.set_title(r"moment czasowy: $%d$" % time_frame)
+
+        ax.set_aspect('equal')
+        ax.set_xlim(xlim)
+        ax.set_ylim(ylim)
+
         ax.set_xticks(major_ticks)
         ax.set_yticks(major_ticks)
         ax.set_xticks(minor_ticks, minor=True)
@@ -198,11 +207,6 @@ def visualize_demo_2():
 
         for i in range(len(df_tf)):
             ax.scatter(x=df_tf.iloc[[i]].x, y=df_tf.iloc[[i]].y, s=20, marker=markers[i], color=colors[i], linewidths=0.5, alpha=0.8)
-
-        ax.set_title(r"moment czasowy: $%d$" % time_frame)
-
-        ax.set_xlim(xlim)
-        ax.set_ylim(ylim)
 
     plt.show()
     fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_2.png")

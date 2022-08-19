@@ -163,27 +163,27 @@ if __name__ == "__main__":
     print("SpatioTemporalInteractionApproachGenerator main()")
 
     iap = InteractionApproachParameters(
-        area=1000,
+        area=50,
         cell_size=5,
         n_base=3,
-        lambda_1=4,
-        lambda_2=20,
+        lambda_1=6,
+        lambda_2=2,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0,
         ncfn=0,
         ncf_proportional=False,
-        ndf=0,
-        ndfn=0,
+        ndf=1,
+        ndfn=5,
         random_seed=0,
-        spatial_prevalent_ratio=0.7,
-        spatial_prevalence_threshold=0.9,
-        time_unit=1,
+        spatial_prevalent_ratio=1.0,
+        spatial_prevalence_threshold=1.0,
+        time_unit=50,
         distance_unit=1.0,
         approx_steps_number=5,
-        k_force=10000,
-        force_limit=2000.0,
-        velocity_limit=20.0,
+        k_force=1000,
+        force_limit=100.0,
+        velocity_limit=15.0,
         faraway_limit_ratio=np.sqrt(2) / 2,
         mass_method=MassMethod.CONSTANT,
         mass_mean=1.0,
@@ -191,12 +191,12 @@ if __name__ == "__main__":
         velocity_method=VelocityMethod.CONSTANT,
         velocity_mean=0.0,
         identical_features_interaction_mode=IdenticalFeaturesInteractionMode.REPEL,
-        different_features_interaction_mode=DifferentFeaturesInteractionMode.COLLOCATION_ATTRACT_OTHER_REPEL
+        different_features_interaction_mode=DifferentFeaturesInteractionMode.ATTRACT
     )
 
     stiag = SpatioTemporalInteractionApproachGenerator(iap=iap)
     stiag.generate(
-        time_frames_number=500,
+        time_frames_number=100,
         output_filename="output\\SpatioTemporalInteractionApproachGenerator_output_file.txt",
         output_filename_timestamp=False
     )
