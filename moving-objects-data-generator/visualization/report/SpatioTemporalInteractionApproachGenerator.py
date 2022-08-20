@@ -1,11 +1,10 @@
 import numpy as np
-import pandas as pd
 from matplotlib import pyplot as plt
 
 from algorithms.enums.InteractionApproachEnums import MassMethod, VelocityMethod, IdenticalFeaturesInteractionMode, DifferentFeaturesInteractionMode
 from algorithms.generator.SpatioTemporalInteractionApproachGenerator import SpatioTemporalInteractionApproachGenerator
 from algorithms.parameters.InteractionApproachParameters import InteractionApproachParameters
-from visualization.report.Utils import visualize_parts
+from visualization.report.Utils import visualize_parts, visualize_x_y, visualize_3d, visualize_perspectives
 
 
 def visualize_demo_1_generate_data():
@@ -24,7 +23,7 @@ def visualize_demo_1_generate_data():
         ncf_proportional=False,
         ndf=0,
         ndfn=0,
-        random_seed=61,
+        random_seed=24473,
         spatial_prevalent_ratio=1.0,
         spatial_prevalence_threshold=1.0,
         time_unit=25,
@@ -63,58 +62,11 @@ def visualize_demo_1_generate_data():
 def visualize_demo_1():
     print("SpatioTemporalInteractionApproachGenerator visualize_demo_1()")
 
-    visualize_demo_1_generate_data()
+    # visualize_demo_1_generate_data()
 
-    df = pd.read_csv("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.txt", sep=';', header=None, comment="#")
-    df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
-    time_frames = df.time_frame.unique()
-    sorted(time_frames)
-    print("time_frames size: %d" % time_frames.size)
+    visualize_x_y("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.txt")
 
-    start_frame = 0
-    end_frame = time_frames[-1]
-    # start_frame = 0
-    # end_frame = 150
-
-    df_filtered = df[np.logical_and(df.time_frame >= start_frame, df.time_frame <= end_frame)]
-
-    (x_min, y_min) = (np.int32(df_filtered.x.min()), np.int32(df_filtered.y.min()))
-    print("min coor:\t(%d, %d)" % (x_min, y_min))
-    (x_max, y_max) = (np.int32(df_filtered.x.max()), np.int32(df_filtered.y.max()))
-    print("max coor:\t(%d, %d)" % (x_max, y_max))
-    # xlim = [10, 60]
-    # ylim = [-20, 50]
-    xlim = [x_min, x_max]
-    ylim = [y_min, y_max]
-
-    plt.rcParams.update({
-        "text.usetex": True,
-        "font.family": "serif",
-        "font.serif": ["Computer Modern Roman"],
-    })
-
-    plt.rcParams['axes.axisbelow'] = True
-
-    cm = 1 / 2.54
-    fig, ax = plt.subplots(figsize=(20*cm, 20*cm))
-    plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
-
-    colors_list = np.linspace(0, 1, df.feature_id.unique().size)
-
-    ax.set_aspect('equal')
-    ax.set_xlim(xlim)
-    ax.set_ylim(ylim)
-
-    df_sorted = df_filtered.sort_values(['feature_id', 'feature_instance_id', 'time_frame'])
-    df_grouped = df_sorted.groupby(['feature_id', 'feature_instance_id'])
-    df_listed = df_grouped.agg({'x': lambda x: list(x), 'y': lambda x: list(x)}).reset_index()
-
-    objects_number = len(df_listed)
-
-    for index, row in df_listed.iterrows():
-        print("Drawing route of object %d out of %d" % (index + 1, objects_number))
-        ax.plot(row.x, row.y, color=plt.get_cmap("nipy_spectral")(colors_list[row.feature_id]), linewidth=1)
-
+    fig = plt.gcf()
     plt.show()
     fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.png")
     fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.svg")
@@ -128,64 +80,6 @@ def visualize_demo_2():
 
     visualize_parts("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.txt", equal_aspect=False)
 
-    # df = pd.read_csv("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.txt", sep=';', header=None, comment="#")
-    # df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
-    # time_frames = df.time_frame.unique()
-    # sorted(time_frames)
-    # print("time_frames size: %d" % time_frames.size)
-    #
-    # start_frame = 0
-    # interval_frames = 100
-    #
-    # df_filtered = df[np.logical_and(df.time_frame >= start_frame, df.time_frame < start_frame + 4 * interval_frames)]
-    #
-    # (x_min, y_min) = (np.int32(df_filtered.x.min()), np.int32(df_filtered.y.min()))
-    # print("min coor:\t(%d, %d)" % (x_min, y_min))
-    # (x_max, y_max) = (np.int32(df_filtered.x.max()), np.int32(df_filtered.y.max()))
-    # print("max coor:\t(%d, %d)" % (x_max, y_max))
-    # # xlim = [10, 60]
-    # # ylim = [-20, 50]
-    # xlim = [x_min, x_max]
-    # ylim = [y_min, y_max]
-    #
-    # plt.rcParams.update({
-    #     "text.usetex": True,
-    #     "font.family": "serif",
-    #     "font.serif": ["Computer Modern Roman"],
-    # })
-    #
-    # plt.rcParams['axes.axisbelow'] = True
-    #
-    # cm = 1 / 2.54
-    # fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(20*cm, 20*cm))
-    # plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
-    #
-    # colors_list = np.linspace(0, 1, df.feature_id.unique().size)
-    #
-    # for time_frames_batch_number in range(4):
-    #     start_batch = start_frame + time_frames_batch_number * interval_frames
-    #     end_batch = start_batch + interval_frames
-    #
-    #     df_filtered_batch = df_filtered[np.logical_and(df.time_frame >= start_batch, df.time_frame < end_batch)]
-    #
-    #     ax = axs[time_frames_batch_number // 2, time_frames_batch_number % 2]
-    #
-    #     ax.set_title(r"zakres momentow czasowych: $%d$ -- $%d$" % (start_batch, end_batch - 1))
-    #
-    #     ax.set_aspect('equal')
-    #     ax.set_xlim(xlim)
-    #     ax.set_ylim(ylim)
-    #
-    #     df_sorted = df_filtered_batch.sort_values(['feature_id', 'feature_instance_id', 'time_frame'])
-    #     df_grouped = df_sorted.groupby(['feature_id', 'feature_instance_id'])
-    #     df_listed = df_grouped.agg({'x': lambda x: list(x), 'y': lambda x: list(x)}).reset_index()
-    #
-    #     objects_number = len(df_listed)
-    #
-    #     for index, row in df_listed.iterrows():
-    #         print("Drawing route of object %d out of %d" % (index + 1, objects_number))
-    #         ax.plot(row.x, row.y, color=plt.get_cmap("nipy_spectral")(colors_list[row.feature_id]), linewidth=1)
-
     fig = plt.gcf()
     plt.show()
     fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_2.png")
@@ -193,11 +87,39 @@ def visualize_demo_2():
     fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_2.eps")
 
 
-def visualize_demo_3_generate_data():
-    print("SpatioTemporalInteractionApproachGenerator visualize_demo_3_generate_data()")
+def visualize_demo_3():
+    print("SpatioTemporalInteractionApproachGenerator visualize_demo_3()")
+
+    # visualize_demo_1_generate_data()
+
+    visualize_3d("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.txt")
+
+    fig = plt.gcf()
+    plt.show()
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.png")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.svg")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.eps")
+
+
+def visualize_demo_4():
+    print("SpatioTemporalInteractionApproachGenerator visualize_demo_4()")
+
+    # visualize_demo_1_generate_data()
+
+    visualize_perspectives("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.txt")
+
+    fig = plt.gcf()
+    plt.show()
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.png")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.svg")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.eps")
+
+
+def visualize_demo_5_generate_data():
+    print("SpatioTemporalInteractionApproachGenerator visualize_demo_5_generate_data()")
 
     iap = InteractionApproachParameters(
-        area=50,
+        area=1000,
         cell_size=5,
         n_base=1,
         lambda_1=5,
@@ -209,7 +131,7 @@ def visualize_demo_3_generate_data():
         ncf_proportional=False,
         ndf=0,
         ndfn=0,
-        random_seed=0,
+        random_seed=132,
         spatial_prevalent_ratio=1.0,
         spatial_prevalence_threshold=1.0,
         time_unit=25,
@@ -230,7 +152,7 @@ def visualize_demo_3_generate_data():
 
     while True:
         stiag = SpatioTemporalInteractionApproachGenerator(iap=iap)
-        if ((stiag.iai.collocation_lengths == np.array([5], dtype=np.int32)).all() and
+        if ((stiag.iai.collocation_lengths == np.array([10], dtype=np.int32)).all() and
                 (stiag.iai.collocation_instances_counts == np.array([1], dtype=np.int32)).all()):
             print(iap.random_seed)
             break
@@ -239,74 +161,31 @@ def visualize_demo_3_generate_data():
 
     stiag.generate(
         time_frames_number=500,
-        output_filename="data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.txt",
+        output_filename="data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.txt",
         output_filename_timestamp=False
     )
 
 
-def visualize_demo_3():
-    print("SpatioTemporalInteractionApproachGenerator visualize_demo_3()")
+def visualize_demo_5():
+    print("SpatioTemporalInteractionApproachGenerator visualize_demo_5()")
 
-    visualize_demo_3_generate_data()
+    visualize_demo_5_generate_data()
 
-    df = pd.read_csv("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.txt", sep=';', header=None, comment="#")
-    df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
-    time_frames = df.time_frame.unique()
-    sorted(time_frames)
-    print("time_frames size: %d" % time_frames.size)
+    visualize_3d("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.txt")
 
-    start_frame = 0
-    end_frame = time_frames[-1]
-    # start_frame = 0
-    # end_frame = 150
-
-    df_filtered = df[np.logical_and(df.time_frame >= start_frame, df.time_frame <= end_frame)]
-
-    (x_min, y_min) = (np.int32(df_filtered.x.min()), np.int32(df_filtered.y.min()))
-    print("min coor:\t(%d, %d)" % (x_min, y_min))
-    (x_max, y_max) = (np.int32(df_filtered.x.max()), np.int32(df_filtered.y.max()))
-    print("max coor:\t(%d, %d)" % (x_max, y_max))
-    # xlim = [10, 60]
-    # ylim = [-20, 50]
-    xlim = [x_min, x_max]
-    ylim = [y_min, y_max]
-
-    plt.rcParams.update({
-        "text.usetex": True,
-        "font.family": "serif",
-        "font.serif": ["Computer Modern Roman"],
-    })
-
-    plt.rcParams['axes.axisbelow'] = True
-
-    cm = 1 / 2.54
-    fig, ax = plt.subplots(figsize=(20*cm, 20*cm))
-    plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
-
-    ax.set_aspect('equal')
-    ax.set_xlim(xlim)
-    ax.set_ylim(ylim)
-
-    df_sorted = df_filtered.sort_values(['feature_id', 'feature_instance_id', 'time_frame'])
-    df_grouped = df_sorted.groupby(['feature_id', 'feature_instance_id'])
-    df_listed = df_grouped.agg({'x': lambda x: list(x), 'y': lambda x: list(x)}).reset_index()
-
-    objects_number = len(df_listed)
-
-    for index, row in df_listed.iterrows():
-        print("Drawing route of object %d out of %d" % (index + 1, objects_number))
-        ax.plot(row.x, row.y)
-
+    fig = plt.gcf()
     plt.show()
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.png")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.svg")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.eps")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.png")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.svg")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.eps")
 
 
 def main():
     # visualize_demo_1()
-    visualize_demo_2()
+    # visualize_demo_2()
     # visualize_demo_3()
+    # visualize_demo_4()
+    visualize_demo_5()
 
 
 if __name__ == "__main__":

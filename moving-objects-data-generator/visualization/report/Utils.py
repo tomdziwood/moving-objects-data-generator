@@ -3,7 +3,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 
-def visualize_x_y(input_file, start_frame=None, end_frame=None, equal_aspect=True, markersize=3, linewidth=1, markevery=10):
+def visualize_x_y(input_file, start_frame=None, end_frame=None, xlim=None, ylim=None, equal_aspect=True, color_per_feature=False, markersize=3, linewidth=1, markevery=10):
     print("Utils visualize_x_y()")
 
     df = pd.read_csv(input_file, sep=';', header=None, comment="#")
@@ -40,12 +40,13 @@ def visualize_x_y(input_file, start_frame=None, end_frame=None, equal_aspect=Tru
 
     markers_list = ["o", "s", "^", "+", "*", "x", "2", (6, 1, 0), (6, 2, 0), "h", "v", "<", ">", "1", "3", "4", "D", "8", "p", "P", "H", "X", "d"]
     markers_list_length = len(markers_list)
-    # colors_list = np.linspace(0, 1, df.feature_id.unique().size)
 
     if equal_aspect:
         ax.set_aspect('equal')
-    # ax.set_xlim(xlim)
-    # ax.set_ylim(ylim)
+    if xlim is not None:
+        ax.set_xlim(xlim)
+    if ylim is not None:
+        ax.set_ylim(ylim)
 
     ax.set_xlabel(r"x")
     ax.set_ylabel(r"y")
@@ -55,12 +56,20 @@ def visualize_x_y(input_file, start_frame=None, end_frame=None, equal_aspect=Tru
     df_listed = df_grouped.agg({'x': lambda x: list(x), 'y': lambda x: list(x)}).reset_index()
 
     objects_number = len(df_listed)
-    colors_list = np.linspace(0, 1, objects_number)
+
+    if color_per_feature:
+        colors_list = np.linspace(0, 1, df.feature_id.unique().size)
+    else:
+        colors_list = np.linspace(0, 1, objects_number)
 
     for index, row in df_listed.iterrows():
         print("Drawing route of object %d out of %d" % (index + 1, objects_number))
+        if color_per_feature:
+            color = plt.get_cmap("nipy_spectral")(colors_list[row.feature_id])
+        else:
+            color = plt.get_cmap("nipy_spectral")(colors_list[index])
         ax.plot(row.x, row.y,
-                color=plt.get_cmap("nipy_spectral")(colors_list[index]),
+                color=color,
                 marker=markers_list[row.feature_id % markers_list_length],
                 markersize=markersize, linewidth=linewidth, markevery=markevery)
 
@@ -344,13 +353,6 @@ def visualize_frame(input_file, time_frame=0, markersize=20, xlim=None, ylim=Non
 
     for i in range(objects_number):
         row = df_selected_time_frame.iloc[[i]]
-        # print("row:")
-        # print(row)
-        # print(row.feature_id % markers_list_length)
-        # print("fid:")
-        # print(row.feature_id)
-        # print("marker:")
-        # print(markers_list[row.feature_id % markers_list_length])
         ax.scatter(x=row.x, y=row.y, s=markersize,
                    marker=markers[i],
                    color=plt.get_cmap("nipy_spectral")(colors_list[i]),
