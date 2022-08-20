@@ -62,15 +62,15 @@ def visualize_demo_1_generate_data():
 def visualize_demo_1():
     print("SpatioTemporalInteractionApproachGenerator visualize_demo_1()")
 
-    # visualize_demo_1_generate_data()
+    visualize_demo_1_generate_data()
 
     visualize_x_y("data\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.txt")
 
     fig = plt.gcf()
     plt.show()
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.png")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.svg")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.eps")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_1.eps", bbox_inches='tight')
 
 
 def visualize_demo_2():
@@ -82,9 +82,9 @@ def visualize_demo_2():
 
     fig = plt.gcf()
     plt.show()
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_2.png")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_2.svg")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_2.eps")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_2.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_2.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_2.eps", bbox_inches='tight')
 
 
 def visualize_demo_3():
@@ -96,9 +96,9 @@ def visualize_demo_3():
 
     fig = plt.gcf()
     plt.show()
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.png")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.svg")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.eps")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_3.eps", bbox_inches='tight')
 
 
 def visualize_demo_4():
@@ -110,9 +110,9 @@ def visualize_demo_4():
 
     fig = plt.gcf()
     plt.show()
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.png")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.svg")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.eps")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_4.eps", bbox_inches='tight')
 
 
 def visualize_demo_5_generate_data():
@@ -175,16 +175,16 @@ def visualize_demo_5():
 
     fig = plt.gcf()
     plt.show()
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.png")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.svg")
-    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.eps")
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalInteractionApproachGenerator_output_file_demo_5.eps", bbox_inches='tight')
 
 
 def main():
-    # visualize_demo_1()
-    # visualize_demo_2()
-    # visualize_demo_3()
-    # visualize_demo_4()
+    visualize_demo_1()
+    visualize_demo_2()
+    visualize_demo_3()
+    visualize_demo_4()
     visualize_demo_5()
 
 

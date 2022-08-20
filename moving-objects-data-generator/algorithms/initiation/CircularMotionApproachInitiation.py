@@ -15,7 +15,12 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
         self.start_angle: np.ndarray = np.array([], dtype=np.float64)
         self.start_orbit_center_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
 
-    def initiate(self, cmap: CircularMotionApproachParameters = CircularMotionApproachParameters()):
+    def initiate(self, cmap: CircularMotionApproachParameters = CircularMotionApproachParameters(), report_output_filename=None):
+
+        # open file of report data if needed
+        report_output_file = None
+        if report_output_filename is not None:
+            report_output_file = open(file=report_output_filename, mode="w")
 
         # perform the initiation of the super class
         super().initiate(stfp=cmap)
@@ -58,6 +63,13 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
         # determine circular orbits' centers of the feature instance which belong to the given co-location's instance
         features_instances_orbit_centers_coor = collocations_instances_orbit_centers_coor[:, self.collocations_clumpy_instances_global_ids]
 
+        # write circular orbits' centers to the report file if needed
+        if report_output_filename is not None:
+            fmt_line = '%.6f;%.6f' + ';%.6f;%.6f' * cmap.circle_chain_size + '\n'
+            for i_feature_instance in range(self.features_instances_sum):
+                data = np.concatenate((features_instances_orbit_centers_coor[:, i_feature_instance, :].ravel(), features_instances_start_coor[i_feature_instance]), axis=0)
+                report_output_file.write(fmt_line % tuple(data))
+
         # calculate random position displacement of every circular orbit of the given feature instance according to the 'center_noise_displacement' parameter value
         orbit_center_displacement_theta = np.random.uniform(high=2 * np.pi, size=(cmap.circle_chain_size, self.features_instances_sum))
         orbit_center_displacement_r = cmap.center_noise_displacement * np.sqrt(np.random.random(size=(cmap.circle_chain_size, self.features_instances_sum)))
@@ -68,6 +80,14 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
         # displace every circular orbit with calculated noise
         features_instances_orbit_centers_coor += orbit_center_displacement_coor
         # ----end---- determine circular orbits' centers of all features' instances
+
+        # write circular orbits' centers to the report file if needed
+        if report_output_filename is not None:
+            fmt_line = '%.6f;%.6f' + ';%.6f;%.6f' * cmap.circle_chain_size + '\n'
+            for i_feature_instance in range(self.features_instances_sum):
+                data = np.concatenate((features_instances_orbit_centers_coor[:, i_feature_instance, :].ravel(), features_instances_start_coor[i_feature_instance]), axis=0)
+                report_output_file.write(fmt_line % tuple(data))
+            report_output_file.close()
 
         # remember starting position of calculating orbital position of every feature instance
         self.start_orbit_center_coor = features_instances_orbit_centers_coor[0]

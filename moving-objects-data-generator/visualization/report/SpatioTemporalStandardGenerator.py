@@ -46,7 +46,7 @@ def visualize_demo_1_generate_data():
 def visualize_demo_1():
     print("SpatioTemporalStandardGenerator visualize_demo_1()")
 
-    # visualize_demo_1_generate_data()
+    visualize_demo_1_generate_data()
 
     df = pd.read_csv("data\\SpatioTemporalStandardGenerator_output_file_demo_1.txt", sep=';', header=None, comment="#")
     df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
@@ -105,9 +105,9 @@ def visualize_demo_1():
             ax.scatter(x=df_tf.iloc[[i]].x, y=df_tf.iloc[[i]].y, s=20, marker=markers[i], color=colors[i], linewidths=0.5, alpha=0.8)
 
     plt.show()
-    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_1.png")
-    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_1.svg")
-    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_1.eps")
+    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_1.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_1.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_1.eps", bbox_inches='tight')
 
 
 def visualize_demo_2_generate_data():
@@ -150,7 +150,7 @@ def visualize_demo_2_generate_data():
 def visualize_demo_2():
     print("SpatioTemporalStandardGenerator visualize_demo_2()")
 
-    # visualize_demo_2_generate_data()
+    visualize_demo_2_generate_data()
 
     df = pd.read_csv("data\\SpatioTemporalStandardGenerator_output_file_demo_2.txt", sep=';', header=None, comment="#")
     df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
@@ -209,13 +209,13 @@ def visualize_demo_2():
             ax.scatter(x=df_tf.iloc[[i]].x, y=df_tf.iloc[[i]].y, s=20, marker=markers[i], color=colors[i], linewidths=0.5, alpha=0.8)
 
     plt.show()
-    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_2.png")
-    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_2.svg")
-    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_2.eps")
+    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_2.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_2.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalStandardGenerator_output_file_demo_2.eps", bbox_inches='tight')
 
 
 def main():
-    # visualize_demo_1()
+    visualize_demo_1()
     visualize_demo_2()
 
 

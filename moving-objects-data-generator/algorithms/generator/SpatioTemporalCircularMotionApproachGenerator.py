@@ -63,7 +63,6 @@ class SpatioTemporalCircularMotionApproachGenerator:
 
 
 if __name__ == "__main__":
-
     print("SpatioTemporalCircularMotionApproachGenerator main()")
 
     cmap = CircularMotionApproachParameters(
@@ -90,8 +89,8 @@ if __name__ == "__main__":
         center_noise_displacement=5.0
     )
 
-    stoag = SpatioTemporalCircularMotionApproachGenerator(cmap=cmap)
-    stoag.generate(
+    stcmag = SpatioTemporalCircularMotionApproachGenerator(cmap=cmap)
+    stcmag.generate(
         time_frames_number=500,
         output_filename="output\\SpatioTemporalCircularMotionApproachGenerator_output_file.txt",
         output_filename_timestamp=False

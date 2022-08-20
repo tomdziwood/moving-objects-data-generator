@@ -49,15 +49,15 @@ def visualize_demo_1_generate_data():
 def visualize_demo_1():
     print("SpatioTemporalTravelApproachGenerator visualize_demo_1()")
 
-    # visualize_demo_1_generate_data()
+    visualize_demo_1_generate_data()
 
     visualize_x_y("data\\SpatioTemporalTravelApproachGenerator_output_file_demo_1.txt", xlim=[0, 50], ylim=[0, 50], markersize=4, markevery=1)
 
     fig = plt.gcf()
     plt.show()
-    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_1.png")
-    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_1.svg")
-    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_1.eps")
+    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_1.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_1.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_1.eps", bbox_inches='tight')
 
 
 def visualize_demo_2_generate_data():
@@ -109,19 +109,19 @@ def visualize_demo_2_generate_data():
 def visualize_demo_2():
     print("SpatioTemporalTravelApproachGenerator visualize_demo_2()")
 
-    # visualize_demo_2_generate_data()
+    visualize_demo_2_generate_data()
 
     visualize_x_y("data\\SpatioTemporalTravelApproachGenerator_output_file_demo_2.txt", xlim=[0, 40], ylim=[10, 50], markersize=4, markevery=1)
 
     fig = plt.gcf()
     plt.show()
-    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_2.png")
-    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_2.svg")
-    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_2.eps")
+    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_2.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_2.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalTravelApproachGenerator_output_file_demo_2.eps", bbox_inches='tight')
 
 
 def main():
-    # visualize_demo_1()
+    visualize_demo_1()
     visualize_demo_2()
 
 
