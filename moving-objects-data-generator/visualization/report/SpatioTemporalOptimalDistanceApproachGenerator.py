@@ -289,9 +289,12 @@ def visualize_demo_5():
     ylim = [91, 105]
 
     input_filenames = [
-        "data\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5.txt",
-        "data\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_6.txt"
+        "data\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_6.txt",
+        "data\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5.txt"
     ]
+
+    ax_titles = [r"(%d) $k_{optimal}=5.0, F_{max}=20.0, v_{max}=2.5$",
+                 r"(%d) $k_{optimal}=5.0, F_{max}=20.0, v_{max}=10.0$"]
 
     for i in range(len(input_filenames)):
         df = pd.read_csv(input_filenames[i], sep=';', header=None, comment="#")
@@ -313,6 +316,7 @@ def visualize_demo_5():
         ax.set_ylim(ylim)
         ax.set_xlabel(r"x")
         ax.set_ylabel(r"y")
+        ax.set_title(ax_titles[i] % (i + 1))
 
         df_sorted = df_filtered.sort_values(['feature_id', 'feature_instance_id', 'time_frame'])
         df_grouped = df_sorted.groupby(['feature_id', 'feature_instance_id'])
@@ -327,6 +331,16 @@ def visualize_demo_5():
                     color=plt.get_cmap("nipy_spectral")(colors_list[index]),
                     marker=markers_list[row.feature_id % markers_list_length],
                     markersize=3, linewidth=1, markevery=1)
+
+            # print("Drawing route of object %d out of %d" % (index + 1, objects_number))
+            # points = np.array([row.x, row.y]).T.reshape(-1, 1, 2)
+            # segments = np.concatenate([points[:-1], points[1:]], axis=1)
+            # color = plt.get_cmap("nipy_spectral")(colors_list[index])
+            # marker = markers_list[row.feature_id % markers_list_length]
+            # for i_segment in range(segments.shape[0]):
+            #     segment = segments[i_segment]
+            #     alpha = 0.0 + i_segment / segments.shape[0]
+            #     ax.plot(segment[:, 0], segment[:, 1], time_frames[i_segment:i_segment + 2], color=color, marker=marker, markersize=3, linewidth=1, alpha=alpha)
 
     plt.show()
     fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5.png", bbox_inches='tight')
