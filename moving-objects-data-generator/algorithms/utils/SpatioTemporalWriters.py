@@ -265,6 +265,7 @@ class SpatioTemporalInteractionApproachWriter(SpatioTemporalWriter):
         # write basic statistics of created features
         self.f.write("# ---------- initiated values ----------\n")
         write_basic_initiation_values(self.f, iai)
+        write_standard_time_frame_initiation_values(self.f, iai)
         self.f.write("# mass_sum:\t%s\n" % str(iai.mass_sum))
         self.f.write("# center:\t%s\n" % str(iai.center))
         self.f.write("# time_interval:\t%s\n" % str(iai.time_interval))
@@ -301,6 +302,7 @@ class SpatioTemporalCircularMotionApproachWriter(SpatioTemporalWriter):
         # write basic statistics of created features
         self.f.write("# ---------- initiated values ----------\n")
         write_basic_initiation_values(self.f, cmai)
+        write_standard_time_frame_initiation_values(self.f, cmai)
         self.f.write("#\n")
 
 
@@ -333,6 +335,7 @@ class SpatioTemporalOptimalDistanceApproachWriter(SpatioTemporalWriter):
         # write basic statistics of created features
         self.f.write("# ---------- initiated values ----------\n")
         write_basic_initiation_values(self.f, odai)
+        write_standard_time_frame_initiation_values(self.f, odai)
         self.f.write("# mass_sum:\t%s\n" % str(odai.mass_sum))
         self.f.write("# center:\t%s\n" % str(odai.center))
         self.f.write("# time_interval:\t%s\n" % str(odai.time_interval))
