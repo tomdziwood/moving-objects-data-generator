@@ -34,6 +34,8 @@ def visualize_minfreq(input_filename):
         "Generator oparty na wyznaczaniu celu podróży"
     ]
 
+    markers_list = ["o", "s", "^", "+", "x", "2", (6, 2, 0), "*", (6, 1, 0)]
+
     filenames = df.filename.unique()
     for filename_idx, filename in enumerate(filenames):
         idx = filename.rfind('\\') + 1
@@ -83,7 +85,13 @@ def visualize_minfreq(input_filename):
             idxs = np.where(columnData.values == 0)[0]
             if idxs.size > 0:
                 idx = idxs[0]
-            ax.plot(minfreqs[:idx], columnData.values[:idx], marker='o', markersize=5, linewidth=1.5, linestyle='dashed', color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
+
+            marker = markers_list[column_idx]
+
+            if idx <= 1:
+                ax.scatter(minfreqs[:idx], columnData.values[:idx], marker=marker, s=49, color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
+            else:
+                ax.plot(minfreqs[:idx], columnData.values[:idx], marker=marker, markersize=7, linewidth=1.5, linestyle='dashed', color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
             column_idx += 1
 
         xlim = [0, 1]
@@ -104,7 +112,13 @@ def visualize_minfreq(input_filename):
             idxs = np.where(columnData.values == 0)[0]
             if idxs.size > 0:
                 idx = idxs[0]
-            ax.plot(minfreqs[:idx], columnData.values[:idx], marker='o', markersize=5, linewidth=1.5, linestyle='dashed', color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
+
+            marker = markers_list[column_idx]
+
+            if idx <= 1:
+                ax.scatter(minfreqs[:idx], columnData.values[:idx], marker=marker, s=49, color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
+            else:
+                ax.plot(minfreqs[:idx], columnData.values[:idx], marker=marker, markersize=7, linewidth=1.5, linestyle='dashed', color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
             column_idx += 1
 
         ax.legend(title=r"\noindent Długość \\ \vspace{20mm} wzorca", loc='center left', bbox_to_anchor=(1, 0.5))
@@ -152,6 +166,8 @@ def visualize_minprev(input_filename):
         "Standardowy generator",
         "Generator oparty na wyznaczaniu celu podróży"
     ]
+
+    markers_list = ["o", "s", "^", "+", "x", "2", (6, 2, 0), "*", (6, 1, 0)]
 
     filenames = df.filename.unique()
     for filename_idx, filename in enumerate(filenames):
@@ -202,7 +218,13 @@ def visualize_minprev(input_filename):
             idxs = np.where(columnData.values == 0)[0]
             if idxs.size > 0:
                 idx = idxs[0]
-            ax.plot(minprevs[:idx], columnData.values[:idx], marker='o', markersize=5, linewidth=1.5, linestyle='dashed', color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
+
+            marker = markers_list[column_idx]
+
+            if idx <= 1:
+                ax.scatter(minprevs[:idx], columnData.values[:idx], marker=marker, s=49, color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
+            else:
+                ax.plot(minprevs[:idx], columnData.values[:idx], marker=marker, markersize=7, linewidth=1.5, linestyle='dashed', color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
             column_idx += 1
 
         xlim = [0.25, 0.75]
@@ -223,7 +245,13 @@ def visualize_minprev(input_filename):
             idxs = np.where(columnData.values == 0)[0]
             if idxs.size > 0:
                 idx = idxs[0]
-            ax.plot(minprevs[:idx], columnData.values[:idx], marker='o', markersize=5, linewidth=1.5, linestyle='dashed', color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
+
+            marker = markers_list[column_idx]
+
+            if idx <= 1:
+                ax.scatter(minprevs[:idx], columnData.values[:idx], marker=marker, s=49, color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
+            else:
+                ax.plot(minprevs[:idx], columnData.values[:idx], marker=marker, markersize=7, linewidth=1.5, linestyle='dashed', color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
             column_idx += 1
 
         ax.legend(title=r"\noindent Długość \\ \vspace{20mm} wzorca", loc='center left', bbox_to_anchor=(1, 0.5))
