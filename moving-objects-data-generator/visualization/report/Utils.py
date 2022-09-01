@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from adjustText import adjust_text
 from matplotlib import pyplot as plt
 
 
@@ -357,3 +358,39 @@ def visualize_frame(input_file, time_frame=0, markersize=20, xlim=None, ylim=Non
                    marker=markers[i],
                    color=plt.get_cmap("nipy_spectral")(colors_list[i]),
                    linewidths=0.5, alpha=0.8)
+
+
+def visualize_neighbours_in_space(ax, df, area, distance, xlim=None, ylim=None, markersize=100, markerlinewidth=1.5, linewidth=1.0, fontsize=16):
+    (x_min, y_min) = (np.int32(df.x.min()), np.int32(df.y.min()))
+    print("min coor:\t(%d, %d)" % (x_min, y_min))
+    (x_max, y_max) = (np.int32(df.x.max()), np.int32(df.y.max()))
+    print("max coor:\t(%d, %d)" % (x_max, y_max))
+    if xlim is None:
+        xlim = [0, area]
+        ylim = [0, area]
+
+    markers_list = ["o", ",", "^", "+", "x", "2", (6, 2, 0), "*", (6, 1, 0), "h", "v", "<", ">", "1", "3", "4", "D", "8", "s", "p", "P", "H", "X", "d"]
+    markers_list_length = len(markers_list)
+
+    ax.set_aspect('equal')
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+
+    ax.tick_params(axis='both', left=False, right=False, top=False, bottom=False, labelbottom=False, labelleft=False)
+
+    markers = [markers_list[x % markers_list_length] for x in df.feature_id]
+    texts = []
+
+    for i in range(len(df)):
+        row = df.iloc[i]
+        ax.scatter(x=row.x, y=row.y, s=markersize, marker=markers[i], color='b', linewidths=markerlinewidth)
+        texts.append(ax.text(row.x, row.y, "%s.%d" % (chr(int(ord('A') + row.feature_id)), row.feature_instance_id), ha='center', va='center', fontsize=fontsize))
+
+    adjust_text(texts)
+
+    for i in range(len(df)):
+        i_row = df.iloc[i]
+        for j in range(i + 1, len(df)):
+            j_row = df.iloc[j]
+            if (i_row.x - j_row.x) ** 2 + (i_row.y - j_row.y) ** 2 <= distance ** 2:
+                ax.plot([i_row.x, j_row.x], [i_row.y, j_row.y], color='0.5', linewidth=linewidth, zorder=0)
