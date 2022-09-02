@@ -149,7 +149,8 @@ moving-objects-data-generator/visualization/report/data/*.txt
 moving-objects-data-generator/visualization/report/output/*.png
 moving-objects-data-generator/visualization/report/output/*.eps
 
-# Ignore report visualization output files
+# Ignore analyses visualization output files
+moving-objects-data-generator/analyses/trash.txt
 moving-objects-data-generator/analyses/data/batch_??/*.txt
 moving-objects-data-generator/analyses/output/*.png
 moving-objects-data-generator/analyses/output/*.eps

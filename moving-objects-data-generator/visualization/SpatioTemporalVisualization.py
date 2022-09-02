@@ -48,15 +48,21 @@ def visualize_stack(input_filename="input_file.txt"):
 
 
 def animate(frame, *fargs):
-    (df, ax, xlim, ylim) = fargs
+    (df, ax, xlim, ylim, colors_list, markers_list, unique_feature_ids) = fargs
     ax.clear()
 
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
+    ax.set_title("moment czasowy: %d" % (frame + 1), fontsize=9)
 
     df_tf = df[df.time_frame == frame]
-    ax.scatter(x=df_tf.x, y=df_tf.y)
-    plt.title("czas: %d" % (frame + 1))
+
+    for feature_id in unique_feature_ids:
+        df_tf_feature_id = df_tf[df_tf.feature_id == feature_id]
+        ax.scatter(x=df_tf_feature_id.x, y=df_tf_feature_id.y, s=25,
+                   marker=markers_list[feature_id % len(markers_list)],
+                   color=plt.get_cmap("nipy_spectral")(colors_list[feature_id]),
+                   linewidths=2, alpha=0.7)
 
 
 def visualize_gif(input_filename="input_file.txt", output_filename=None, fps=1):
@@ -76,14 +82,23 @@ def visualize_gif(input_filename="input_file.txt", output_filename=None, fps=1):
     xlim = [x_min - lim_margin_percent * (x_max - x_min), x_max + lim_margin_percent * (x_max - x_min)]
     ylim = [y_min - lim_margin_percent * (y_max - y_min), y_max + lim_margin_percent * (y_max - y_min)]
 
-    fig, ax = plt.subplots()
-    plt.rcParams["figure.figsize"] = (10, 7)
+    cm = 1 / 2.54
+    fig, ax = plt.subplots(figsize=(12 * cm, 12 * cm), dpi=300)
+    plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
+
+    ax.set_aspect('equal')
+    ax.tick_params(axis='both', which='major', labelsize=7)
+    ax.tick_params(axis='both', which='minor', labelsize=5)
+
+    unique_feature_ids =  df.feature_id.unique()
+    colors_list = np.linspace(0, 1, unique_feature_ids.size)
+    markers_list = ["o", ",", "^", "+", "x", "2", (6, 2, 0), "*", (6, 1, 0), "h", "v", "<", ">", "1", "3", "4", "D", "8", "p", "P", "H", "X", "d"]
 
     fa = plt_ani.FuncAnimation(
         fig=fig,
         func=animate,
         frames=time_frames,
-        fargs=(df, ax, xlim, ylim)
+        fargs=(df, ax, xlim, ylim, colors_list, markers_list, unique_feature_ids)
     )
 
     if output_filename is None:
