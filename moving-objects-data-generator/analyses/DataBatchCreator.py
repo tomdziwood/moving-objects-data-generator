@@ -558,7 +558,7 @@ def create_batch_05():
             else:
                 iap.random_seed = random_seeds[sample]
 
-            output_filename = "data\\batch_05\\SpatioTemporalInteractionApproachGenerator_output_file__velocity_limit_%02.1f__sample_%02d.txt" % (velocity_limit, sample)
+            output_filename = "data\\batch_05\\SpatioTemporalInteractionApproachGenerator_output_file__velocity_limit_%04.1f__sample_%02d.txt" % (velocity_limit, sample)
 
             stiag = SpatioTemporalInteractionApproachGenerator(iap=iap)
             stiag.generate(
@@ -645,7 +645,7 @@ def create_batch_06():
             else:
                 odap.random_seed = random_seeds[sample]
 
-            output_filename = "data\\batch_06\\SpatioTemporalOptimalDistanceApproachGenerator_output_file__velocity_limit_%02.1f__sample_%02d.txt" % (velocity_limit, sample)
+            output_filename = "data\\batch_06\\SpatioTemporalOptimalDistanceApproachGenerator_output_file__velocity_limit_%04.1f__sample_%02d.txt" % (velocity_limit, sample)
 
             stodag = SpatioTemporalOptimalDistanceApproachGenerator(odap=odap)
             stodag.generate(
