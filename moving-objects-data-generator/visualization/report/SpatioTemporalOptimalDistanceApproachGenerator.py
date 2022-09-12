@@ -261,6 +261,51 @@ def visualize_demo_6_generate_data():
     )
 
 
+def visualize_individually(input_filename, ax, title):
+
+    markers_list = ["o", "s", "^", "+", "*", "x", "2", (6, 1, 0), (6, 2, 0), "h", "v", "<", ">", "1", "3", "4", "D", "8", "p", "P", "H", "X", "d"]
+    markers_list_length = len(markers_list)
+
+    start_frame = 50
+    end_frame = 150
+
+    xlim = [33, 47]
+    ylim = [91, 105]
+
+    df = pd.read_csv(input_filename, sep=';', header=None, comment="#")
+    df.columns = ["time_frame", "feature_id", "feature_instance_id", "x", "y"]
+    time_frames = df.time_frame.unique()
+    sorted(time_frames)
+    print("time_frames size: %d" % time_frames.size)
+    df_filtered = df[np.logical_and(df.time_frame >= start_frame, df.time_frame <= end_frame)]
+
+    (x_min, y_min) = (np.int32(df.x.min()), np.int32(df.y.min()))
+    print("min coor:\t(%d, %d)" % (x_min, y_min))
+    (x_max, y_max) = (np.int32(df.x.max()), np.int32(df.y.max()))
+    print("max coor:\t(%d, %d)" % (x_max, y_max))
+
+    ax.set_aspect('equal')
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    ax.set_xlabel(r"x")
+    ax.set_ylabel(r"y")
+    ax.set_title(title)
+
+    df_sorted = df_filtered.sort_values(['feature_id', 'feature_instance_id', 'time_frame'])
+    df_grouped = df_sorted.groupby(['feature_id', 'feature_instance_id'])
+    df_listed = df_grouped.agg({'x': lambda x: list(x), 'y': lambda x: list(x)}).reset_index()
+
+    objects_number = len(df_listed)
+    colors_list = np.linspace(0, 1, objects_number)
+
+    for index, row in df_listed.iterrows():
+        print("Drawing route of object %d out of %d" % (index + 1, objects_number))
+        ax.plot(row.x, row.y,
+                color=plt.get_cmap("nipy_spectral")(colors_list[index]),
+                marker=markers_list[row.feature_id % markers_list_length],
+                markersize=3, linewidth=1, markevery=1)
+
+
 def visualize_demo_5():
     print("SpatioTemporalOptimalDistanceApproachGenerator visualize_demo_5()")
 
@@ -293,8 +338,11 @@ def visualize_demo_5():
         "data\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5.txt"
     ]
 
-    ax_titles = [r"(%d) $k_{optimal}=5.0, F_{max}=20.0, v_{max}=2.5$",
-                 r"(%d) $k_{optimal}=5.0, F_{max}=20.0, v_{max}=10.0$"]
+    ax_titles_1 = [r"(a) $k_{optimal}=5.0, F_{max}=20.0, v_{max}=2.5$",
+                   r"(b) $k_{optimal}=5.0, F_{max}=20.0, v_{max}=10.0$"]
+
+    ax_titles_2 = [r"$k_{optimal}=5.0, F_{max}=20.0, v_{max}=2.5$",
+                   r"$k_{optimal}=5.0, F_{max}=20.0, v_{max}=10.0$"]
 
     for i in range(len(input_filenames)):
         df = pd.read_csv(input_filenames[i], sep=';', header=None, comment="#")
@@ -316,7 +364,7 @@ def visualize_demo_5():
         ax.set_ylim(ylim)
         ax.set_xlabel(r"x")
         ax.set_ylabel(r"y")
-        ax.set_title(ax_titles[i] % (i + 1))
+        ax.set_title(ax_titles_1[i])
 
         df_sorted = df_filtered.sort_values(['feature_id', 'feature_instance_id', 'time_frame'])
         df_grouped = df_sorted.groupby(['feature_id', 'feature_instance_id'])
@@ -347,12 +395,28 @@ def visualize_demo_5():
     fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5.svg", bbox_inches='tight')
     fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5.eps", bbox_inches='tight')
 
+    fig, ax = plt.subplots(figsize=(10*cm, 10*cm))
+    plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
+    visualize_individually(input_filename=input_filenames[0], ax=ax, title=ax_titles_2[0])
+    plt.show()
+    fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5a.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5a.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5a.eps", bbox_inches='tight')
+
+    fig, ax = plt.subplots(figsize=(10*cm, 10*cm))
+    plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
+    visualize_individually(input_filename=input_filenames[1], ax=ax, title=ax_titles_2[1])
+    plt.show()
+    fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5b.png", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5b.svg", bbox_inches='tight')
+    fig.savefig("output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file_demo_5b.eps", bbox_inches='tight')
+
 
 def main():
-    visualize_demo_1()
-    visualize_demo_2()
-    visualize_demo_3()
-    visualize_demo_4()
+    # visualize_demo_1()
+    # visualize_demo_2()
+    # visualize_demo_3()
+    # visualize_demo_4()
     visualize_demo_5()
 
 

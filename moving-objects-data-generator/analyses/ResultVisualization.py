@@ -353,7 +353,7 @@ def visualize_parameter_value_change(input_filename, parameter_name, parameter_v
     ax = axs[0]
 
     ax.set_xlabel(xlabel)
-    ax.set_title(r"Liczba instancji wzorców o danej długości", fontsize=11)
+    ax.set_title(r"Średnia liczba instancji wzorców o danej długości", fontsize=11)
 
     column_idx = 0
     for (columnName, columnData) in df_pattern_instances_size.iteritems():
@@ -369,7 +369,7 @@ def visualize_parameter_value_change(input_filename, parameter_name, parameter_v
                 idx_stop += 1
 
             if idx_start < len(columnData):
-                if idx_start == idx_stop:
+                if idx_start + 1 == idx_stop:
                     ax.scatter(parameter_values_array[idx_start], columnData.values[idx_start], marker=marker, s=49, color=color_map[column_idx])
                 else:
                     ax.plot(parameter_values_array[idx_start:idx_stop], columnData.values[idx_start:idx_stop], marker=marker, markersize=7, linewidth=1.5, linestyle='dashed', color=color_map[column_idx])
@@ -387,7 +387,7 @@ def visualize_parameter_value_change(input_filename, parameter_name, parameter_v
     ax = axs[1]
 
     ax.set_xlabel(xlabel)
-    ax.set_title(r"Liczba wzorców o danej długości", fontsize=11)
+    ax.set_title(r"Średnia liczba wzorców o danej długości", fontsize=11)
 
     column_idx = 0
     for (columnName, columnData) in df_pattern_colocations_size.iteritems():
@@ -404,7 +404,7 @@ def visualize_parameter_value_change(input_filename, parameter_name, parameter_v
                 idx_stop += 1
 
             if idx_start < len(columnData):
-                if idx_start == idx_stop:
+                if idx_start + 1 == idx_stop:
                     if not legend_label_added:
                         ax.scatter(parameter_values_array[idx_start], columnData.values[idx_start], marker=marker, s=49, color=color_map[column_idx], label=r"$%d$" % (column_idx + 2))
                         legend_label_added = True

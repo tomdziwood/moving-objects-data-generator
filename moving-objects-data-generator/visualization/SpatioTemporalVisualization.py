@@ -76,14 +76,14 @@ def visualize_gif(input_filename="input_file.txt", output_filename=None, fps=1):
 
     (x_min, y_min) = (np.int32(df.x.min()), np.int32(df.y.min()))
     print("min coor:\t(%d, %d)" % (x_min, y_min))
-    (x_max, y_max) = (np.int32(df.x.max()), np.int32(df.y.max()))
+    (x_max, y_max) = (np.int32(df.x.max()) + 1, np.int32(df.y.max()) + 1)
     print("max coor:\t(%d, %d)" % (x_max, y_max))
     lim_margin_percent = 0.01
     xlim = [x_min - lim_margin_percent * (x_max - x_min), x_max + lim_margin_percent * (x_max - x_min)]
     ylim = [y_min - lim_margin_percent * (y_max - y_min), y_max + lim_margin_percent * (y_max - y_min)]
 
     cm = 1 / 2.54
-    fig, ax = plt.subplots(figsize=(12 * cm, 12 * cm), dpi=300)
+    fig, ax = plt.subplots(figsize=(12 * cm, 12 * cm), dpi=200)
     plt.tight_layout(pad=1.5, w_pad=0, h_pad=2)
 
     ax.set_aspect('equal')
