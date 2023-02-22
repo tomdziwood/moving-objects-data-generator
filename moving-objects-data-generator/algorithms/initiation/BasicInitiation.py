@@ -13,16 +13,122 @@ class BasicInitiation:
     basic_parameters : BasicParameters
         The object of class `BasicParameters`, which holds all the required parameters of the `SpatioTemporalBasicGenerator` generator.
 
+    base_collocation_lengths : np.ndarray
+        The array's size is equal to the number of base co-locations. The i-th value represents the length of the i-th base co-location - that is the number of features,
+        which take part in the i-th co-location
+
+    collocation_lengths : np.ndarray
+        The array's size is equal to the number of maximal co-locations. The i-th value represents the length of the i-th co-location. The length of the given co-location
+        depends on the length of its base co-location and ``m_overlap`` parameter value.
+
+    collocations_sum : int
+        The total number of co-location patterns.
+
+    collocation_instances_counts : np.ndarray
+        The array's size is equal to the number of co-locations. The i-th value represents the number of instances of the i-th co-location and it is determined
+        by the Poisson distribution with lambda equals ``lambda_2`` parameter value.
+
+    collocations_instances_sum : int
+        The total number of instances of the co-location patterns.
+
+    collocation_features_sum : int
+        The total number of co-location features, which take part in co-locations.
+
+    collocation_features_instances_counts : np.ndarray
+        The array's size is equal to the number of co-location features. The i-th value represents the number of instances of the i-th co-location feature.
+
+    collocation_features_instances_sum : int
+        The total number of co-location features instances, which take part in co-locations.
+
+    collocation_features_ids : np.ndarray
+        The array's size is equal to the number of co-location features instances. The i-th value represents the feature id to which the i-th consecutive
+        co-location feature instance belongs.
+
+    collocation_features_instances_ids : np.ndarray
+        The array's size is equal to the number of co-location features instances. The i-th value represents the feature instance id of the i-th consecutive
+        co-location feature instance.
+
+    area_in_cell_dim : int
+        The number of spatial cells, which can be fitted alongside the defined squared two-dimensional area.
+
+    collocation_noise_features_sum : int
+        The total number of co-location noise features, which are chosen from co-location features. The number is determined with the ``ncfr`` parameter value.
+
+    collocation_noise_features : np.ndarray
+        The array's size is equal to the number of co-location noise features. The array contains co-location features ids, which has been chosen
+        as co-location noise features.
+
+    collocation_noise_features_instances_sum : int
+        The total number of co-location noise features instances. The number depends on the ``ncfr`` and ``ncf_proportional`` parameter values.
+
+    collocation_noise_features_instances_counts : np.ndarray
+        The array's size is equal to the number of co-location noise features. The i-th value represents the number of instances of the i-th co-location noise feature.
+
+    collocation_noise_features_ids : np.ndarray
+        The array's size is equal to the number of co-location noise features instances. The i-th value represents the feature id to which the i-th consecutive
+        co-location noise feature instance belongs.
+
+    collocation_noise_features_instances_ids : np.ndarray
+        The array's size is equal to the number of co-location noise features instances. The i-th value represents the feature instance id of the i-th consecutive
+        co-location noise feature instance.
+
+    additional_noise_features : np.ndarray
+        The array's size is equal to the number of additional noise features. The array contains new ids, which represent new types of additional noise features.
+
+    additional_noise_features_instances_counts : np.ndarray
+        The array's size is equal to the number of additional noise features. The i-th value represents the number of instances of the i-th additional noise feature.
+
+    additional_noise_features_ids : np.ndarray
+        The array's size is equal to the number of additional noise features instances. The i-th value represents the feature id to which the i-th consecutive
+        additional noise feature instance belongs.
+
+    additional_noise_features_instances_ids : np.ndarray
+        The array's size is equal to the number of additional noise features instances. The i-th value represents the feature instance id of the i-th consecutive
+        additional noise feature instance.
+
+    features_sum : int
+        The total number of features, which is the sum of the numbers of co-location features and additional features.
+
+    features_ids : np.ndarray
+        The array's size is equal to the number of features instances. The i-th value represents the feature id to which the i-th consecutive feature instance belongs.
+        The array is created by concatenating the arrays of co-location, co-location noise and additional noise features ids respectively.
+
+    features_instances_ids : np.ndarray
+        The array's size is equal to the number of features instances. The i-th value represents the feature instance id of the i-th consecutive feature instance.
+        The array is created by concatenating the arrays of co-location, co-location noise and additional noise features instances ids respectively.
+
+    features_instances_sum : int
+        The total number of features instances, which is the sum of co-location, co-location noise and additional noise features instances numbers.
+
     collocations_instances_global_ids : np.ndarray
-        The array's size is equal to the number of features' instances. The i-th value represents the global id of the co-location instance,
-        to which the i-th feature instance belongs.
+        The array's size is equal to the number of features instances. The i-th value represents the global id of the co-location instance,
+        to which the i-th feature instance belongs. Every noise feature instance is treated as it belongs to the next unique co-location instance
+        with next unique co-locations instances global id.
 
     collocations_instances_global_sum : int
-        The number of all specified collocation global instances.
+        The number of all specified global collocations instances.
 
     collocations_instances_global_ids_repeats : np.ndarray
-        The array's size is equal to the number of co-locations instances. The i-th value represents the number of features' instances,
-        which belong to the i-th co-location instance.
+        The array's size is equal to the number of global co-locations instances. The i-th value represents the number of features instances,
+        which belong to the i-th global co-location instance.
+
+    collocation_clumpy_instances_counts : np.ndarray
+        The array's size is equal to the number of co-locations. The i-th value represents the number of "clumpy" instances of the i-th co-location.
+        Co-locations instances gathered by ``m_clumpy`` parameter are counted as one "clumpy" instance. When ``m_clumpy`` parameter value is equal to.``1``,
+        then the array is equivalent to the ``collocation_instances_counts`` array.
+
+    collocations_clumpy_instances_global_ids : np.ndarray
+        The array's size is equal to the number of features instances. The i-th value represents the global id of the co-location "clumpy" instance,
+        to which the i-th feature instance belongs.  When ``m_clumpy`` parameter value is equal to.``1``, then the array is equivalent
+        to the ``collocations_instances_global_ids`` array.
+
+    collocations_clumpy_instances_global_sum : int
+        The number of all specified global collocations "clumpy" instances. When ``m_clumpy`` parameter value is equal to.``1``, then the number is equivalent
+        to the ``collocations_instances_global_sum`` number.
+
+    collocations_clumpy_instances_global_ids_repeats : np.ndarray
+        The array's size is equal to the number of global co-locations "clumpy" instances. The i-th value represents the number of features instances,
+        which belong to the i-th global co-location "clumpy" instance.
     """
 
     def __init__(self):
@@ -81,7 +187,7 @@ class BasicInitiation:
         if bp.random_seed is not None:
             np.random.seed(bp.random_seed)
 
-        # determine length to each of the n_base basic co-locations with poisson distribution (lam=lambda_1)
+        # determine length to each of the n_base base co-locations with poisson distribution (lam=lambda_1)
         self.base_collocation_lengths = np.random.poisson(lam=bp.lambda_1, size=bp.n_base)
         self.base_collocation_lengths[self.base_collocation_lengths < 2] = 2
         print("base_collocation_lengths=%s" % str(self.base_collocation_lengths))
@@ -93,7 +199,7 @@ class BasicInitiation:
             self.collocation_lengths = self.base_collocation_lengths
         print("collocation_lengths=%s" % str(self.collocation_lengths))
 
-        # the total number of co-locations patterns
+        # the total number of co-location patterns
         self.collocations_sum = self.collocation_lengths.size
         print("collocations_sum=%s" % str(self.collocations_sum))
 
@@ -155,7 +261,7 @@ class BasicInitiation:
                 collocation_start_feature_id += self.collocation_lengths[i_colloc] + bp.m_overlap - 1
         print("collocation_features_instances_counts=%s" % str(self.collocation_features_instances_counts))
 
-        # determine the total number of features, which take part in co-locations
+        # determine the total number of features instances, which take part in co-locations
         self.collocation_features_instances_sum = self.collocation_features_instances_counts.sum()
         print("collocation_features_instances_sum=%d" % self.collocation_features_instances_sum)
 
@@ -178,14 +284,14 @@ class BasicInitiation:
             # prepare array which holds counts of created instances of the co-location noise feature
             self.collocation_noise_features_instances_sum = round(bp.ncfn * self.collocation_features_instances_sum)
             if bp.ncf_proportional:
-                # number of the instances of given co-location noise feature is proportional to the number of instances of given feature, which are participating in co-locations
+                # number of instances of given co-location noise feature is proportional to the number of instances of given feature, which are participating in co-locations
                 self.collocation_noise_features_instances_counts = self.collocation_noise_features_instances_sum * self.collocation_features_instances_counts[self.collocation_noise_features] / self.collocation_features_instances_counts[self.collocation_noise_features].sum()
                 self.collocation_noise_features_instances_counts = self.collocation_noise_features_instances_counts.astype(np.int32)
 
                 # correct sum of co-location noise features based on actual count of each feature - difference comes from rounding down counts to integer value
                 self.collocation_noise_features_instances_sum = self.collocation_noise_features_instances_counts.sum()
             else:
-                # number of the instances of every co-location noise feature is similar, because co-location noise feature id is chosen randomly with uniform distribution.
+                # number of instances of every co-location noise feature is similar, because co-location noise feature id is chosen randomly with uniform distribution.
                 collocation_noise_feature_random_choices = np.random.randint(low=self.collocation_noise_features_sum, size=self.collocation_noise_features_instances_sum)
                 (unique_indices, counts_indices) = np.unique(ar=collocation_noise_feature_random_choices, return_counts=True)
                 self.collocation_noise_features_instances_counts = np.zeros_like(a=self.collocation_noise_features)

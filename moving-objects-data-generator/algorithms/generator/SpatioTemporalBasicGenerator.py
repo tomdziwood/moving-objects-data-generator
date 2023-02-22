@@ -7,9 +7,28 @@ from algorithms.parameters.BasicParameters import BasicParameters
 
 
 class SpatioTemporalBasicGenerator:
+    """
+    The class of a spatio-temporal data generator. This is a primitive version of the `SpatioTemporalStandardGenerator`. There are no parameters which are responsible for
+    prevalence of patterns. The generator works like the `SpatioTemporalStandardGenerator` with parameters ``persistent_ratio``, ``spatial_prevalence_threshold``
+    and ``time_prevalence_threshold`` set to the value of ``1.0``.
+
+    This class of a spatio-temporal data generator was created to introduce basic parameters and initiation classes, which are used later in extended models of data generator.
+    To generate spatio-temporal data, please use the `SpatioTemporalStandardGenerator` instead.
+    """
+
     def __init__(
             self,
             bp: BasicParameters = BasicParameters()):
+        """
+        Create object of a spatio-temporal data generator with given set of parameters.
+
+        Parameters
+        ----------
+        bp: BasicParameters
+            The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
+            of the `BasicParameters` class.
+        """
+
         # store parameters of the generator
         self.bp = bp
 
@@ -22,6 +41,22 @@ class SpatioTemporalBasicGenerator:
             time_frames_number: int = 10,
             output_filename: str = "output\\SpatioTemporalBasicGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
+        """
+        Generate spatio-temporal data.
+
+        Parameters
+        ----------
+        time_frames_number : int
+            The number of time frames in which spatio-temporal data will be generated.
+
+        output_filename : str
+            The filename to which output will be written.
+
+        output_filename_timestamp : bool
+            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            It helps to automatically recognize different output of generator.
+        """
+
         print("SpatioTemporalBasicGenerator.generate()")
 
         # open file to which output will be written

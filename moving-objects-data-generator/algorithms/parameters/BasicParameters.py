@@ -1,4 +1,8 @@
 class BasicParameters:
+    """
+    The class represents set of parameters used by the `SpatioTemporalBasicGenerator` class of a spatio-temporal data generator.
+    """
+
     def __init__(
             self,
             area: float = 1000.0,
@@ -10,10 +14,62 @@ class BasicParameters:
             m_overlap: int = 1,
             ncfr: float = 0.0,
             ncfn: float = 0.0,
-            ncf_proportional=False,
+            ncf_proportional: bool = False,
             ndf: int = 10,
             ndfn: int = 1000,
             random_seed: int = None):
+        """
+        Construct object which holds all the required parameters of the `SpatioTemporalBasicGenerator` class of a spatio-temporal data generator.
+
+        Parameters
+        ----------
+        area : float
+            The size of the squared two-dimensional area in the spatial framework, where the objects are placed.
+
+        cell_size : float
+            The spatial framework is divided into the squared cells, which size is defined with the value of the parameter ``cell_size``. Features instances,
+            which tend to occur together as a co-location instance, are placed together in the chosen spatial cell in order to create an instance
+            of the co-location pattern in the given time frame.
+
+        n_base : int
+            The number of the base co-location patterns.
+
+        lambda_1 : int
+            The parameter of the Poisson distribution to define the length of the base co-location pattern.
+
+        lambda_2 : int
+            The parameter of the Poisson distribution to define the number of instances of the co-location pattern.
+
+        m_clumpy : int
+            The number of instances of the co-location pattern, which are placed together in the chosen spatial cell.
+
+        m_overlap : int
+            The number of maximal co-location patterns, which are created from a single base co-location pattern. The maximal co-location pattern is created by appending
+            one more spatial feature to the base co-location pattern. When parameter's value is equal to ``1``, then base co-location patterns are treated as maximal.
+
+        ncfr : float
+            The ratio of the number of the co-location noise features which are chosen from the set of the spatial features taking part in the co-locations.
+            This ratio is used to determine the exact number of the co-location noise features.
+
+        ncfn : float
+            The ratio of the number of all instances of the co-location noise features to the number of all instances of the co-location features.
+            This ratio is used to determine the exact number of all co-location features instances.
+
+        ncf_proportional : bool
+            The boolean flag, which determines the way of distributing the number of all instances of the co-location noise features over the every co-location noise feature:
+             - ``False``: the number of all instances is distributed with uniform distribution over the all of the co-location noise features
+             - ``True``: the number of instances of the given co-location noise feature is proportional to the number of instances of this feature, which take part
+               in the co-location.
+
+        ndf : int
+            The number of additional noise features. These are completely new types of features, which are not used in process of defining co-location patterns.
+
+        ndfn : int
+            The number of instances of additional noise features.
+
+        random_seed : int
+            The value of the random seed, which is used to generate reproducible results of experiments.
+        """
 
         # check 'area' value
         if area <= 0.0:
