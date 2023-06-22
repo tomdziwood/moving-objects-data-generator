@@ -8,6 +8,30 @@ from algorithms.utils.SpatialStandardPlacement import SpatialStandardPlacement
 class StandardTimeFrameInitiation(BasicInitiation):
     """
     The class of an initiation of many generator types. Object of this class stores all initial data, which is required to begin the spatio-temporal data generating process.
+
+    Attributes
+    ----------
+    standard_time_frame_parameters : StandardTimeFrameParameters
+        The object of class `StandardTimeFrameParameters`, which holds all the basic parameters used by the many classes of spatio-temporal data generators.
+
+    collocations_instances_number_spatial_prevalence_threshold : np.ndarray
+        The array's size is equal to the number of co-locations. The i-th value represents the minimal number of the i-th co-location instances occurrences,
+        which makes the co-location becomes spatial prevalent.
+
+    spatial_prevalent_collocations_sum : int
+        The number of the co-locations which are chosen as spatial prevalent co-locations at the first time frame. The number is determined
+        with a ''spatial_prevalent_ratio'' parameter value.
+
+    spatial_prevalent_collocations_ids : np.ndarray
+        The array's size is equal to the number of spatial prevalent co-locations. The array contains the ids of the co-locations,
+        which has been chosen as spatial prevalent co-locations.
+
+    collocations_spatial_prevalence_flags : np.ndarray
+        The array's size is equal to the number of co-locations. The array is a boolean vector, which indicates if the i-th co-location is a spatial prevalent co-location
+        at the first time frame.
+
+    spatial_standard_placement : SpatialStandardPlacement
+        The object, which holds all data of the objects placement at the first time frame.
     """
 
     def __init__(self):
@@ -41,7 +65,7 @@ class StandardTimeFrameInitiation(BasicInitiation):
         # store parameters of the initiation
         self.standard_time_frame_parameters = stfp
 
-        # determine the minimal number of the given co-location instances occurrence, which makes the co-location becomes spatial prevalent
+        # determine the minimal number of the given co-location instances occurrences, which makes the co-location becomes spatial prevalent
         self.collocations_instances_number_spatial_prevalence_threshold = np.ceil(stfp.spatial_prevalence_threshold * self.collocation_instances_counts).astype(np.int32)
         print("collocations_instances_number_spatial_prevalence_threshold=%s" % str(self.collocations_instances_number_spatial_prevalence_threshold))
 
@@ -61,7 +85,7 @@ class StandardTimeFrameInitiation(BasicInitiation):
         # create class object, which holds all data of the objects placement
         self.spatial_standard_placement = SpatialStandardPlacement(bi=self, collocations_instances_number_spatial_prevalence_threshold=self.collocations_instances_number_spatial_prevalence_threshold)
 
-        # perform placement of all the features
+        # perform placement of all the features instances
         self.spatial_standard_placement.place(collocations_spatial_prevalence_flags=self.collocations_spatial_prevalence_flags)
 
         # ---begin--- reindex global ids of co-locations' instances
@@ -108,7 +132,7 @@ class StandardTimeFrameInitiation(BasicInitiation):
             # calculate number of new co-locations' ids
             new_collocation_indices_sum = features_instances_not_spatial_prevalent_flags.sum()
 
-            # assign new co-locations' ids to the requested features' instances
+            # assign new co-locations' ids to the requested features instances
             self.collocations_clumpy_instances_global_ids[features_instances_not_spatial_prevalent_flags] = np.arange(self.collocations_clumpy_instances_global_sum, self.collocations_clumpy_instances_global_sum + new_collocation_indices_sum)
 
             # ---begin--- enumerate co-locations' ids again with consecutive integer values
@@ -119,7 +143,7 @@ class StandardTimeFrameInitiation(BasicInitiation):
             self.collocations_clumpy_instances_global_sum = unique.size
             print("collocations_clumpy_instances_global_sum=%d" % self.collocations_clumpy_instances_global_sum)
 
-            # indices of the unique array, which can be used to reconstruct original array, becomes actual co-locations' clumpy instances ids of consecutive features' instances
+            # indices of the unique array, which can be used to reconstruct original array, becomes actual co-locations' clumpy instances ids of consecutive features instances
             self.collocations_clumpy_instances_global_ids = inverse_ids
 
             # ----end---- enumerate co-locations' ids again with consecutive integer values
