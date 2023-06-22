@@ -8,6 +8,33 @@ class StandardInitiation(BasicInitiation):
     """
     The class of a `SpatioTemporalStandardGenerator` initiation. Object of this class stores all initial data, which is required to generate spatio-temporal data
     in each time frame.
+
+    Attributes
+    ----------
+    standard_parameters : StandardParameters
+        The object of class `StandardParameters`, which holds all the required parameters of the `SpatioTemporalStandardGenerator` generator.
+
+    collocations_instances_number_spatial_prevalence_threshold : np.ndarray
+        The array's size is equal to the number of co-locations. The i-th value represents the minimal number of the i-th co-location instances occurrences,
+        which makes the co-location becomes spatial prevalent.
+
+    persistent_collocations_sum : int
+        The number of persistent co-locations. A persistent co-location is a co-location, whose time prevalence measure exceeds the time prevalence threshold.
+
+    persistent_collocations_ids : np.ndarray
+        The array's size is equal to the number of persistent co-locations. The array contains the ids of the co-locations, which has been chosen as persistent co-locations.
+
+    collocations_persistence_flags : np.ndarray
+        The array's size is equal to the number of co-locations. The array is a boolean vector, which indicates if the i-th co-location is persistent.
+
+    transient_collocations_sum : int
+        The number of transient co-locations. A transient co-location is a co-location, whose time prevalence measure does not exceed the time prevalence threshold.
+
+    transient_collocations_ids : np.ndarray
+        The array's size is equal to the number of transient co-locations. The array contains the ids of the co-locations, which has been chosen as transient co-locations.
+
+    collocations_transience_flags : np.ndarray
+        The array's size is equal to the number of co-locations. The array is a boolean vector, which indicates if the i-th co-location is transient.
     """
 
     def __init__(self):
@@ -32,7 +59,7 @@ class StandardInitiation(BasicInitiation):
 
         Parameters
         ----------
-        sp: StandardParameters
+        sp : StandardParameters
             The object of class `StandardParameters`, which holds all the required parameters of the `SpatioTemporalStandardGenerator` generator.
             Its attributes will be used to initialize required data.
         """
@@ -43,7 +70,7 @@ class StandardInitiation(BasicInitiation):
         # store parameters of the initiation
         self.standard_parameters = sp
 
-        # determine the minimal number of the given co-location instances occurrence, which makes the co-location becomes spatial prevalent
+        # determine the minimal number of the given co-location instances occurrences, which makes the co-location becomes spatial prevalent
         self.collocations_instances_number_spatial_prevalence_threshold = np.ceil(sp.spatial_prevalence_threshold * self.collocation_instances_counts).astype(np.int32)
         print("collocations_instances_number_spatial_prevalence_threshold=%s" % str(self.collocations_instances_number_spatial_prevalence_threshold))
 

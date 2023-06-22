@@ -2,12 +2,36 @@ from algorithms.parameters.BasicParameters import BasicParameters
 
 
 class StandardParameters(BasicParameters):
+    """
+    The class represents set of parameters used by the `SpatioTemporalStandardGenerator` class of a spatio-temporal data generator.
+    """
+
     def __init__(
             self,
             persistent_ratio: float = 0.5,
             spatial_prevalence_threshold: float = 0.5,
             time_prevalence_threshold: float = 0.5,
             **kwargs):
+        """
+        Construct object which holds all the required parameters of the `SpatioTemporalStandardGenerator` class of a spatio-temporal data generator.
+
+        Parameters
+        ----------
+        persistent_ratio : float
+            The ratio of the co-location patterns which are chosen as a persistent co-location pattern. This ratio is used to determine the exact number
+            of all persistent co-location patterns.
+
+        spatial_prevalence_threshold : float
+            The spatial prevalence threshold. It is used to determine the minimal number of co-location pattern instances occurrences, which makes the given co-location
+            pattern becomes a spatial prevalent co-location.
+
+        time_prevalence_threshold : float
+            The time prevalence threshold. It is used to determine the minimal number of time frames, when the given co-location pattern is spatial prevalent,
+            so the co-location pattern could be time prevalent.
+
+        kwargs
+            Other parameters passed to the super constructor of the derived class `BasicParameters`.
+        """
 
         super().__init__(**kwargs)
 
