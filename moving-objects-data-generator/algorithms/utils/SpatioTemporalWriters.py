@@ -65,10 +65,10 @@ class SpatioTemporalWriter:
             The vector of time frame ids of consecutive records.
 
         features_ids : np.ndarray
-            The vector of features' types ids of consecutive records.
+            The vector of features types ids of consecutive records.
 
         features_instances_ids : np.ndarray
-            The vector of features' instances ids of consecutive records.
+            The vector of features instances ids of consecutive records.
 
         x : np.ndarray
             The vector of ``x`` coordinates of consecutive records.
@@ -331,7 +331,6 @@ class SpatioTemporalOptimalDistanceApproachWriter(SpatioTemporalWriter):
         write_all_attributes_values(self.f, odai.optimal_distance_approach_parameters)
         self.f.write("#\n")
 
-        # todo
         # write basic statistics of created features
         self.f.write("# ---------- initiated values ----------\n")
         write_basic_initiation_values(self.f, odai)
