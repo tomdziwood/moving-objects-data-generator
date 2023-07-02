@@ -5,6 +5,10 @@ from algorithms.parameters.StandardTimeFrameParameters import StandardTimeFrameP
 
 
 class InteractionApproachParameters(StandardTimeFrameParameters):
+    """
+    The class represents set of parameters used by the `SpatioTemporalInteractionApproachGenerator` class of a spatio-temporal data generator.
+    """
+
     def __init__(
             self,
             time_unit: float = 1.0,
@@ -22,6 +26,67 @@ class InteractionApproachParameters(StandardTimeFrameParameters):
             identical_features_interaction_mode: IdenticalFeaturesInteractionMode = IdenticalFeaturesInteractionMode.ATTRACT,
             different_features_interaction_mode: DifferentFeaturesInteractionMode = DifferentFeaturesInteractionMode.ATTRACT,
             **kwargs):
+        """
+        Construct object which holds all the required parameters of the `SpatioTemporalInteractionApproachGenerator` class of a spatio-temporal data generator.
+
+        Parameters
+        ----------
+        time_unit : float
+            The time unit expressed by the number of time frames.
+
+        distance_unit : float
+            The distance unit expressed by coordinates units of the spatial framework.
+
+        approx_steps_number : int
+            The number of equal steps in the time domain between two consecutive time frames. A larger number of intermediate steps allows for a more accurate simulation
+            of the interactions occurring between objects that affect the obtained locations in subsequent time frames.
+
+        k_force : float
+            The constant scaling factor, which is used in the force interaction formula.
+
+        force_limit : float
+            The limit of maximum absolute value of resultant force applied to the given feature instance.
+
+        velocity_limit : float
+            The limit of maximum absolute value of resultant velocity at which the feature instance can move.
+
+        faraway_limit_ratio : float
+            The ratio of the radius defining the beginning of the attraction force to the initially declared size of the spatial framework. This ratio is used to determine
+            the exact radius length that represents the distance from the center of the initial spatial framework. Once an object exceeds this radius distance,
+            an additional attraction force starts acting on it, pulling it back towards the center. The center is a fixed point determined at the first time frame
+            as the center of mass of all objects. The attractive force acting on a given object is proportional to the mass of that object, the total mass of all objects,
+            the constant scaling factor `'k_force`` and is also proportional to the square of the relative distance of exceeding the allowed distance radius.
+
+        mass_method : MassMethod
+            The enum value is used to distinguish different strategies of choosing the mass for the given instance of the specified feature type.
+            For the detailed description of the available values, see `MassMethod` enum class documentation.
+
+        mass_mean : float
+            The mean value of the mass of a feature instance.
+
+        mass_normal_std_ratio : float
+            The parameter's value is used when ``mass_method=MassMethod.NORMAL``. The parameter's value is used to determine the value of standard deviation
+            while drawing value of the mass from a normal distribution. Parameter describes the ratio of the standard deviation value to the mean value
+            of a normal distribution. This ratio is applied across all features types.
+
+        velocity_method : VelocityMethod
+            The enum value is used to distinguish different strategies of choosing the initial velocity for a feature instance. For the detailed description
+            of the available values, see `VelocityMethod` enum class documentation.
+
+        velocity_mean : float
+            The mean value of the initial velocity of a feature instance.
+
+        identical_features_interaction_mode : IdenticalFeaturesInteractionMode
+            The enum value is used to distinguish different strategies of interaction between instances of the identical feature type. For the detailed description
+            of the available values, see `IdenticalFeaturesInteractionMode` enum class documentation.
+
+        different_features_interaction_mode : DifferentFeaturesInteractionMode
+            The enum value is used to distinguish different strategies of interaction between instances of different features types. For the detailed description
+            of the available values, see `DifferentFeaturesInteractionMode` enum class documentation.
+
+        kwargs
+            Other parameters passed to the super constructor of the derived class `BasicParameters`.
+        """
 
         super().__init__(**kwargs)
 

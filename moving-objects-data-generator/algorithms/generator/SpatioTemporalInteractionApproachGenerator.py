@@ -6,15 +6,39 @@ from algorithms.initiation.InteractionApproachInitiation import InteractionAppro
 from algorithms.parameters.InteractionApproachParameters import InteractionApproachParameters
 
 
-def view_statistics_of_absolute_values(array, array_name):
-    array_abs = np.sqrt(np.sum(a=array ** 2, axis=-1))
-    print("%s:\n\tmin:\t%.12f\n\tavg:\t%.12f\n\tmax:\t%.12f\n" % (array_name, array_abs.min(), array_abs.mean(), array_abs.max()))
-
-
 class SpatioTemporalInteractionApproachGenerator:
+    """
+    The class of a spatio-temporal data generator. The generator refers to natural phenomena of gravitational or electrostatic forces. The applied algorithm assumes
+    that the features instances have mass and interact with each other in space.
+
+    Each pair of objects interacts with each other through mutual attractive or repulsive force, depending on the defined properties between features types
+    by the parameters ``identical_features_interaction_mode`` and ``different_features_interaction_mode``. The force value between a specific pair of objects is proportional
+    to the scaling constant coefficient ``k_force``, the masses of both objects and inversely proportional to the square of the distance between them.
+    The resultant force of all the force components acting on a given object determines its acceleration, which translates into changes in velocity and, consequently,
+    changes in position over time.
+
+    Thanks to the ``distance_unit`` and ``time_unit`` parameters, it is possible to interpret distances in the coordinate system of the workspace and interpret time
+    between consecutive time frames in any desired manner. It is also possible to divide the interval between two consecutive time frames into ``approx_steps_number``
+    equal fragments. For each short time fragment, simulation calculations are performed sequentially, resulting in more accurate results for the specified time frame.
+
+    To prevent overly abrupt motion simulations resulting from the discrete nature of calculations, it is necessary to use a limit ''force_limit'' for the maximum
+    resultant force acting on an object, as well as a limit ''velocity_limit'' for the maximum achievable velocity. Additionally, the parameter ''faraway_limit_ratio''
+    is available, allowing for the confinement of objects within a compact space and preventing them from continuously moving away in the unbounded spatial framework.
+    """
+
     def __init__(
             self,
             iap: InteractionApproachParameters = InteractionApproachParameters()):
+        """
+        Create object of a spatio-temporal data generator with given set of parameters.
+
+        Parameters
+        ----------
+        iap: InteractionApproachParameters
+            The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
+            of the `InteractionApproachParameters` class.
+        """
+
         # store parameters of the generator
         self.iap = iap
 
@@ -27,6 +51,22 @@ class SpatioTemporalInteractionApproachGenerator:
             time_frames_number: int = 10,
             output_filename: str = "output\\SpatioTemporalInteractionApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
+        """
+        Generate spatio-temporal data.
+
+        Parameters
+        ----------
+        time_frames_number : int
+            The number of time frames in which spatio-temporal data will be generated.
+
+        output_filename : str
+            The filename to which output will be written.
+
+        output_filename_timestamp : bool
+            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            It helps to automatically recognize different output of generator.
+        """
+
         print("SpatioTemporalInteractionApproachGenerator.generate()")
 
         # open file to which output will be written
@@ -38,7 +78,7 @@ class SpatioTemporalInteractionApproachGenerator:
         # write comment to output file about chosen configuration
         stia_writer.write_comment(iai=self.iai)
 
-        # write starting data of all the features to the output file
+        # write starting data of all the features instances to the output file
         stia_writer.write(
             time_frame_ids=time_frame_ids,
             features_ids=self.iai.features_ids,
@@ -146,7 +186,7 @@ class SpatioTemporalInteractionApproachGenerator:
             # generate vector of time frame ids of starting time frame
             time_frame_ids = np.full(shape=self.iai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
-            # write starting data of all the features to the output file
+            # write data of all the features instances to the output file
             stia_writer.write(
                 time_frame_ids=time_frame_ids,
                 features_ids=self.iai.features_ids,

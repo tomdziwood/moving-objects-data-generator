@@ -6,7 +6,66 @@ from algorithms.parameters.InteractionApproachParameters import InteractionAppro
 
 
 class InteractionApproachInitiation(StandardTimeFrameInitiation):
+    """
+    The class of a `SpatioTemporalInteractionApproachGenerator` initiation. Object of this class stores all initial data, which is required to generate spatio-temporal data
+    in each time frame.
+
+    Attributes
+    ----------
+    interaction_approach_parameters : InteractionApproachParameters
+        The object of class `InteractionApproachParameters`, which holds all the required parameters of the `SpatioTemporalInteractionApproachGenerator` generator.
+
+    instances_coor : np.ndarray
+        The array's size is equal to the number of features instances. The i-th value represents the coordinates of the location of the i-th feature instance
+        initiated at the first time frame. This array is used as a shortcut for initiated coordinates available at ``self.spatial_standard_placement.features_instances_coor``.
+
+    mass : np.ndarray
+        The array's size is equal to the number of features instances. The i-th value represents the mass of the i-th feature instance.
+
+    mass_sum : float
+        The sum of the mass of all features instances.
+
+    center : np.ndarray
+        The array contains the coordinates of the center of the spatial framework. The center is the mass center of all features instances
+        determined by their initial locations at first time frame and their respective masses. The calculated point of mass center remains constant at every time frames
+        and is used in computation of the attraction force that pulls objects back towards the designated center, which is the center of mass, when they have deviated too far.
+
+    force_multiplier_constant : np.ndarray
+        The size of the matrix is equal to the number of features instances X the number of features instances. The matrix contains the precalculated constant factor
+        of force between each pair of features instances, which depends on the 'k_force' parameter and the mass of both instances. The exact value of the force
+        between each pair of features instances is calculated, taking into account their current location at specific moments.
+
+    force_center_multiplier_constant : np.ndarray
+        The array's size is equal to the number of features instances. The i-th value represents the precalculated constant factor of attraction force between mass center
+        and the i-th feature instance. The exact value of the attraction force acting on the given object is calculated, taking into account the object's current location
+        at specific moments.
+
+    velocity : np.ndarray
+        The array's size is equal to the number of features instances. The i-th value represents the velocity of the i-th feature instance initiated at the first time frame.
+
+    time_interval : float
+        The value of time interval between two consecutive time frames. The time interval is equal to the inverse of the declared ``time_unit`` parameter.
+
+    approx_step_time_interval : float
+        The length of every equal steps in the time domain between two consecutive time frames. The length is calculated by dividing the time interval``time_interval``
+        by the number of equal steps ``approx_steps_number``.
+
+    faraway_limit : float
+        The distance measured from the center of the spatial framework, beyond which the attraction force starts to act on the moving object. The distance is determined
+        with the ``faraway_limit_ratio`` parameter value.
+
+    features_instances_interaction : np.ndarray
+        The size of the matrix is equal to the number of features instances X the number of features instances. The matrix defines the interaction mode between each pair
+        of features instances, which depends on chosen values of the ``identical_features_interaction_mode`` and the ``different_features_interaction_mode`` parameters.
+        At the intersection of the i-th row and j-th column, the matrix can contain one of three values: ``-1``, ``0``, ``1``, which respectively indicate repulsion,
+        no interaction, or attraction between the pair of the i-th and j-th instances.
+    """
+
     def __init__(self):
+        """
+        Construct empty object of the `InteractionApproachInitiation` class.
+        """
+
         super().__init__()
 
         self.interaction_approach_parameters: InteractionApproachParameters = InteractionApproachParameters()
@@ -24,11 +83,18 @@ class InteractionApproachInitiation(StandardTimeFrameInitiation):
 
     def __define_features_instances_interaction(self, different_collocations_interaction_value=0, identical_features_interaction_value=1, noise_features_interaction_value=1):
         """
-        Private method define `self.features_instances_interaction` matrix values
+        Private method defines the `self.features_instances_interaction` matrix values.
 
-        :param different_collocations_interaction_value: default value of interaction between features which participate in different co-location
-        :param identical_features_interaction_value: interaction value between instances of the identical feature
-        :param noise_features_interaction_value: default value of interaction noise feature with any other feature
+        Parameters
+        ----------
+        different_collocations_interaction_value : int
+            The default value of the interaction between features that participate in different co-locations.
+
+        identical_features_interaction_value : int
+            The interaction value between instances of the identical feature type.
+
+        noise_features_interaction_value : int
+            The default value of the interaction of the noise feature with any other feature type.
         """
 
         # initiate interaction matrix of co-location features with default value of interaction between different co-location
@@ -55,10 +121,19 @@ class InteractionApproachInitiation(StandardTimeFrameInitiation):
             self.collocation_features_ids[:, None], self.collocation_features_ids[None, :]
         ]
 
-        # set interaction value between instances of the identical feature
+        # set interaction value between instances of the identical feature type
         self.features_instances_interaction[self.features_ids[:, None] == self.features_ids[None, :]] = identical_features_interaction_value
 
     def initiate(self, iap: InteractionApproachParameters = InteractionApproachParameters()):
+        """
+        Initiate required data to generate spatio-temporal data in each time frame.
+
+        Parameters
+        ----------
+        iap : InteractionApproachParameters
+            The object of class `InteractionApproachParameters`, which holds all the required parameters of the `SpatioTemporalInteractionApproachGenerator` generator.
+            Its attributes will be used to initialize required data.
+        """
 
         # perform the initiation of the super class
         super().initiate(stfp=iap)
@@ -75,17 +150,17 @@ class InteractionApproachInitiation(StandardTimeFrameInitiation):
             self.mass = np.full(shape=self.features_instances_sum, fill_value=iap.mass_mean, dtype=np.float64)
 
         elif iap.mass_method == MassMethod.FEATURE_CONSTANT:
-            # each type of feature has own constant mass value drawn from gamma distribution
+            # each type of feature has own constant mass value drawn from a gamma distribution
             feature_mass_const = np.random.gamma(shape=iap.mass_mean, scale=1.0, size=self.features_sum)
 
             # each instance of the given type feature has mass value which is equal to the feature's constant mass value
             self.mass = feature_mass_const[self.features_ids]
 
         elif iap.mass_method == MassMethod.NORMAL:
-            # each type of feature has own mean mass value drawn from gamma distribution
+            # each type of feature has own mean mass value drawn from a gamma distribution
             feature_mass_mu = np.random.gamma(shape=iap.mass_mean, scale=1.0, size=self.features_sum)
 
-            # each instance of the given type feature has own mass value drawn from normal distribution
+            # each instance of the given type feature has own mass value drawn from a normal distribution
             self.mass = np.random.normal(loc=feature_mass_mu[self.features_ids], scale=feature_mass_mu[self.features_ids] * iap.mass_normal_std_ratio, size=self.features_instances_sum)
             self.mass[self.mass < 0] *= -1
 
