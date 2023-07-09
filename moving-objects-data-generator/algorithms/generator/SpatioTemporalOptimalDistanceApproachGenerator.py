@@ -7,9 +7,36 @@ from algorithms.utils.SpatioTemporalWriters import SpatioTemporalOptimalDistance
 
 
 class SpatioTemporalOptimalDistanceApproachGenerator:
+    """
+    The class of a spatio-temporal data generator. The generator is inspired by methods used for graph layout visualization. It adopts the concept of attraction
+    and repulsion forces presented in the article `Thomas MJ Fruchterman and Edward M Reingold. Graph drawing by force-directed placement. Software: Practice and experience,
+    21(11):1129–1164, 1991`.
+
+    The method of generating spatio-temporal data is similar to that of the `SpatioTemporalInteractionApproachGenerator` generator. Features instances with mass
+    move in the spatial framework over time due to interacting forces between each other. However, the model of the interacting forces is different in this case.
+    Between features instances, two types of forces are distinguished: repulsive forces and attractive forces. The values of the occurring forces between features instances
+    depend on the masses of those instances, the distance between them, the scaling constant coefficient ``k_force``, and the special coefficient ``k_optimal_distance``
+    defining the distance to which features instances will strive to maintain, if they are intended to co-occur within a given co-location instance.
+
+    Repulsion forces occur between each pair of features instances. Attraction forces, on the other hand, apply only between features instances that were initiated
+    at the first time frame as co-occurring within a given co-location instance. The values of both types of forces are proportional to the masses of both features instances
+    and a constant scaling factor ``k_force``. The difference, however, lies in the fact that the attraction force is proportional to the square of the distance between
+    features instances and inversely proportional to the parameter ``k_optimal_distance``. On the other hand, the repulsion force is inversely proportional to the distance
+    between features instances and proportional to the square of the ``k_optimal_distance`` parameter.
+    """
+
     def __init__(
             self,
             odap: OptimalDistanceApproachParameters = OptimalDistanceApproachParameters()):
+        """
+        Create object of a spatio-temporal data generator with given set of parameters.
+
+        Parameters
+        ----------
+        odap: OptimalDistanceApproachParameters
+            The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
+            of the `OptimalDistanceApproachParameters` class.
+        """
 
         # store parameters of the generator
         self.odap = odap
@@ -23,6 +50,22 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
             time_frames_number: int = 10,
             output_filename: str = "output\\SpatioTemporalOptimalDistanceApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
+        """
+        Generate spatio-temporal data.
+
+        Parameters
+        ----------
+        time_frames_number : int
+            The number of time frames in which spatio-temporal data will be generated.
+
+        output_filename : str
+            The filename to which output will be written.
+
+        output_filename_timestamp : bool
+            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            It helps to automatically recognize different output of generator.
+        """
+
         print("SpatioTemporalOptimalDistanceApproachGenerator.generate()")
 
         # open file to which output will be written
@@ -34,7 +77,7 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
         # write comment to output file about chosen configuration
         stoda_writer.write_comment(odai=self.odai)
 
-        # write starting data of all the features to the output file
+        # write starting data of all the features instances to the output file
         stoda_writer.write(
             time_frame_ids=time_frame_ids,
             features_ids=self.odai.features_ids,
@@ -154,7 +197,7 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
             # generate vector of time frame ids of starting time frame
             time_frame_ids = np.full(shape=self.odai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
-            # write starting data of all the features to the output file
+            # write data of all the features instances to the output file
             stoda_writer.write(
                 time_frame_ids=time_frame_ids,
                 features_ids=self.odai.features_ids,
