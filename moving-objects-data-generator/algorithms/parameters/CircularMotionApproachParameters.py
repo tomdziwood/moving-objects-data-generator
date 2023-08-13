@@ -4,6 +4,10 @@ from algorithms.parameters.StandardTimeFrameParameters import StandardTimeFrameP
 
 
 class CircularMotionApproachParameters(StandardTimeFrameParameters):
+    """
+    The class represents set of parameters used by the `SpatioTemporalCircularMotionApproachGenerator` class of a spatio-temporal data generator.
+    """
+
     def __init__(
             self,
             circle_chain_size: int = 2,
@@ -13,6 +17,32 @@ class CircularMotionApproachParameters(StandardTimeFrameParameters):
             circle_r_max: float = 200.0,
             center_noise_displacement: float = 5.0,
             **kwargs):
+        """
+        Construct an object which holds all the required parameters of the `SpatioTemporalCircularMotionApproachGenerator` class of a spatio-temporal data generator.
+
+        Parameters
+        ----------
+        circle_chain_size : int
+            The number of defined circular motions that make up the trajectory of a single feature instance.
+
+        omega_min : float
+            The lower boundary of the uniform distribution of the angular velocity of the circular orbit. The angular velocity is expressed in radians per time frame.
+
+        omega_max : float
+            The upper boundary of the uniform distribution of the angular velocity of the circular orbit. The angular velocity is expressed in radians per time frame.
+
+        circle_r_min : float
+            The lower boundary of the uniform distribution of the radius length of the circular orbit.
+
+        circle_r_max : float
+            The upper boundary of the uniform distribution of the radius length of the circular orbit.
+
+        center_noise_displacement : float
+            The radius length of the area within which the initially fixed center of the circular orbit is displaced.
+
+        kwargs
+            Other parameters passed to the super constructor of the derived class `StandardTimeFrameParameters`.
+        """
 
         super().__init__(**kwargs)
 

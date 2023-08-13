@@ -6,9 +6,44 @@ from algorithms.utils.SpatioTemporalWriters import SpatioTemporalCircularMotionA
 
 
 class SpatioTemporalCircularMotionApproachGenerator:
+    """
+    The class of a spatio-temporal data generator. The generated spatio-temporal data is determined through specific feature instance trajectory formulas that describe
+    the positional relationship of features instances over consecutive time frames. In the case of this generator, trajectories are defined using equations
+    describing the position-time relationship in uniform circular motion.
+
+    The position of a given feature instance is described by many dedicated equations of uniform circular motion with a specified radius length. The exact number of equations
+    used to determine the position of a given feature instance is defined by the parameter ``circle_chain_size``. The position of the feature instance at a given time frame
+    is calculated through successive displacements (starting from a fixed reference point) along directed radii according to consecutive assigned equations of circular motion.
+    This approach can be described as if a certain number of distinct radii, corresponding to various circular movements, were connected into a single polygonal line,
+    into a single chain. One end of the polyline is located at a fixed point, while the other end of the polyline determines the feature instance's position in space.
+    The resulting movement of the feature instance can be alternatively described as if the feature instance moves around a point, which subsequently revolves
+    around another point, ..., and so on, until it finally encircles the last fixed point in space.
+
+    The equations describing the position dependence over time in uniform circular motion are determined by the angular velocity and the radius length of the circle.
+    These values are randomly drawn from a uniform distribution within the range specified by the generator parameters. The radius length is drawn from the uniform
+    distribution within the range from ``circle_r_min`` to ``circle_r_max``, while the angular velocity is drawn from the uniform distribution within the range
+    from ``omega_min`` to ``omega_max``.
+
+    Features instances, which are intended to co-occur within a given co-location instance, they have very closely related sequences of circular motion equations.
+    For features instances that are initially located close to each other within a small spatial cell at the first time frame, a shared sequence of points
+    representing the positions of consecutive circular motion centers is determined. Next, the parameter ``center_noise_displacement`` is utilized to distort
+    the initially similar trajectories of features instances movement. The parameter ``center_noise_displacement`` describes the radius length of the area
+    within which the initially fixed center of the every circular orbit is randomly displaced. The applied modification of the sequence of equations allows
+    influencing the actual occurrence of co-locations among a given group of features instances.
+    """
+
     def __init__(
             self,
             cmap: CircularMotionApproachParameters = CircularMotionApproachParameters()):
+        """
+        Create object of a spatio-temporal data generator with given set of parameters.
+
+        Parameters
+        ----------
+        cmap : CircularMotionApproachParameters
+            The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
+            of the `CircularMotionApproachParameters` class.
+        """
 
         # store parameters of the generator
         self.cmap = cmap
@@ -22,6 +57,21 @@ class SpatioTemporalCircularMotionApproachGenerator:
             time_frames_number: int = 10,
             output_filename: str = "output\\SpatioTemporalCircularMotionApproachGenerator_output_file.txt",
             output_filename_timestamp: bool = True):
+        """
+        Generate spatio-temporal data.
+
+        Parameters
+        ----------
+        time_frames_number : int
+            The number of time frames in which spatio-temporal data will be generated.
+
+        output_filename : str
+            The file name to which output will be written.
+
+        output_filename_timestamp : bool
+            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            It helps to automatically recognize different output of generator.
+        """
 
         print("SpatioTemporalCircularMotionApproachGenerator.generate()")
 
@@ -49,7 +99,7 @@ class SpatioTemporalCircularMotionApproachGenerator:
             # generate vector of time frame ids of starting time frame
             time_frame_ids = np.full(shape=self.cmai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
-            # write starting data of all the features to the output file
+            # write data of all features instances to the output file
             stoa_writer.write(
                 time_frame_ids=time_frame_ids,
                 features_ids=self.cmai.features_ids,

@@ -5,17 +5,59 @@ from algorithms.parameters.CircularMotionApproachParameters import CircularMotio
 
 
 class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
+    """
+    The class of a `SpatioTemporalCircularMotionApproachGenerator` initiation. Object of this class stores all initial data, which is required to generate
+    spatio-temporal data in each time frame.
+
+    Attributes
+    ----------
+    circular_motion_approach_parameters : CircularMotionApproachParameters
+        The object of class `CircularMotionApproachParameters`, which holds all the required parameters of the `SpatioTemporalCircularMotionApproachGenerator` generator.
+
+    radius_length : np.ndarray
+        The size of the matrix is equal to the ``circle_chain_size`` parameter value X the number of features instances. The matrix contains the radius length
+        of the i-th circular orbit of the j-th feature instance.
+
+    angular_velocity : np.ndarray
+        The size of the matrix is equal to the ``circle_chain_size`` parameter value X the number of features instances. The matrix contains the angular velocity
+        of the i-th circular orbit of the j-th feature instance.
+
+    start_angle : np.ndarray
+        The size of the matrix is equal to the ``circle_chain_size`` parameter value X the number of features instances. The matrix contains the angle value
+        at the starting time point of the i-th circular orbit of the j-th feature instance.
+
+    start_orbit_center_coor : np.ndarray
+        The array's size is equal to the number of features instances. The i-th value represents the fixed coordinates of the center of the first circular orbit
+        in sequence of all ``circle_chain_size`` circular orbits, that together determine the trajectory of the i-th feature instance.
+    """
+
     def __init__(self):
+        """
+        Construct empty object of the `CircularMotionApproachInitiation` class.
+        """
 
         super().__init__()
 
         self.circular_motion_approach_parameters: CircularMotionApproachParameters = CircularMotionApproachParameters()
-        self.radius_length: np.ndarray = np.array([], dtype=np.float64)
-        self.angular_velocity: np.ndarray = np.array([], dtype=np.float64)
-        self.start_angle: np.ndarray = np.array([], dtype=np.float64)
+        self.radius_length: np.ndarray = np.array(shape=(0, 0), dtype=np.float64)
+        self.angular_velocity: np.ndarray = np.array(shape=(0, 0), dtype=np.float64)
+        self.start_angle: np.ndarray = np.array(shape=(0, 0), dtype=np.float64)
         self.start_orbit_center_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
 
-    def initiate(self, cmap: CircularMotionApproachParameters = CircularMotionApproachParameters(), report_output_filename=None):
+    def initiate(self, cmap: CircularMotionApproachParameters = CircularMotionApproachParameters(), report_output_filename: str = None):
+        """
+        Initiate required data to generate spatio-temporal data in each time frame.
+
+        Parameters
+        ----------
+        cmap : CircularMotionApproachParameters
+            The object of class `CircularMotionApproachParameters`, which holds all the required parameters of the `SpatioTemporalCircularMotionApproachGenerator` generator.
+            Its attributes will be used to initialize required data.
+
+        report_output_filename : str
+            The file name to which the data required to create an additional report will be written. The report allows to present the given object and its radii chain
+            of circular orbits. If the parameter value is ``None``, then no data will be saved.
+        """
 
         # open file of report data if needed
         report_output_file = None
@@ -59,7 +101,7 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
         collocations_instances_orbit_centers_coor += collocations_instances_start_coor_mean[None, :, :]
         # ----end---- determine circular orbits' centers of all co-locations' instances
 
-        # ---begin--- determine circular orbits' centers of all features' instances
+        # ---begin--- determine circular orbits' centers of all features instances
         # determine circular orbits' centers of the feature instance which belong to the given co-location's instance
         features_instances_orbit_centers_coor = collocations_instances_orbit_centers_coor[:, self.collocations_clumpy_instances_global_ids]
 
@@ -79,7 +121,7 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
 
         # displace every circular orbit with calculated noise
         features_instances_orbit_centers_coor += orbit_center_displacement_coor
-        # ----end---- determine circular orbits' centers of all features' instances
+        # ----end---- determine circular orbits' centers of all features instances
 
         # write circular orbits' centers to the report file if needed
         if report_output_filename is not None:
