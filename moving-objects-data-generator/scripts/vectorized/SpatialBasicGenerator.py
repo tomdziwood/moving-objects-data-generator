@@ -11,7 +11,7 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", area=1000, cel
     # open file to which output will be written
     f = open(file=output_file, mode="w")
 
-    # determine length to each of the n_base basic co-locations with poisson distribution (lam=lambda_1)
+    # determine length to each of the n_base base co-locations with poisson distribution (lam=lambda_1)
     base_collocation_lengths = np.random.poisson(lam=lambda_1, size=n_base)
     base_collocation_lengths[base_collocation_lengths < 2] = 2
     print("base_collocation_lengths=%s" % str(base_collocation_lengths))
@@ -53,7 +53,7 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", area=1000, cel
         # calculate total number of all co-location feature instances
         collocation_features_instances_sum = collocations_instances_counts[i_colloc] * collocation_lengths[i_colloc]
 
-        # generate vector of x coordinates of all the consecutive instances
+        # generate vector of x coordinates of all consecutive instances
         collocation_features_instances_x = np.random.randint(low=area_in_cell_dim, size=(collocations_instances_counts[i_colloc] - 1) // m_clumpy + 1)
         collocation_features_instances_x *= cell_size
         collocation_features_instances_x = collocation_features_instances_x.astype(dtype=np.float64)
@@ -61,7 +61,7 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", area=1000, cel
         collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=collocation_lengths[i_colloc])
         collocation_features_instances_x += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
 
-        # generate vector of y coordinates of all the consecutive instances
+        # generate vector of y coordinates of all consecutive instances
         collocation_features_instances_y = np.random.randint(low=area_in_cell_dim, size=(collocations_instances_counts[i_colloc] - 1) // m_clumpy + 1)
         collocation_features_instances_y *= cell_size
         collocation_features_instances_y = collocation_features_instances_y.astype(dtype=np.float64)
@@ -69,10 +69,10 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", area=1000, cel
         collocation_features_instances_y = np.repeat(a=collocation_features_instances_y, repeats=collocation_lengths[i_colloc])
         collocation_features_instances_y += np.random.uniform(high=cell_size, size=collocation_features_instances_sum)
 
-        # generate vector of features ids of all the consecutive instances
+        # generate vector of features ids of all consecutive instances
         collocation_features_ids = np.tile(A=collocation_features, reps=collocations_instances_counts[i_colloc])
 
-        # generate vector of features instances ids of all the consecutive instances
+        # generate vector of features instances ids of all consecutive instances
         collocation_features_instances_ids = np.arange(
             start=collocation_features_instances_counts[collocation_start_feature_id],
             stop=collocation_features_instances_counts[collocation_start_feature_id] + collocations_instances_counts[i_colloc]
@@ -84,7 +84,7 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", area=1000, cel
         ))
         collocation_features_instances_ids = collocation_features_instances_ids.T.flatten()
 
-        # write data of all the co-location features to the output file
+        # write data of all co-location features to the output file
         fmt = '%d;%d;%.6f;%.6f\n' * collocation_features_instances_sum
         data = fmt % tuple(np.column_stack(tup=(collocation_features_ids, collocation_features_instances_ids, collocation_features_instances_x, collocation_features_instances_y)).ravel())
         f.write(data)
@@ -119,19 +119,19 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", area=1000, cel
         (_, collocation_noise_features_instances_counts) = np.unique(ar=collocation_noise_feature_random_choices, return_counts=True)
     print("collocation_noise_features_instances_counts=%s" % str(collocation_noise_features_instances_counts))
 
-    # generate vectors of x and y coordinates and ids of all the consecutive instances of co-location noise features
+    # generate vectors of x and y coordinates and ids of all consecutive instances of co-location noise features
     collocation_noise_features_instances_sum = np.sum(collocation_noise_features_instances_counts)
     collocation_noise_features_instances_x = np.random.uniform(high=area, size=collocation_noise_features_instances_sum)
     collocation_noise_features_instances_y = np.random.uniform(high=area, size=collocation_noise_features_instances_sum)
     collocation_noise_features_ids = np.repeat(a=collocation_noise_features, repeats=collocation_noise_features_instances_counts)
 
-    # generate vector of features instances ids of all the consecutive instances of co-location noise features
+    # generate vector of features instances ids of all consecutive instances of co-location noise features
     start = collocation_features_instances_counts[collocation_noise_features]
     length = collocation_noise_features_instances_counts
     collocation_noise_features_instances_ids = np.repeat(a=(start + length - length.cumsum()), repeats=length) + np.arange(collocation_noise_features_instances_sum)
     # print("collocation_noise_features_instances_ids=%s" % collocation_noise_features_instances_ids)
 
-    # write data of all the co-location noise features to the output file
+    # write data of all co-location noise features to the output file
     fmt = '%d;%d;%.6f;%.6f\n' * collocation_noise_features_instances_sum
     data = fmt % tuple(np.column_stack(tup=(collocation_noise_features_ids, collocation_noise_features_instances_ids, collocation_noise_features_instances_x, collocation_noise_features_instances_y)).ravel())
     f.write(data)
@@ -150,7 +150,7 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", area=1000, cel
         additional_noise_features_instances_x = np.random.uniform(high=area, size=ndfn)
         additional_noise_features_instances_y = np.random.uniform(high=area, size=ndfn)
 
-        # write data of all the additional noise features to the output file
+        # write data of all additional noise features to the output file
         fmt = '%d;%d;%.6f;%.6f\n' * ndfn
         data = fmt % tuple(np.column_stack(tup=(additional_noise_features_ids, additional_noise_features_instances_ids, additional_noise_features_instances_x, additional_noise_features_instances_y)).ravel())
         f.write(data)

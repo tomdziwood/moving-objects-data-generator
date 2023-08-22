@@ -19,12 +19,12 @@ class BasicParameters:
             ndfn: int = 1000,
             random_seed: int = None):
         """
-        Construct object which holds all the required parameters of the `SpatioTemporalBasicGenerator` class of a spatio-temporal data generator.
+        Construct an object which holds all the required parameters of the `SpatioTemporalBasicGenerator` class of a spatio-temporal data generator.
 
         Parameters
         ----------
         area : float
-            The size of the squared two-dimensional area in the spatial framework, where the objects are placed.
+            The size of the squared two-dimensional area of the spatial framework, where the objects are placed.
 
         cell_size : float
             The spatial framework is divided into the squared cells, which size is defined with the value of the parameter ``cell_size``. Features instances,
@@ -57,7 +57,7 @@ class BasicParameters:
 
         ncf_proportional : bool
             The boolean flag, which determines the way of distributing the number of all instances of the co-location noise features over the every co-location noise feature:
-             - ``False``: the number of all instances is distributed with uniform distribution over the all of the co-location noise features
+             - ``False``: the number of all instances is distributed with the uniform distribution over all of the co-location noise features
              - ``True``: the number of instances of the given co-location noise feature is proportional to the number of instances of this feature, which take part
                in the co-location.
 

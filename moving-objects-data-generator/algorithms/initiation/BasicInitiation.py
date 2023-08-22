@@ -19,14 +19,14 @@ class BasicInitiation:
 
     collocation_lengths : np.ndarray
         The array's size is equal to the number of maximal co-locations. The i-th value represents the length of the i-th co-location. The length of the given co-location
-        depends on the length of its base co-location and ``m_overlap`` parameter value.
+        depends on the length of its base co-location and the ``m_overlap`` parameter value.
 
     collocations_sum : int
         The total number of co-location patterns.
 
     collocation_instances_counts : np.ndarray
         The array's size is equal to the number of co-locations. The i-th value represents the number of instances of the i-th co-location and it is determined
-        by the Poisson distribution with lambda equals ``lambda_2`` parameter value.
+        by the Poisson distribution with the lambda equals the ``lambda_2`` parameter value.
 
     collocations_instances_sum : int
         The total number of instances of the co-location patterns.
@@ -59,7 +59,7 @@ class BasicInitiation:
         as co-location noise features.
 
     collocation_noise_features_instances_sum : int
-        The total number of co-location noise features instances. The number depends on the ``ncfr`` and ``ncf_proportional`` parameter values.
+        The total number of co-location noise features instances. The number depends on the ``ncfr`` and the ``ncf_proportional`` parameter values.
 
     collocation_noise_features_instances_counts : np.ndarray
         The array's size is equal to the number of co-location noise features. The i-th value represents the number of instances of the i-th co-location noise feature.
@@ -114,16 +114,16 @@ class BasicInitiation:
 
     collocation_clumpy_instances_counts : np.ndarray
         The array's size is equal to the number of co-locations. The i-th value represents the number of "clumpy" instances of the i-th co-location.
-        Co-locations instances gathered by ``m_clumpy`` parameter are counted as one "clumpy" instance. When ``m_clumpy`` parameter value is equal to.``1``,
+        Co-locations instances gathered by the ``m_clumpy`` parameter are counted as one "clumpy" instance. When the ``m_clumpy`` parameter value is equal to.``1``,
         then the array is equivalent to the ``collocation_instances_counts`` array.
 
     collocations_clumpy_instances_global_ids : np.ndarray
         The array's size is equal to the number of features instances. The i-th value represents the global id of the co-location "clumpy" instance,
-        to which the i-th feature instance belongs.  When ``m_clumpy`` parameter value is equal to.``1``, then the array is equivalent
+        to which the i-th feature instance belongs.  When the ``m_clumpy`` parameter value is equal to.``1``, then the array is equivalent
         to the ``collocations_instances_global_ids`` array.
 
     collocations_clumpy_instances_global_sum : int
-        The number of all specified global collocations "clumpy" instances. When ``m_clumpy`` parameter value is equal to.``1``, then the number is equivalent
+        The number of all specified global collocations "clumpy" instances. When the ``m_clumpy`` parameter value is equal to.``1``, then the number is equivalent
         to the ``collocations_instances_global_sum`` number.
 
     collocations_clumpy_instances_global_ids_repeats : np.ndarray
@@ -176,7 +176,7 @@ class BasicInitiation:
 
         Parameters
         ----------
-        bp: BasicParameters
+        bp : BasicParameters
             The object of class `BasicParameters`, which holds all the required parameters of the `SpatioTemporalBasicGenerator` generator.
             Its attributes will be used to initialize required data.
         """
@@ -234,10 +234,10 @@ class BasicInitiation:
             collocation_features[-1] += i_colloc % bp.m_overlap
             print("collocation_features=%s" % str(collocation_features))
 
-            # generate vector of features ids of all the consecutive instances in current co-location
+            # generate vector of features ids of all consecutive instances in current co-location
             i_colloc_features_ids = np.tile(A=collocation_features, reps=self.collocation_instances_counts[i_colloc])
 
-            # generate vector of features instances ids of all the consecutive instances in current co-location
+            # generate vector of features instances ids of all consecutive instances in current co-location
             i_colloc_features_instances_ids = np.arange(
                 start=self.collocation_features_instances_counts[collocation_start_feature_id],
                 stop=self.collocation_features_instances_counts[collocation_start_feature_id] + self.collocation_instances_counts[i_colloc]
@@ -299,10 +299,10 @@ class BasicInitiation:
             print("collocation_noise_features_instances_sum=%s" % str(self.collocation_noise_features_instances_sum))
             print("collocation_noise_features_instances_counts=%s" % str(self.collocation_noise_features_instances_counts))
 
-            # generate vector of features ids of all the consecutive instances of co-location noise features
+            # generate vector of features ids of all consecutive instances of co-location noise features
             self.collocation_noise_features_ids = np.repeat(a=self.collocation_noise_features, repeats=self.collocation_noise_features_instances_counts)
 
-            # generate vector of features instances ids of all the consecutive instances of co-location noise features
+            # generate vector of features instances ids of all consecutive instances of co-location noise features
             start = self.collocation_features_instances_counts[self.collocation_noise_features]
             length = self.collocation_noise_features_instances_counts
             self.collocation_noise_features_instances_ids = np.repeat(a=(start + length - length.cumsum()), repeats=length) + np.arange(self.collocation_noise_features_instances_sum)
@@ -316,10 +316,10 @@ class BasicInitiation:
             print("additional_noise_features=%s" % str(self.additional_noise_features))
             print("additional_noise_features_instances_counts=%s" % str(self.additional_noise_features_instances_counts))
 
-            # generate vector of feature ids of all the consecutive instances of additional noise features
+            # generate vector of feature ids of all consecutive instances of additional noise features
             self.additional_noise_features_ids = np.repeat(a=self.additional_noise_features, repeats=self.additional_noise_features_instances_counts)
 
-            # generate vector of features instances ids of all the consecutive instances of additional noise features
+            # generate vector of features instances ids of all consecutive instances of additional noise features
             self.additional_noise_features_instances_ids = np.repeat(
                 a=(self.additional_noise_features_instances_counts - self.additional_noise_features_instances_counts.cumsum()),
                 repeats=self.additional_noise_features_instances_counts

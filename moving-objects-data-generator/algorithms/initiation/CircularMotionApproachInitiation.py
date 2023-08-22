@@ -39,9 +39,9 @@ class CircularMotionApproachInitiation(StandardTimeFrameInitiation):
         super().__init__()
 
         self.circular_motion_approach_parameters: CircularMotionApproachParameters = CircularMotionApproachParameters()
-        self.radius_length: np.ndarray = np.array(shape=(0, 0), dtype=np.float64)
-        self.angular_velocity: np.ndarray = np.array(shape=(0, 0), dtype=np.float64)
-        self.start_angle: np.ndarray = np.array(shape=(0, 0), dtype=np.float64)
+        self.radius_length: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
+        self.angular_velocity: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
+        self.start_angle: np.ndarray = np.empty(shape=(0, 0), dtype=np.float64)
         self.start_orbit_center_coor: np.ndarray = np.empty(shape=(0, 2), dtype=np.float64)
 
     def initiate(self, cmap: CircularMotionApproachParameters = CircularMotionApproachParameters(), report_output_filename: str = None):

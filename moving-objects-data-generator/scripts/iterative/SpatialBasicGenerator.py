@@ -11,7 +11,7 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", area=1000, cel
     # open file to which output will be written
     f = open(file=output_file, mode="w")
 
-    # determine length to each of the n_base basic co-locations with poisson distribution (lam=lambda_1)
+    # determine length to each of the n_base base co-locations with poisson distribution (lam=lambda_1)
     base_collocation_lengths = np.random.poisson(lam=lambda_1, size=n_base)
     base_collocation_lengths[base_collocation_lengths < 2] = 2
     print("base_collocation_lengths=%s" % str(base_collocation_lengths))

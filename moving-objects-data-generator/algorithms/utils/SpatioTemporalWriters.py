@@ -30,10 +30,10 @@ class SpatioTemporalWriter:
         Parameters
         ----------
         output_filename : str
-            The filename to which output will be written.
+            The file name to which output will be written.
 
         output_filename_timestamp : bool
-            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            When ``True``, the file name has added unique string which is created based on the current timestamp.
             It helps to automatically recognize different output of generator.
         """
 
@@ -57,24 +57,24 @@ class SpatioTemporalWriter:
             y: np.ndarray):
         """
         Write spatio-temporal data to the output. The single record contains five numbers separated with semicolon. These five types of values are passed
-        as the params of the method - five vectors of equal length.
+        as the params of the method - five arrays of equal length.
 
         Parameters
         ----------
         time_frame_ids : np.ndarray
-            The vector of time frame ids of consecutive records.
+            The array of time frame ids of consecutive records.
 
         features_ids : np.ndarray
-            The vector of features types ids of consecutive records.
+            The array of features types ids of consecutive records.
 
         features_instances_ids : np.ndarray
-            The vector of features instances ids of consecutive records.
+            The array of features instances ids of consecutive records.
 
         x : np.ndarray
-            The vector of ``x`` coordinates of consecutive records.
+            The array of ``x`` coordinates of consecutive records.
 
         y : np.ndarray
-            The vector of ``y`` coordinates of consecutive records.
+            The array of ``y`` coordinates of consecutive records.
         """
 
         fmt = '%d;%d;%d;%.6f;%.6f\n' * time_frame_ids.size

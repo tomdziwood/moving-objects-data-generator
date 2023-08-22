@@ -69,7 +69,7 @@ class SpatioTemporalCircularMotionApproachGenerator:
             The file name to which output will be written.
 
         output_filename_timestamp : bool
-            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            When ``True``, the file name has added unique string which is created based on the current timestamp.
             It helps to automatically recognize different output of generator.
         """
 

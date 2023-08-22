@@ -8,13 +8,13 @@ class MassMethod(Enum):
 
     CONSTANT = auto()
     """
-    Every feature instance has constant mass, which is equal to the 'mass_mean' parameter value.
+    Every feature instance has constant mass, which is equal to the `mass_mean` parameter value.
     """
 
     FEATURE_CONSTANT = auto()
     """
     Every instance of the specified feature type has constant mass, which is equal to the feature's constant mass value. The constant mass value of the specified feature type
-    is drawn from the gamma distribution with the given shape of 'mass_mean' parameter value and the scale equals ``1.0``. This distribution is an extension from the integer
+    is drawn from the gamma distribution with the given shape of `mass_mean` parameter value and the scale equals ``1.0``. This distribution is an extension from the integer
     to the real domain of the Poisson distribution with the lambda equals the given shape.
     """
 
@@ -32,13 +32,13 @@ class VelocityMethod(Enum):
 
     CONSTANT = auto()
     """
-    Every feature instance has a constant initial velocity, which is equal to the 'velocity_mean' parameter value. When the velocity is different than ''0.0'',
+    Every feature instance has a constant initial velocity, which is equal to the `velocity_mean` parameter value. When the velocity is different than ``0.0``,
     the velocity of the given feature instance is oriented in a random direction.
     """
 
     GAMMA = auto()
     """
-    Every feature instance has an initial velocity drawn from the gamma distribution with the given shape of 'velocity_mean' parameter value and the scale equals ``1.0``.
+    Every feature instance has an initial velocity drawn from the gamma distribution with the given shape of `velocity_mean` parameter value and the scale equals ``1.0``.
     This distribution is an extension from the integer to the real domain of the Poisson distribution with the lambda equals the given shape.
     The velocity of features instances is oriented in a random direction.
     """

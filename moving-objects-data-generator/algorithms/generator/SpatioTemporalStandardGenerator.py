@@ -17,9 +17,9 @@ class SpatioTemporalStandardGenerator:
     in a randomly selected small cell of the space.
 
     Through the appropriate parameter values, data is generated to ensure the occurrence of the desired number of maximal co-locations. The exact number of persistent
-    and transient co-locations is determined by the ''persistent_ratio'' parameter. For each specific type of co-location, a specific number of time frames is established
-    in which the co-location will or will not be persistent, based on the ''time_prevalence_threshold'' parameter. At a given time frame, the number of occurring
-    co-location instances is determined, taking into account the ''spatial_prevalence_threshold'' parameter.
+    and transient co-locations is determined by the ``persistent_ratio`` parameter. For each specific type of co-location, a specific number of time frames is established
+    in which the co-location will or will not be persistent, based on the ``time_prevalence_threshold`` parameter. At a given time frame, the number of occurring
+    co-location instances is determined, taking into account the ``spatial_prevalence_threshold`` parameter.
     """
 
     def __init__(
@@ -56,10 +56,10 @@ class SpatioTemporalStandardGenerator:
             The number of time frames in which spatio-temporal data will be generated.
 
         output_filename : str
-            The filename to which output will be written.
+            The file name to which output will be written.
 
         output_filename_timestamp : bool
-            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            When ``True``, the file name has added unique string which is created based on the current timestamp.
             It helps to automatically recognize different output of generator.
         """
 
@@ -95,13 +95,13 @@ class SpatioTemporalStandardGenerator:
             random_value = np.random.randint(low=1, high=time_frames_number - time_frame + 1, size=self.si.collocations_sum)
             collocations_spatial_prevalence_flags = random_value <= collocations_remaining_time_frames_numbers_of_spatial_prevalence
 
-            # perform placement of all the features instances
+            # perform placement of all features instances
             ssp.place(collocations_spatial_prevalence_flags=collocations_spatial_prevalence_flags)
 
             # generate vector of time frame ids of the current time frame
             time_frame_ids = np.full(shape=self.si.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
-            # write data of all the features instances to the output file
+            # write data of all features instances to the output file
             sts_writer.write(
                     time_frame_ids=time_frame_ids,
                     features_ids=self.si.features_ids,

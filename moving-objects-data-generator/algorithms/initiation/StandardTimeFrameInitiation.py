@@ -20,7 +20,7 @@ class StandardTimeFrameInitiation(BasicInitiation):
 
     spatial_prevalent_collocations_sum : int
         The number of the co-locations which are chosen as spatial prevalent co-locations at the first time frame. The number is determined
-        with a ''spatial_prevalent_ratio'' parameter value.
+        with a ``spatial_prevalent_ratio`` parameter value.
 
     spatial_prevalent_collocations_ids : np.ndarray
         The array's size is equal to the number of spatial prevalent co-locations. The array contains the ids of the co-locations,
@@ -85,7 +85,7 @@ class StandardTimeFrameInitiation(BasicInitiation):
         # create class object, which holds all data of the objects placement
         self.spatial_standard_placement = SpatialStandardPlacement(bi=self, collocations_instances_number_spatial_prevalence_threshold=self.collocations_instances_number_spatial_prevalence_threshold)
 
-        # perform placement of all the features instances
+        # perform placement of all features instances
         self.spatial_standard_placement.place(collocations_spatial_prevalence_flags=self.collocations_spatial_prevalence_flags)
 
         # ---begin--- reindex global ids of co-locations' instances

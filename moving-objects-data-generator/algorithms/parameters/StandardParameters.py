@@ -13,7 +13,7 @@ class StandardParameters(BasicParameters):
             time_prevalence_threshold: float = 0.5,
             **kwargs):
         """
-        Construct object which holds all the required parameters of the `SpatioTemporalStandardGenerator` class of a spatio-temporal data generator.
+        Construct an object which holds all the required parameters of the `SpatioTemporalStandardGenerator` class of a spatio-temporal data generator.
 
         Parameters
         ----------

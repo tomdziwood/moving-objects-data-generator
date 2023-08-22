@@ -6,15 +6,15 @@ from performance.Utils import measure_time_execution_of_function
 
 
 def choose_spatial_prevalent_features_1(si, collocations_spatial_prevalent_instances_number):
-    # boolean vector which tells if the given co-locations instance occurs in the current time frame
+    # boolean vector which tells if the given co-locations instance occurs at the current time frame
     collocations_instances_spatial_prevalent_flags = np.array([], dtype=bool)
 
     # determine values of the 'collocations_instances_spatial_prevalent_flags' vector
     for i_colloc in range(si.collocations_sum):
-        # choose indices of the instances of the 'i_colloc' co-location which actually create co-location in the current time frame
+        # choose indices of the instances of the 'i_colloc' co-location which actually create co-location at the current time frame
         i_colloc_spatial_prevalent_instances_ids = np.random.choice(a=si.collocation_instances_counts[i_colloc], size=collocations_spatial_prevalent_instances_number[i_colloc], replace=False)
 
-        # create boolean vector which tells if the given instance of the 'i_colloc' co-location occurs in the current time frame
+        # create boolean vector which tells if the given instance of the 'i_colloc' co-location occurs at the current time frame
         i_colloc_spatial_prevalent_instances_flags = np.zeros(shape=si.collocation_instances_counts[i_colloc], dtype=bool)
         i_colloc_spatial_prevalent_instances_flags[i_colloc_spatial_prevalent_instances_ids] = True
 
@@ -108,17 +108,17 @@ def test_choose_spatial_prevalent_features():
 
     time_frames_number = 100
 
-    # determine the minimal number of the given co-location instances occurrence, which makes the co-location becomes spatial prevalent
+    # determine the minimal number of the given co-location instances occurrences, which makes the co-location becomes spatial prevalent
     collocations_instances_number_spatial_prevalence_threshold = np.ceil(sp.spatial_prevalence_threshold * si.collocation_instances_counts).astype(np.int32)
 
     # determine the number of time frames when the given co-location pattern is spatial prevalent
     collocations_time_frames_numbers_of_spatial_prevalence = np.random.randint(low=1, high=time_frames_number + 1, size=si.collocations_sum)
 
-    # decide which of the co-locations patterns are spatial prevalent in the current time frame
+    # decide which of the co-location patterns are spatial prevalent at the current time frame
     random_value = np.random.randint(low=1, high=time_frames_number + 1, size=si.collocations_sum)
     collocations_spatial_prevalence_flags = random_value <= collocations_time_frames_numbers_of_spatial_prevalence
 
-    # determine the number of the co-locations instances which actually creates co-location in the current time frame
+    # determine the number of the co-locations instances which actually creates co-location at the current time frame
     collocations_spatial_prevalent_instances_number = np.zeros(shape=si.collocations_sum, dtype=np.int32)
     collocations_spatial_prevalent_instances_number[np.logical_not(collocations_spatial_prevalence_flags)] = np.random.randint(
         low=0,

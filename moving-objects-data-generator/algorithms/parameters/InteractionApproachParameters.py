@@ -27,7 +27,7 @@ class InteractionApproachParameters(StandardTimeFrameParameters):
             different_features_interaction_mode: DifferentFeaturesInteractionMode = DifferentFeaturesInteractionMode.ATTRACT,
             **kwargs):
         """
-        Construct object which holds all the required parameters of the `SpatioTemporalInteractionApproachGenerator` class of a spatio-temporal data generator.
+        Construct an object which holds all the required parameters of the `SpatioTemporalInteractionApproachGenerator` class of a spatio-temporal data generator.
 
         Parameters
         ----------
@@ -55,7 +55,7 @@ class InteractionApproachParameters(StandardTimeFrameParameters):
             the exact radius length that represents the distance from the center of the initial spatial framework. Once an object exceeds this radius distance,
             an additional attraction force starts acting on it, pulling it back towards the center. The center is a fixed point determined at the first time frame
             as the center of mass of all objects. The attractive force acting on a given object is proportional to the mass of that object, the total mass of all objects,
-            the constant scaling factor `'k_force`` and is also proportional to the square of the relative distance of exceeding the allowed distance radius.
+            the constant scaling factor ``k_force`` and is also proportional to the square of the relative distance of exceeding the allowed distance radius.
 
         mass_method : MassMethod
             The enum value is used to distinguish different strategies of choosing the mass for the given instance of the specified feature type.
@@ -85,7 +85,7 @@ class InteractionApproachParameters(StandardTimeFrameParameters):
             of the available values, see `DifferentFeaturesInteractionMode` enum class documentation.
 
         kwargs
-            Other parameters passed to the super constructor of the derived class `BasicParameters`.
+            Other parameters passed to the super constructor of the derived class `StandardTimeFrameParameters`.
         """
 
         super().__init__(**kwargs)

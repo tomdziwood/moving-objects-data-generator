@@ -14,15 +14,15 @@ class SpatioTemporalInteractionApproachGenerator:
     Each pair of objects interacts with each other through mutual attractive or repulsive force, depending on the defined properties between features types
     by the parameters ``identical_features_interaction_mode`` and ``different_features_interaction_mode``. The force value between a specific pair of objects is proportional
     to the scaling constant coefficient ``k_force``, the masses of both objects and inversely proportional to the square of the distance between them.
-    The resultant force of all the force components acting on a given object determines its acceleration, which translates into changes in velocity and, consequently,
+    The resultant force of all force components acting on a given object determines its acceleration, which translates into changes in velocity and, consequently,
     changes in position over time.
 
     Thanks to the ``distance_unit`` and ``time_unit`` parameters, it is possible to interpret distances in the coordinate system of the workspace and interpret time
     between consecutive time frames in any desired manner. It is also possible to divide the interval between two consecutive time frames into ``approx_steps_number``
     equal fragments. For each short time fragment, simulation calculations are performed sequentially, resulting in more accurate results for the specified time frame.
 
-    To prevent overly abrupt motion simulations resulting from the discrete nature of calculations, it is necessary to use a limit ''force_limit'' for the maximum
-    resultant force acting on an object, as well as a limit ''velocity_limit'' for the maximum achievable velocity. Additionally, the parameter ''faraway_limit_ratio''
+    To prevent overly abrupt motion simulations resulting from the discrete nature of calculations, it is necessary to use a limit ``force_limit`` for the maximum
+    resultant force acting on an object, as well as a limit ``velocity_limit`` for the maximum achievable velocity. Additionally, the parameter ``faraway_limit_ratio``
     is available, allowing for the confinement of objects within a compact space and preventing them from continuously moving away in the unbounded spatial framework.
     """
 
@@ -34,7 +34,7 @@ class SpatioTemporalInteractionApproachGenerator:
 
         Parameters
         ----------
-        iap: InteractionApproachParameters
+        iap : InteractionApproachParameters
             The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
             of the `InteractionApproachParameters` class.
         """
@@ -60,10 +60,10 @@ class SpatioTemporalInteractionApproachGenerator:
             The number of time frames in which spatio-temporal data will be generated.
 
         output_filename : str
-            The filename to which output will be written.
+            The file name to which output will be written.
 
         output_filename_timestamp : bool
-            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            When ``True``, the file name has added unique string which is created based on the current timestamp.
             It helps to automatically recognize different output of generator.
         """
 
@@ -78,7 +78,7 @@ class SpatioTemporalInteractionApproachGenerator:
         # write comment to output file about chosen configuration
         stia_writer.write_comment(iai=self.iai)
 
-        # write starting data of all the features instances to the output file
+        # write starting data of all features instances to the output file
         stia_writer.write(
             time_frame_ids=time_frame_ids,
             features_ids=self.iai.features_ids,
@@ -186,7 +186,7 @@ class SpatioTemporalInteractionApproachGenerator:
             # generate vector of time frame ids of starting time frame
             time_frame_ids = np.full(shape=self.iai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
-            # write data of all the features instances to the output file
+            # write data of all features instances to the output file
             stia_writer.write(
                 time_frame_ids=time_frame_ids,
                 features_ids=self.iai.features_ids,

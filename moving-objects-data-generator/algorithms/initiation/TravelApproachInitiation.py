@@ -16,42 +16,43 @@ class TravelApproachInitiation(StandardTimeFrameInitiation):
         The object of class `TravelApproachParameters`, which holds all the required parameters of the `SpatioTemporalTravelApproachGenerator` generator.
 
     collocations_instances_destination_coor : np.ndarray
-        The array's size is equal to the number of co-locations instances. The i-th value represents the coordinates of the destination point of the i-th co-location instance.
+        The array's size is equal to the number of co-locations instances. The i-th value represents the coordinates of the spatial cell, which is the destination point
+        of the i-th co-location instance.
 
     features_instances_destination_coor : np.ndarray
-        The array's size is equal to the number of features' instances. The i-th value represents the coordinates of the destination point of the i-th feature instance.
+        The array's size is equal to the number of features instances. The i-th value represents the coordinates of the destination point of the i-th feature instance.
 
     features_instances_destination_reached : np.ndarray
-        The array's size is equal to the number of features' instances. The i-th value tells if i-th feature instance has reached its destination point.
+        The array's size is equal to the number of features instances. The i-th value tells if i-th feature instance has reached its destination point.
 
     collocations_instances_waiting_countdown : np.ndarray
         The array's size is equal to the number of co-locations instances. The i-th value represents remaining time frames of waiting for the rest
-        of the features' instances of the i-th co-location instance to reach their destination point. When counter is inactive, the value is equal ``-1``.
+        of the features instances of the i-th co-location instance to reach their destination point. When counter is inactive, the value is equal ``-1``.
 
     features_step_length_mean : np.ndarray
-        The array's size is equal to the number of features' types. The i-th value represents mean value of the step's length of a feature's instance
-        of the i-th feature's type.
+        The array's size is equal to the number of features types. The i-th value represents mean value of the step's length of a feature instance
+        of the i-th feature type.
 
     features_step_length_uniform_min : np.ndarray
-        The array's size is equal to the number of features' types. The array is initialized, when the generator's parameter ``step_length_method``
-        is equal to ``StepLengthMethod.UNIFORM``. The i-th value represents lower boundary of the uniform distribution of the step's length of the i-th feature's type.
+        The array's size is equal to the number of features types. The array is initialized, when the generator's parameter ``step_length_method``
+        is equal to ``StepLengthMethod.UNIFORM``. The i-th value represents the lower boundary of the uniform distribution of the step's length of the i-th feature type.
 
     features_step_length_uniform_max : np.ndarray
-        The array's size is equal to the number of features' types. The array is initialized, when the generator's parameter ``step_length_method``
-        is equal to ``StepLengthMethod.UNIFORM``. The i-th value represents upper boundary of the uniform distribution of the step's length of the i-th feature's type.
+        The array's size is equal to the number of features types. The array is initialized, when the generator's parameter ``step_length_method``
+        is equal to ``StepLengthMethod.UNIFORM``. The i-th value represents the upper boundary of the uniform distribution of the step's length of the i-th feature type.
 
     features_step_length_normal_std : np.ndarray
-        The array's size is equal to the number of features' types. The array is initialized, when the generator's parameter ``step_length_method``
-        is equal to ``StepLengthMethod.NORMAL``. The i-th value represents standard deviation of the normal distribution of the step's length of the i-th feature's type.
+        The array's size is equal to the number of features types. The array is initialized, when the generator's parameter ``step_length_method``
+        is equal to ``StepLengthMethod.NORMAL``. The i-th value represents standard deviation of the normal distribution of the step's length of the i-th feature type.
 
     features_step_angle_range : np.ndarray
-        The array's size is equal to the number of features' types. The i-th value represents the maximum step's angle to the direction of destination point
-        of the i-th feature's type.
+        The array's size is equal to the number of features types. The i-th value represents the maximum step's angle to the direction of destination point
+        of the i-th feature type.
 
     features_step_angle_normal_std : np.ndarray
-        The array's size is equal to the number of features' types. The array is initialized, when the generator's parameter ``step_angle_method``
+        The array's size is equal to the number of features types. The array is initialized, when the generator's parameter ``step_angle_method``
         is equal to ``StepAngleMethod.NORMAL``. The i-th value represents the standard deviation of the normal distribution of the step's angle
-        to the direction of destination point of the i-th feature's type.
+        to the direction of destination point of the i-th feature type.
 
     """
 

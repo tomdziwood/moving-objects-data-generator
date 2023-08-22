@@ -8,14 +8,14 @@ from algorithms.parameters.TravelApproachParameters import TravelApproachParamet
 
 class SpatioTemporalTravelApproachGenerator:
     """
-    The class of a spatio-temporal data generator. The main idea of the generator is that features' instances are changing their positions
+    The class of a spatio-temporal data generator. The main idea of the generator is that features instances are changing their positions
     by making steps into direction of the individually defined destination points. When a current destination point is achieved, then a new destination point is defined.
-    There are allowed different values of step's length and different values of step's angle to the direction of destination point of the given feature's instance.
+    There are allowed different values of step's length and different values of step's angle to the direction of destination point of the given feature instance.
 
-    Feature's instances, which tend to occur together as a co-location instance, they have closely located their destination points - similar like when
-    these feature's instance positions are defined at the starting position according to `SpatialBasicPlacement` procedure. In case of the given co-location instance,
-    only when all the features' instances reach the current destination points, the new destination points are defined. It is possible to get new destination
-    thanks to the elapsed time frames according to the `waiting_time_frames` parameter value.
+    Features instances, which tend to occur together as a co-location instance, they have closely located their destination points - similar like when
+    these features instances' positions are defined at the starting position according to `SpatialBasicPlacement` procedure. In case of the given co-location instance,
+    only when all the features instances reach the current destination points, the new destination points are defined. It is possible to get new destination
+    thanks to the elapsed time frames according to the ``waiting_time_frames`` parameter value.
     """
 
     def __init__(
@@ -26,7 +26,7 @@ class SpatioTemporalTravelApproachGenerator:
 
         Parameters
         ----------
-        tap: TravelApproachParameters
+        tap : TravelApproachParameters
             The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
             of the `TravelApproachParameters` class.
         """
@@ -52,10 +52,10 @@ class SpatioTemporalTravelApproachGenerator:
             The number of time frames in which spatio-temporal data will be generated.
 
         output_filename : str
-            The filename to which output will be written.
+            The file name to which output will be written.
 
         output_filename_timestamp : bool
-            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            When ``True``, the file name has added unique string which is created based on the current timestamp.
             It helps to automatically recognize different output of generator.
         """
 
@@ -70,7 +70,7 @@ class SpatioTemporalTravelApproachGenerator:
         # generate vector of time frame ids of starting time frame
         time_frame_ids = np.full(shape=self.tai.features_instances_sum, fill_value=0, dtype=np.int32)
 
-        # write starting data of all the features to the output file
+        # write starting data of all features instances to the output file
         stta_writer.write(
             time_frame_ids=time_frame_ids,
             features_ids=self.tai.features_ids,
@@ -184,7 +184,7 @@ class SpatioTemporalTravelApproachGenerator:
             # generate vector of time frame ids of current time frame
             time_frame_ids = np.full(shape=self.tai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
-            # write data of all the features to the output file
+            # write data of all features instances to the output file
             stta_writer.write(
                 time_frame_ids=time_frame_ids,
                 features_ids=self.tai.features_ids,

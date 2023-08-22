@@ -24,7 +24,7 @@ class SpatioTemporalBasicGenerator:
 
         Parameters
         ----------
-        bp: BasicParameters
+        bp : BasicParameters
             The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
             of the `BasicParameters` class.
         """
@@ -50,10 +50,10 @@ class SpatioTemporalBasicGenerator:
             The number of time frames in which spatio-temporal data will be generated.
 
         output_filename : str
-            The filename to which output will be written.
+            The file name to which output will be written.
 
         output_filename_timestamp : bool
-            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            When ``True``, the file name has added unique string which is created based on the current timestamp.
             It helps to automatically recognize different output of generator.
         """
 
@@ -72,13 +72,13 @@ class SpatioTemporalBasicGenerator:
         for time_frame in range(time_frames_number):
             print("time_frame %d of %d" % (time_frame + 1, time_frames_number))
 
-            # perform placement of all the features
+            # perform placement of all features instances
             sbp.place(self.bi)
 
             # generate vector of time frame ids of current time frame
             time_frame_ids = np.full(shape=self.bi.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
-            # write data of all the features to the output file
+            # write data of all features instances to the output file
             stb_writer.write(
                     time_frame_ids=time_frame_ids,
                     features_ids=self.bi.features_ids,

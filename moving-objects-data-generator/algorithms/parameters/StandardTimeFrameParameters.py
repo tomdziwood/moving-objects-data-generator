@@ -14,7 +14,7 @@ class StandardTimeFrameParameters(BasicParameters):
             spatial_prevalence_threshold: float = 1.0,
             **kwargs):
         """
-        Construct object which holds all the basic parameters of the many classes of spatio-temporal data generators. These parameters are required while calculating
+        Construct an object which holds all the basic parameters of the many classes of spatio-temporal data generators. These parameters are required while calculating
         the localization of the objects at the first time frame.
 
         Parameters

@@ -960,7 +960,7 @@ def generate_all_features_1(bi: BasicInitiation):
         # calculate total number of all co-location feature instances
         collocation_features_instances_sum = bi.collocation_instances_counts[i_colloc] * bi.collocation_lengths[i_colloc]
 
-        # generate vector of x coordinates of all the consecutive instances
+        # generate vector of x coordinates of all consecutive instances
         collocation_features_instances_x = np.random.randint(low=bi.area_in_cell_dim, size=(bi.collocation_instances_counts[i_colloc] - 1) // bp.m_clumpy + 1)
         collocation_features_instances_x *= bp.cell_size
         collocation_features_instances_x = collocation_features_instances_x.astype(dtype=np.float64)
@@ -968,7 +968,7 @@ def generate_all_features_1(bi: BasicInitiation):
         collocation_features_instances_x = np.repeat(a=collocation_features_instances_x, repeats=bi.collocation_lengths[i_colloc])
         collocation_features_instances_x += np.random.uniform(high=bp.cell_size, size=collocation_features_instances_sum)
 
-        # generate vector of y coordinates of all the consecutive instances
+        # generate vector of y coordinates of all consecutive instances
         collocation_features_instances_y = np.random.randint(low=bi.area_in_cell_dim, size=(bi.collocation_instances_counts[i_colloc] - 1) // bp.m_clumpy + 1)
         collocation_features_instances_y *= bp.cell_size
         collocation_features_instances_y = collocation_features_instances_y.astype(dtype=np.float64)
@@ -981,7 +981,7 @@ def generate_all_features_1(bi: BasicInitiation):
         y = np.concatenate((y, collocation_features_instances_y))
 
     # generate data of every co-location noise feature in given time frame
-    # generate vectors of x and y coordinates of all the consecutive instances of co-location noise features
+    # generate vectors of x and y coordinates of all consecutive instances of co-location noise features
     collocation_noise_features_instances_x = np.random.uniform(high=bp.area, size=bi.collocation_noise_features_instances_sum)
     collocation_noise_features_instances_y = np.random.uniform(high=bp.area, size=bi.collocation_noise_features_instances_sum)
 
@@ -991,7 +991,7 @@ def generate_all_features_1(bi: BasicInitiation):
 
     # generate additional noise features if they are requested in given time frame
     if bp.ndf > 0:
-        # generate vectors of x and y coordinates of all the consecutive instances of additional noise features
+        # generate vectors of x and y coordinates of all consecutive instances of additional noise features
         additional_noise_features_instances_x = np.random.uniform(high=bp.area, size=bp.ndfn)
         additional_noise_features_instances_y = np.random.uniform(high=bp.area, size=bp.ndfn)
 

@@ -25,7 +25,7 @@ class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
             velocity_mean: float = 0.0,
             **kwargs):
         """
-        Construct object which holds all the required parameters of the `SpatioTemporalOptimalDistanceApproachGenerator` class of a spatio-temporal data generator.
+        Construct an object which holds all the required parameters of the `SpatioTemporalOptimalDistanceApproachGenerator` class of a spatio-temporal data generator.
 
         Parameters
         ----------

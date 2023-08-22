@@ -5,7 +5,7 @@ from algorithms.initiation.BasicInitiation import BasicInitiation
 
 class SpatialBasicPlacement:
     """
-    The class of a spatial placement. Object of this class performs placement of all the features instances and holds all data of this placement. The placement is performed
+    The class of a spatial placement. Object of this class performs placement of all features instances and holds all data of this placement. The placement is performed
     according to the strategy of the `SpatioTemporalBasicGenerator` generator.
 
     Attributes
@@ -24,7 +24,7 @@ class SpatialBasicPlacement:
 
     def place(self, bi: BasicInitiation):
         """
-        Perform placement of all the features instances initiated by the object of `BasicInitiation` class. Every object has assigned a single location
+        Perform placement of all features instances initiated by the object of `BasicInitiation` class. Every object has assigned a single location
         in two-dimensional area of the spatial framework.
 
         Parameters

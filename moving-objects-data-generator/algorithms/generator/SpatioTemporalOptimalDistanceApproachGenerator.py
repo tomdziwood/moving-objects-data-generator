@@ -33,7 +33,7 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
 
         Parameters
         ----------
-        odap: OptimalDistanceApproachParameters
+        odap : OptimalDistanceApproachParameters
             The object which represents set of parameters used by the generator. For detailed description of available parameters, see documentation
             of the `OptimalDistanceApproachParameters` class.
         """
@@ -59,10 +59,10 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
             The number of time frames in which spatio-temporal data will be generated.
 
         output_filename : str
-            The filename to which output will be written.
+            The file name to which output will be written.
 
         output_filename_timestamp : bool
-            When ``True``, the filename has added unique string which is created based on the current timestamp.
+            When ``True``, the file name has added unique string which is created based on the current timestamp.
             It helps to automatically recognize different output of generator.
         """
 
@@ -77,7 +77,7 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
         # write comment to output file about chosen configuration
         stoda_writer.write_comment(odai=self.odai)
 
-        # write starting data of all the features instances to the output file
+        # write starting data of all features instances to the output file
         stoda_writer.write(
             time_frame_ids=time_frame_ids,
             features_ids=self.odai.features_ids,
@@ -197,7 +197,7 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
             # generate vector of time frame ids of starting time frame
             time_frame_ids = np.full(shape=self.odai.features_instances_sum, fill_value=time_frame, dtype=np.int32)
 
-            # write data of all the features instances to the output file
+            # write data of all features instances to the output file
             stoda_writer.write(
                 time_frame_ids=time_frame_ids,
                 features_ids=self.odai.features_ids,
