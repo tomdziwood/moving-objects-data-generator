@@ -266,7 +266,7 @@ class BasicInitiation:
         print("collocation_features_instances_sum=%d" % self.collocation_features_instances_sum)
 
         # express area dimension in spatial cell unit
-        self.area_in_cell_dim = bp.area // bp.cell_size
+        self.area_in_cell_dim = int(bp.area / bp.cell_size)
         print("area_in_cell_dim: ", self.area_in_cell_dim)
 
         # determine the total number of features, which take part in co-locations and also are used to generate noise

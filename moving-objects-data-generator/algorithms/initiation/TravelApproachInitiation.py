@@ -94,8 +94,8 @@ class TravelApproachInitiation(StandardTimeFrameInitiation):
 
         # set destination point of every feature instance
         self.collocations_instances_destination_coor = np.random.randint(low=self.area_in_cell_dim, size=(self.collocations_clumpy_instances_global_sum, 2))
-        self.collocations_instances_destination_coor *= tap.cell_size
         self.collocations_instances_destination_coor = self.collocations_instances_destination_coor.astype(dtype=np.float64)
+        self.collocations_instances_destination_coor *= tap.cell_size
         self.features_instances_destination_coor = self.collocations_instances_destination_coor[self.collocations_clumpy_instances_global_ids]
         self.features_instances_destination_coor += np.random.uniform(high=tap.cell_size, size=self.features_instances_destination_coor.shape)
 

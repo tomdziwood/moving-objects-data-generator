@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def generate(output_file="SpatialBasicGenerator_output_file.txt", time_frames_number=10, area=1000, cell_size=5, n_base=3, lambda_1=5, lambda_2=100, m_clumpy=1, m_overlap=1, ncfr=1.0, ncfn=1.0, ncf_proportional=False, ndf=2, ndfn=5000, random_seed=None):
+def generate(output_file="SpatialBasicGenerator_output_file.txt", time_frames_number=10, area=1000.0, cell_size=5.0, n_base=3, lambda_1=5.0, lambda_2=100.0, m_clumpy=1, m_overlap=1, ncfr=1.0, ncfn=1.0, ncf_proportional=False, ndf=2, ndfn=5000, random_seed=None):
     print("generate()")
 
     # set random seed value
@@ -195,7 +195,7 @@ def generate(output_file="SpatialBasicGenerator_output_file.txt", time_frames_nu
 def main():
     print("main()")
 
-    generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_frames_number=10, area=1000, cell_size=5, n_base=2, lambda_1=5, lambda_2=100, m_clumpy=2, m_overlap=3, ncfr=0.4, ncfn=1, ncf_proportional=False, ndf=5, ndfn=200, random_seed=0)
+    generate(output_file="SpatioTemporalBasicGenerator_output_file.txt", time_frames_number=10, area=1000.0, cell_size=5.0, n_base=2, lambda_1=5.0, lambda_2=100.0, m_clumpy=2, m_overlap=3, ncfr=0.4, ncfn=1.0, ncf_proportional=False, ndf=5, ndfn=200, random_seed=0)
 
 
 if __name__ == "__main__":

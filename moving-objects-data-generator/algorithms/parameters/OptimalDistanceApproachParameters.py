@@ -106,7 +106,7 @@ class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
             velocity_limit = 5.0
 
         # check 'faraway_limit_ratio' value
-        if faraway_limit_ratio <= 0:
+        if faraway_limit_ratio <= 0.0:
             faraway_limit_ratio = np.sqrt(2) / 2
 
         # check 'mass_mean' value

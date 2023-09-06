@@ -338,11 +338,11 @@ def test_generate_collocation_feature():
 
     print("test_generate_collocation_feature execute")
     parameters = {
-        "area": 1000,
-        "cell_size": 5,
+        "area": 1000.0,
+        "cell_size": 5.0,
         "n_base": 10,
-        "lambda_1": 5,
-        "lambda_2": 1000,
+        "lambda_1": 5.0,
+        "lambda_2": 1000.0,
         "m_clumpy": 1,
         "m_overlap": 1
     }
@@ -397,7 +397,7 @@ def test_generate_collocation_feature():
     print("average time execution of function generate_collocation_feature_7:\t%.12f [s]" % ((end - start) / loops_number))
 
 
-def generate_collocation_feature_and_write_1(output_file="generate_collocation_feature_and_write_1.txt", area=1000, cell_size=5, n_base=3, lambda_1=5, lambda_2=100):
+def generate_collocation_feature_and_write_1(output_file="generate_collocation_feature_and_write_1.txt", area=1000.0, cell_size=5.0, n_base=3, lambda_1=5.0, lambda_2=100.0):
     np.random.seed(0)
     f = open(file=output_file, mode="w")
     base_collocation_length_array = np.random.poisson(lam=lambda_1, size=n_base)
@@ -442,7 +442,7 @@ def generate_collocation_feature_and_write_1(output_file="generate_collocation_f
     f.close()
 
 
-def generate_collocation_feature_and_write_2(output_file="generate_collocation_feature_and_write_2.txt", area=1000, cell_size=5, n_base=3, lambda_1=5, lambda_2=100):
+def generate_collocation_feature_and_write_2(output_file="generate_collocation_feature_and_write_2.txt", area=1000.0, cell_size=5.0, n_base=3, lambda_1=5.0, lambda_2=100.0):
     np.random.seed(0)
     f = open(file=output_file, mode="w")
     base_collocation_length_array = np.random.poisson(lam=lambda_1, size=n_base)
@@ -482,7 +482,7 @@ def generate_collocation_feature_and_write_2(output_file="generate_collocation_f
     f.close()
 
 
-def generate_collocation_feature_and_write_3(output_file="generate_collocation_feature_and_write_3.txt", area=1000, cell_size=5, n_base=3, lambda_1=5, lambda_2=100):
+def generate_collocation_feature_and_write_3(output_file="generate_collocation_feature_and_write_3.txt", area=1000.0, cell_size=5.0, n_base=3, lambda_1=5.0, lambda_2=100.0):
     np.random.seed(0)
     f = open(file=output_file, mode="w")
     base_collocation_length_array = np.random.poisson(lam=lambda_1, size=n_base)
@@ -526,7 +526,7 @@ def generate_collocation_feature_and_write_3(output_file="generate_collocation_f
     f.close()
 
 
-def generate_collocation_feature_and_write_4(output_file="generate_collocation_feature_and_write_4.txt", area=1000, cell_size=5, n_base=3, lambda_1=5, lambda_2=100):
+def generate_collocation_feature_and_write_4(output_file="generate_collocation_feature_and_write_4.txt", area=1000.0, cell_size=5.0, n_base=3, lambda_1=5.0, lambda_2=100.0):
     np.random.seed(0)
     f = open(file=output_file, mode="w")
     base_collocation_length_array = np.random.poisson(lam=lambda_1, size=n_base)
@@ -581,11 +581,11 @@ def test_generate_collocation_feature_and_write():
 
     print("test_generate_collocation_feature_and_write execute")
     parameters = {
-        "area": 1000,
-        "cell_size": 5,
+        "area": 1000.0,
+        "cell_size": 5.0,
         "n_base": 10,
-        "lambda_1": 5,
-        "lambda_2": 1000
+        "lambda_1": 5.0,
+        "lambda_2": 1000.0
     }
 
     loops_number = 10
@@ -667,18 +667,18 @@ def test_generate_collocation_noise_feature():
     print("test_generate_collocation_noise_feature execute")
 
     # starting parameters
-    area = 1000
+    area = 1000.0
     n_base = 10
-    lambda_1 = 5
-    lambda_2 = 1000
+    lambda_1 = 5.0
+    lambda_2 = 1000.0
     ncfr = 0.98
     ncfn = 1.5
 
     # # starting parameters
-    # area = 1000
+    # area = 1000.0
     # n_base = 100
-    # lambda_1 = 50
-    # lambda_2 = 100
+    # lambda_1 = 50.0
+    # lambda_2 = 100.0
     # ncfr = 0.98
     # ncfn = 1.5
 
@@ -774,18 +774,18 @@ def test_write_collocation_noise_feature():
     print("test_generate_collocation_noise_feature_and_write execute")
 
     # starting parameters
-    area = 1000
+    area = 1000.0
     n_base = 10
-    lambda_1 = 5
-    lambda_2 = 1000
+    lambda_1 = 5.0
+    lambda_2 = 1000.0
     ncfr = 0.98
     ncfn = 1.5
 
     # # starting parameters
-    # area = 1000
+    # area = 1000.0
     # n_base = 100
-    # lambda_1 = 50
-    # lambda_2 = 100
+    # lambda_1 = 50.0
+    # lambda_2 = 100.0
     # ncfr = 0.98
     # ncfn = 1.5
 
@@ -883,7 +883,7 @@ def test_generate_additional_noise_feature():
 
     # generating parameters
     parameters = {
-        "area": 1000,
+        "area": 1000.0,
         "last_colloc_id": 13,
         "ndf": 5,
         "ndfn": 5000,
@@ -912,11 +912,11 @@ def test_spatial_basic_generator():
 
     # generating parameters
     parameters = {
-        "area": 1000,
-        "cell_size": 5,
+        "area": 1000.0,
+        "cell_size": 5.0,
         "n_base": 10,
-        "lambda_1": 5,
-        "lambda_2": 1000,
+        "lambda_1": 5.0,
+        "lambda_2": 1000.0,
         "m_clumpy": 2,
         "m_overlap": 3,
         "ncfr": 0.4,
@@ -1020,11 +1020,11 @@ def test_generate_all_features():
     print("test_generate_all_features execute")
 
     bp = BasicParameters(
-        area=1000,
-        cell_size=5,
+        area=1000.0,
+        cell_size=5.0,
         n_base=10,
-        lambda_1=4,
-        lambda_2=50,
+        lambda_1=4.0,
+        lambda_2=50.0,
         m_clumpy=3,
         m_overlap=2,
         ncfr=0.5,

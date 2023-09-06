@@ -79,30 +79,30 @@ class TravelApproachParameters(StandardTimeFrameParameters):
         super().__init__(**kwargs)
 
         # check step_length_mean value
-        if step_length_mean < 0:
-            step_length_mean = 0
+        if step_length_mean < 0.0:
+            step_length_mean = 0.0
 
         # check step_length_uniform_low_to_mean_ratio value
-        if step_length_uniform_low_to_mean_ratio < 0:
-            step_length_uniform_low_to_mean_ratio = 0
-        if step_length_uniform_low_to_mean_ratio > 1:
-            step_length_uniform_low_to_mean_ratio = 1
+        if step_length_uniform_low_to_mean_ratio < 0.0:
+            step_length_uniform_low_to_mean_ratio = 0.0
+        if step_length_uniform_low_to_mean_ratio > 1.0:
+            step_length_uniform_low_to_mean_ratio = 1.0
 
         # check step_length_normal_std_ratio value
-        if step_length_normal_std_ratio < 0:
-            step_length_normal_std_ratio = 0
+        if step_length_normal_std_ratio < 0.0:
+            step_length_normal_std_ratio = 0.0
 
         # check step_angle_range_mean value
-        if step_angle_range_mean < 0:
-            step_angle_range_mean = 0
+        if step_angle_range_mean < 0.0:
+            step_angle_range_mean = 0.0
 
         # check step_angle_range_limit value
-        if step_angle_range_limit < 0:
-            step_angle_range_limit = 0
+        if step_angle_range_limit < 0.0:
+            step_angle_range_limit = 0.0
 
         # check step_angle_normal_std_ratio value
-        if step_angle_normal_std_ratio < 0:
-            step_angle_normal_std_ratio = 0
+        if step_angle_normal_std_ratio < 0.0:
+            step_angle_normal_std_ratio = 0.0
 
         # check waiting_time_frames value
         if waiting_time_frames < 0:

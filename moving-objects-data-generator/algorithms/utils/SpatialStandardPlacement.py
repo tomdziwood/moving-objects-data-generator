@@ -104,8 +104,8 @@ class SpatialStandardPlacement:
 
         # initialize features instances' coordinates as if there occurred every co-locations instance - with the awareness of the m_clumpy parameter
         collocations_clumpy_instances_coor_all_collocations_instances_occured = np.random.randint(low=self.bi.area_in_cell_dim, size=(self.bi.collocations_clumpy_instances_global_sum, 2))
-        collocations_clumpy_instances_coor_all_collocations_instances_occured *= bp.cell_size
         collocations_clumpy_instances_coor_all_collocations_instances_occured = collocations_clumpy_instances_coor_all_collocations_instances_occured.astype(dtype=np.float64)
+        collocations_clumpy_instances_coor_all_collocations_instances_occured *= bp.cell_size
         features_instances_coor_all_collocations_instances_occured = collocations_clumpy_instances_coor_all_collocations_instances_occured[self.bi.collocations_clumpy_instances_global_ids]
         features_instances_coor_all_collocations_instances_occured += np.random.uniform(high=bp.cell_size, size=features_instances_coor_all_collocations_instances_occured.shape)
 

@@ -12,14 +12,14 @@ def visualize_demo_1_generate_data(area, random_seed):
 
     sp = StandardParameters(
         area=area,
-        cell_size=5,
+        cell_size=5.0,
         n_base=2,
-        lambda_1=3,
-        lambda_2=3,
+        lambda_1=3.0,
+        lambda_2=3.0,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0,
-        ncfn=0,
+        ncfr=0.0,
+        ncfn=0.0,
         ncf_proportional=False,
         ndf=1,
         ndfn=5,
@@ -48,7 +48,7 @@ def visualize_demo_1_generate_data(area, random_seed):
 def visualize_demo_1():
     print("SpatioTemporalStandardGenerator visualize_demo_1()")
 
-    area = 30
+    area = 30.0
     random_seed = 1911
 
     visualize_demo_1_generate_data(area=area, random_seed=random_seed)
@@ -125,14 +125,14 @@ def visualize_demo_2_generate_data(area, random_seed):
 
     sp = StandardParameters(
         area=area,
-        cell_size=5,
+        cell_size=5.0,
         n_base=1,
-        lambda_1=3,
-        lambda_2=5,
+        lambda_1=3.0,
+        lambda_2=5.0,
         m_clumpy=3,
         m_overlap=2,
-        ncfr=0,
-        ncfn=0,
+        ncfr=0.0,
+        ncfn=0.0,
         ncf_proportional=False,
         ndf=0,
         ndfn=0,
@@ -161,7 +161,7 @@ def visualize_demo_2_generate_data(area, random_seed):
 def visualize_demo_2():
     print("SpatioTemporalStandardGenerator visualize_demo_2()")
 
-    area = 30
+    area = 30.0
     random_seed = 2704
 
     visualize_demo_2_generate_data(area=area, random_seed=random_seed)

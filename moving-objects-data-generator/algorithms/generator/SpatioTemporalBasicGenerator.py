@@ -95,11 +95,11 @@ if __name__ == "__main__":
     print("SpatioTemporalBasicGenerator main()")
 
     bp = BasicParameters(
-        area=1000,
-        cell_size=5,
+        area=1000.0,
+        cell_size=5.0,
         n_base=2,
-        lambda_1=3,
-        lambda_2=6,
+        lambda_1=3.0,
+        lambda_2=6.0,
         m_clumpy=2,
         m_overlap=2,
         ncfr=0.5,

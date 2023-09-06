@@ -14,11 +14,11 @@ def test_spatio_temporal_standard_generator():
     # generating parameters
     parameters = {
         "time_frames_number": 10,
-        "area": 1000,
-        "cell_size": 5,
+        "area": 1000.0,
+        "cell_size": 5.0,
         "n_base": 10,
-        "lambda_1": 5,
-        "lambda_2": 1000,
+        "lambda_1": 5.0,
+        "lambda_2": 1000.0,
         "m_clumpy": 2,
         "m_overlap": 3,
         "ncfr": 0.4,

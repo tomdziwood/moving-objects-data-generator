@@ -14,10 +14,10 @@ def visualize_spatial_data_generate_data(area, random_seed):
 
     sp = StandardParameters(
         area=area,
-        cell_size=5,
+        cell_size=5.0,
         n_base=2,
-        lambda_1=2,
-        lambda_2=2,
+        lambda_1=2.0,
+        lambda_2=2.0,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0.4,
@@ -50,7 +50,7 @@ def visualize_spatial_data_generate_data(area, random_seed):
 def visualize_spatial_data():
     print("ExtraVisualization visualize_spatial_data()")
 
-    area = 20
+    area = 20.0
     random_seed = 6824  # 36, 1494, 6821
     distance = 5
 
@@ -83,10 +83,10 @@ def visualize_spatiotemporal_data_generate_data(area, random_seed):
 
     cmap = CircularMotionApproachParameters(
         area=area,
-        cell_size=5,
+        cell_size=5.0,
         n_base=1,
-        lambda_1=3,
-        lambda_2=3,
+        lambda_1=3.0,
+        lambda_2=3.0,
         m_clumpy=1,
         m_overlap=1,
         ncfr=0.7,
@@ -98,8 +98,8 @@ def visualize_spatiotemporal_data_generate_data(area, random_seed):
         spatial_prevalent_ratio=1.0,
         spatial_prevalence_threshold=1.0,
         circle_chain_size=2,
-        omega_min= np.pi / 8,
-        omega_max= np.pi / 4,
+        omega_min=np.pi / 8,
+        omega_max=np.pi / 4,
         circle_r_min=2.0,
         circle_r_max=3.0,
         center_noise_displacement=0.5
@@ -124,7 +124,7 @@ def visualize_spatiotemporal_data_generate_data(area, random_seed):
 def visualize_spatiotemporal_data():
     print("ExtraVisualization visualize_spatiotemporal_data()")
 
-    area = 15
+    area = 15.0
     random_seed = 316  # 56, 160, 316, 381
     distance = 4
 

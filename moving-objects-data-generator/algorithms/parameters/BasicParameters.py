@@ -8,8 +8,8 @@ class BasicParameters:
             area: float = 1000.0,
             cell_size: float = 5.0,
             n_base: int = 3,
-            lambda_1: int = 5,
-            lambda_2: int = 100,
+            lambda_1: float = 5.0,
+            lambda_2: float = 100.0,
             m_clumpy: int = 1,
             m_overlap: int = 1,
             ncfr: float = 0.0,
@@ -34,10 +34,10 @@ class BasicParameters:
         n_base : int
             The number of the base co-location patterns.
 
-        lambda_1 : int
+        lambda_1 : float
             The parameter of the Poisson distribution to define the length of the base co-location pattern.
 
-        lambda_2 : int
+        lambda_2 : float
             The parameter of the Poisson distribution to define the number of instances of the co-location pattern.
 
         m_clumpy : int
@@ -84,12 +84,12 @@ class BasicParameters:
             n_base = 0
 
         # check 'lambda_1' value
-        if lambda_1 < 1:
-            lambda_1 = 1
+        if lambda_1 < 1.0:
+            lambda_1 = 1.0
 
         # check 'lambda_2' value
-        if lambda_2 < 1:
-            lambda_2 = 1
+        if lambda_2 < 1.0:
+            lambda_2 = 1.0
 
         # check 'm_clumpy' value
         if m_clumpy < 1:

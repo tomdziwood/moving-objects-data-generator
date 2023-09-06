@@ -88,7 +88,7 @@ def test_set_destination_point():
     print("collocation_instances_global_sum=%s" % str(collocation_instances_global_sum))
 
     area_in_cell_dim = 200
-    cell_size = 5
+    cell_size = 5.0
 
     parameters = {
         "area_in_cell_dim": area_in_cell_dim,

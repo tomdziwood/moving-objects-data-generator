@@ -85,15 +85,15 @@ def test_choose_spatial_prevalent_features():
 
     print("test_choose_spatial_prevalent_features execute")
     sp = StandardParameters(
-        area=1000,
-        cell_size=5,
+        area=1000.0,
+        cell_size=5.0,
         n_base=10,
-        lambda_1=4,
-        lambda_2=30,
+        lambda_1=4.0,
+        lambda_2=30.0,
         m_clumpy=3,
         m_overlap=2,
-        ncfr=0,
-        ncfn=0,
+        ncfr=0.0,
+        ncfn=0.0,
         ncf_proportional=False,
         ndf=1,
         ndfn=40,
