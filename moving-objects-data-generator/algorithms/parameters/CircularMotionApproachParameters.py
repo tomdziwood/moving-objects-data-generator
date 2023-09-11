@@ -23,22 +23,24 @@ class CircularMotionApproachParameters(StandardTimeFrameParameters):
         Parameters
         ----------
         circle_chain_size : int
-            The number of defined circular motions that make up the trajectory of a single feature instance.
+            The number of defined circular motions that make up the trajectory of a single feature instance. The parameter is also known as the "n_circle".
 
         omega_min : float
             The lower boundary of the uniform distribution of the angular velocity of the circular orbit. The angular velocity is expressed in radians per time frame.
+             The parameter is also known as the "ω_min".
 
         omega_max : float
             The upper boundary of the uniform distribution of the angular velocity of the circular orbit. The angular velocity is expressed in radians per time frame.
+             The parameter is also known as the "ω_max".
 
         circle_r_min : float
-            The lower boundary of the uniform distribution of the radius length of the circular orbit.
+            The lower boundary of the uniform distribution of the radius length of the circular orbit. The parameter is also known as the "r_circle_min".
 
         circle_r_max : float
-            The upper boundary of the uniform distribution of the radius length of the circular orbit.
+            The upper boundary of the uniform distribution of the radius length of the circular orbit. The parameter is also known as the "r_circle_max".
 
         center_noise_displacement : float
-            The radius length of the area within which the initially fixed center of the circular orbit is displaced.
+            The radius length of the area within which the initially fixed center of the circular orbit is displaced. The parameter is also known as the "r_displacement".
 
         kwargs
             Other parameters passed to the super constructor of the derived class `StandardTimeFrameParameters`.

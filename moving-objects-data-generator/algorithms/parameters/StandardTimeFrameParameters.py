@@ -21,11 +21,11 @@ class StandardTimeFrameParameters(BasicParameters):
         ----------
         spatial_prevalent_ratio : float
             The ratio of the co-location patterns which are chosen as a spatial prevalent co-location pattern at the first time frame. This ratio is used to determine
-            the exact number of all spatial prevalent co-location patterns.
+            the exact number of all spatial prevalent co-location patterns. The parameter is also known as the "l_spatial_prevalent".
 
         spatial_prevalence_threshold : float
             The spatial prevalence threshold. It is used to determine the minimal number of co-location pattern instances occurrences, which makes the given co-location
-            pattern becomes a spatial prevalent co-location at the first time frame.
+            pattern becomes a spatial prevalent co-location at the first time frame. The parameter is also known as the "θ_p".
 
         kwargs
             Other parameters passed to the super constructor of the derived class `BasicParameters`.
