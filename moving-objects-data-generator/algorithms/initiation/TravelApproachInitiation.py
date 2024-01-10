@@ -106,14 +106,20 @@ class TravelApproachInitiation(StandardTimeFrameInitiation):
         self.collocations_instances_waiting_countdown = np.full(shape=self.collocations_clumpy_instances_global_sum, fill_value=-1, dtype=np.int32)
 
         # determine travel step length settings of each feature type
-        self.features_step_length_mean = np.random.gamma(shape=tap.step_length_mean, scale=1.0, size=self.features_sum)
+        if tap.step_length_method in {StepLengthMethod.COLLOCATION_UNIFORM, StepLengthMethod.COLLOCATION_GAMMA, StepLengthMethod.COLLOCATION_NORMAL}:
+            base_collocations_features_repeats = self.base_collocation_lengths if tap.m_overlap == 1 else self.base_collocation_lengths + tap.m_overlap
+            base_collocations_features_repeats = np.concatenate((base_collocations_features_repeats, np.ones(tap.ndf, dtype=np.int32)))
+            base_collocations_step_length_mean = np.random.gamma(shape=tap.step_length_mean, scale=1.0, size=tap.n_base + tap.ndf)
+            self.features_step_length_mean = np.repeat(a=base_collocations_step_length_mean, repeats=base_collocations_features_repeats)
+        else:
+            self.features_step_length_mean = np.random.gamma(shape=tap.step_length_mean, scale=1.0, size=self.features_sum)
         print("features_step_length_mean=%s" % str(self.features_step_length_mean))
-        if tap.step_length_method == StepLengthMethod.UNIFORM:
+        if tap.step_length_method in {StepLengthMethod.UNIFORM, StepLengthMethod.COLLOCATION_UNIFORM}:
             self.features_step_length_uniform_min = self.features_step_length_mean * tap.step_length_uniform_low_to_mean_ratio
             print("features_step_length_uniform_min=%s" % str(self.features_step_length_uniform_min))
             self.features_step_length_uniform_max = 2 * self.features_step_length_mean - self.features_step_length_uniform_min
             print("features_step_length_uniform_max=%s" % str(self.features_step_length_uniform_max))
-        elif tap.step_length_method == StepLengthMethod.NORMAL:
+        elif tap.step_length_method in {StepLengthMethod.NORMAL, StepLengthMethod.COLLOCATION_NORMAL}:
             self.features_step_length_normal_std = tap.step_length_normal_std_ratio * self.features_step_length_mean
             print("features_step_length_normal_std=%s" % str(self.features_step_length_normal_std))
 

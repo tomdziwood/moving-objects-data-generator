@@ -94,11 +94,11 @@ class SpatioTemporalTravelApproachGenerator:
 
             # determine travel step length of each feature instance
             features_instances_step_length = np.array([], dtype=np.float64)
-            if self.tap.step_length_method == StepLengthMethod.UNIFORM:
+            if self.tap.step_length_method in {StepLengthMethod.UNIFORM, StepLengthMethod.COLLOCATION_UNIFORM}:
                 features_instances_step_length = np.random.uniform(low=self.tai.features_step_length_uniform_min[self.tai.features_ids], high=self.tai.features_step_length_uniform_max[self.tai.features_ids], size=self.tai.features_instances_sum)
-            elif self.tap.step_length_method == StepLengthMethod.GAMMA:
+            elif self.tap.step_length_method in {StepLengthMethod.GAMMA, StepLengthMethod.COLLOCATION_GAMMA}:
                 features_instances_step_length = np.random.gamma(shape=self.tai.features_step_length_mean[self.tai.features_ids], scale=1.0, size=self.tai.features_instances_sum)
-            elif self.tap.step_length_method == StepLengthMethod.NORMAL:
+            elif self.tap.step_length_method in {StepLengthMethod.NORMAL, StepLengthMethod.COLLOCATION_NORMAL}:
                 features_instances_step_length = np.random.normal(loc=self.tai.features_step_length_mean[self.tai.features_ids], scale=self.tai.features_step_length_normal_std[self.tai.features_ids], size=self.tai.features_instances_sum)
                 features_instances_step_length[features_instances_step_length < 0] *= -1
 
