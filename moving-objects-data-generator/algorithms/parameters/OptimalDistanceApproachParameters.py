@@ -16,6 +16,7 @@ class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
             k_optimal_distance: float = 1.0,
             k_force: float = 1.0,
             force_limit: float = 5.0,
+            force_repulsion_interaction_limit: float = 10.0,
             velocity_limit: float = 5.0,
             faraway_limit_ratio: float = np.sqrt(2) / 2,
             mass_method: MassMethod = MassMethod.CONSTANT,
@@ -45,6 +46,10 @@ class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
 
         force_limit : float
             The limit of maximum absolute value of resultant force applied to the given feature instance. The parameter is also known as the "f_max".
+
+        force_repulsion_interaction_limit : float
+            The maximum distance limit between each pair of features instances at which the repulsion force exists. When the distance between the given pair
+            of features instances exceeds the specified limit, no repulsion force occurs between these objects.
 
         velocity_limit : float
             The limit of maximum absolute value of resultant velocity at which the feature instance can move. The parameter is also known as the "v_max".
@@ -102,6 +107,10 @@ class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
         if force_limit <= 0.0:
             force_limit = 5.0
 
+        # check 'force_repulsion_interaction_limit' value
+        if force_repulsion_interaction_limit <= k_optimal_distance:
+            force_limit = 10 * k_optimal_distance
+
         # check 'velocity_limit' value
         if velocity_limit <= 0.0:
             velocity_limit = 5.0
@@ -127,6 +136,7 @@ class OptimalDistanceApproachParameters(StandardTimeFrameParameters):
         self.k_optimal_distance = k_optimal_distance
         self.k_force = k_force
         self.force_limit = force_limit
+        self.force_repulsion_interaction_limit = force_repulsion_interaction_limit
         self.velocity_limit = velocity_limit
         self.faraway_limit_ratio = faraway_limit_ratio
         self.mass_method = mass_method

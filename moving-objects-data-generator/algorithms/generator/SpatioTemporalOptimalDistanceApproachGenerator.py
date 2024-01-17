@@ -18,11 +18,13 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
     depend on the masses of those instances, the distance between them, the scaling constant coefficient ``k_force``, and the special coefficient ``k_optimal_distance``
     defining the distance to which features instances will strive to maintain, if they are intended to co-occur within a given co-location instance.
 
-    Repulsion forces occur between each pair of features instances. Attraction forces, on the other hand, apply only between features instances that were initiated
-    at the first time frame as co-occurring within a given co-location instance. The values of both types of forces are proportional to the masses of both features instances
-    and a constant scaling factor ``k_force``. The difference, however, lies in the fact that the attraction force is proportional to the square of the distance between
-    features instances and inversely proportional to the parameter ``k_optimal_distance``. On the other hand, the repulsion force is inversely proportional to the distance
-    between features instances and proportional to the square of the ``k_optimal_distance`` parameter.
+    Repulsion forces exist between each pair of features instances which are placed within the distance of the parameter ''force_repulsion_interaction_limit''.
+    Attraction forces, on the other hand, apply only between features instances that were initiated at the first time frame as co-occurring within the given
+    co-location instance. The values of both types of forces are proportional to the masses of both features instances and a constant scaling factor ``k_force``.
+    The difference, however, lies in the fact that the attraction force is proportional to the square of the distance between features instances
+    and inversely proportional to the parameter ``k_optimal_distance``. On the other hand, the repulsion force is inversely proportional to the distance between
+    features instances and proportional to the square of the ``k_optimal_distance`` parameter. However, the repulsion force stops working between the given pair
+    of features instances, if they are at a distance exceeding the value of the parameter ''force_repulsion_interaction_limit''.
     """
 
     def __init__(
@@ -109,7 +111,8 @@ class SpatioTemporalOptimalDistanceApproachGenerator:
 
                 # ---begin--- calculate resultant repulsion force for each instance
                 # calculate absolute value of repulsion force between each pair of instances
-                force_repulsion_abs = -np.divide(self.odap.k_optimal_distance ** 2 * self.odai.force_multiplier_constant, dist, out=np.zeros_like(dist), where=dist != 0)
+                force_repulsion_abs = -np.divide(self.odap.k_optimal_distance ** 2 * self.odai.force_multiplier_constant, dist, out=np.zeros_like(dist),
+                                                 where=np.logical_and(dist != 0, dist <= self.odap.force_repulsion_interaction_limit))
 
                 # calculate components of repulsion force between each pair of instances
                 force_repulsion_div = np.divide(force_repulsion_abs, dist, out=np.zeros_like(force_repulsion_abs), where=dist != 0)
@@ -216,13 +219,13 @@ if __name__ == "__main__":
     odap = OptimalDistanceApproachParameters(
         area=100.0,
         cell_size=5.0,
-        n_base=1,
+        n_base=3,
         lambda_1=6.0,
-        lambda_2=1.0,
+        lambda_2=3.0,
         m_clumpy=1,
         m_overlap=1,
-        ncfr=0.0,
-        ncfn=0.0,
+        ncfr=0.5,
+        ncfn=0.5,
         ncf_proportional=False,
         ndf=0,
         ndfn=0,
@@ -232,9 +235,10 @@ if __name__ == "__main__":
         time_unit=25.0,
         approx_steps_number=2,
         k_optimal_distance=5.0,
-        k_force=1.0,
+        k_force=10.0,
         force_limit=20.0,
-        velocity_limit=2.5,
+        force_repulsion_interaction_limit=25.0,
+        velocity_limit=10.0,
         faraway_limit_ratio=np.sqrt(2) / 2,
         mass_method=MassMethod.CONSTANT,
         mass_mean=1.0,
